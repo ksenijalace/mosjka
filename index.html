@@ -261,6 +261,17 @@
       <ul class="log" id="scaleHistory"></ul>
     </div>
 
+    <div class="card ui no-print">
+      <strong>Keep your records safe</strong>
+      <p class="note">Your days, scores and letters are saved automatically in this browser. They can be lost if you clear your browser data, use a private window, or switch to another phone or computer. Download a backup now and then, and restore it on any device to carry on where you left off.</p>
+      <div class="row">
+        <button id="backupBtn">Download a backup</button>
+        <button id="restoreBtn">Restore from a backup</button>
+        <input type="file" id="restoreFile" accept="application/json,.json" hidden>
+        <span id="backupMsg" class="note" aria-live="polite"></span>
+      </div>
+    </div>
+
     <div class="row ui no-print">
       <button id="printBtn">Print or save for your vet</button>
       <button class="link" id="clearBtn">Delete everything I've entered</button>
@@ -425,7 +436,12 @@
       catch (e) { return fallback; }
     },
     set: function (key, value) {
-      try { localStorage.setItem(key, JSON.stringify(value)); return true; }
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+        // Ask the browser not to evict our data when space runs low.
+        if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function () {});
+        return true;
+      }
       catch (e) { return false; }
     },
     remove: function (key) { try { localStorage.removeItem(key); } catch (e) {} }
@@ -606,6 +622,59 @@
     ta.value = "";
     flash("letterSaved", ok ? "Kept." : unsaved);
     renderLetters();
+  });
+
+  // ---- Backup / restore ----
+  document.getElementById("backupBtn").addEventListener("click", function () {
+    var data = {
+      app: "the-hardest-kindness",
+      version: 1,
+      exported: new Date().toISOString(),
+      days: store.get(KEYS.days, {}),
+      scores: store.get(KEYS.scores, []),
+      letters: store.get(KEYS.letters, [])
+    };
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "hardest-kindness-backup-" + today() + ".json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    flash("backupMsg", "Backup downloaded. Keep it somewhere safe, like your email or cloud storage.");
+  });
+
+  var restoreFile = document.getElementById("restoreFile");
+  document.getElementById("restoreBtn").addEventListener("click", function () { restoreFile.click(); });
+  restoreFile.addEventListener("change", function () {
+    var file = restoreFile.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      var data;
+      try { data = JSON.parse(reader.result); } catch (e) { data = null; }
+      if (!data || data.app !== "the-hardest-kindness") {
+        flash("backupMsg", "That file doesn't look like a backup from this site.");
+        return;
+      }
+      // Merge so restoring never wipes anything already on this device.
+      var days = store.get(KEYS.days, {});
+      Object.keys(data.days || {}).forEach(function (d) { days[d] = data.days[d]; });
+      function mergeList(existing, incoming) {
+        var seen = {};
+        existing.forEach(function (x) { seen[JSON.stringify(x)] = true; });
+        (incoming || []).forEach(function (x) { if (!seen[JSON.stringify(x)]) existing.push(x); });
+        return existing.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+      }
+      var ok = store.set(KEYS.days, days)
+        && store.set(KEYS.scores, mergeList(store.get(KEYS.scores, []), data.scores))
+        && store.set(KEYS.letters, mergeList(store.get(KEYS.letters, []), data.letters));
+      flash("backupMsg", ok ? "Your records have been restored." : unsaved);
+      loadDayIntoForm(); renderDays(); renderScores(); renderLetters();
+    };
+    reader.readAsText(file);
+    restoreFile.value = "";
   });
 
   // ---- Print / clear ----
