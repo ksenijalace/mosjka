@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Hardest Kindness</title>
+<meta name="description" content="Support before and after saying goodbye to your dog through euthanasia: deciding when it is time, and living with the guilt afterwards.">
+<style>
+  :root {
+    --bg: #faf6f0;
+    --surface: #ffffff;
+    --surface-soft: #f3ece2;
+    --text: #2e2a26;
+    --muted: #6b625a;
+    --accent: #9a5b3f;
+    --accent-soft: #f1e1d6;
+    --line: #e4d9cc;
+    --good: #5f8a63;
+    --okay: #c49a3c;
+    --bad: #a2554e;
+    --focus: #2f6db5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1c1a19;
+      --surface: #252220;
+      --surface-soft: #2d2926;
+      --text: #ece6df;
+      --muted: #b0a69c;
+      --accent: #e0a283;
+      --accent-soft: #3a2c25;
+      --line: #3b3531;
+      --good: #8fbf92;
+      --okay: #e0bd6b;
+      --bad: #e08f87;
+      --focus: #8db8ef;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1c1a19;
+    --surface: #252220;
+    --surface-soft: #2d2926;
+    --text: #ece6df;
+    --muted: #b0a69c;
+    --accent: #e0a283;
+    --accent-soft: #3a2c25;
+    --line: #3b3531;
+    --good: #8fbf92;
+    --okay: #e0bd6b;
+    --bad: #e08f87;
+    --focus: #8db8ef;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 18px/1.65 Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  }
+  .ui, nav, button, input, textarea, label, .help-bar, footer, summary .hint {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  a { color: var(--accent); }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .help-bar {
+    background: var(--accent-soft);
+    color: var(--text);
+    font-size: 15px;
+    text-align: center;
+    padding: 8px 16px;
+  }
+  .help-bar a { font-weight: 600; }
+
+  header.hero {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 16px 24px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 6vw, 46px);
+    line-height: 1.15;
+    margin: 0 0 16px;
+    font-weight: normal;
+  }
+  .hero p { color: var(--muted); font-size: 20px; margin: 0; }
+
+  nav.paths {
+    max-width: 760px;
+    margin: 24px auto 0;
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  nav.paths a {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px;
+    text-decoration: none;
+    color: var(--text);
+  }
+  nav.paths a strong { display: block; font-size: 18px; color: var(--accent); }
+  nav.paths a span { font-size: 15px; color: var(--muted); }
+  @media (max-width: 560px) { nav.paths { grid-template-columns: 1fr; } }
+
+  main { max-width: 760px; margin: 0 auto; padding: 0 16px 48px; }
+  section { padding-top: 48px; }
+  h2 { font-size: 30px; font-weight: normal; margin: 0 0 8px; }
+  h3 { font-size: 22px; font-weight: normal; margin: 32px 0 8px; }
+  .lead { color: var(--muted); margin-top: 0; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+    margin: 16px 0;
+  }
+
+  details.piece {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    margin: 12px 0;
+  }
+  details.piece summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 18px 20px;
+    font-size: 21px;
+  }
+  details.piece summary::-webkit-details-marker { display: none; }
+  details.piece summary::after { content: "+"; float: right; color: var(--muted); }
+  details.piece[open] summary::after { content: "−"; }
+  details.piece summary .hint { display: block; font-size: 14px; color: var(--muted); }
+  details.piece .body { padding: 0 20px 20px; }
+  .exercise {
+    background: var(--surface-soft);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 16px;
+  }
+  .exercise b { font-family: system-ui, sans-serif; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); }
+
+  /* Tracker */
+  .ui { font-size: 16px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  button {
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--surface-soft);
+    color: var(--text);
+    padding: 10px 16px;
+    cursor: pointer;
+    min-height: 44px;
+  }
+  button.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  button.choice[aria-pressed="true"] { border-width: 2px; border-color: var(--accent); background: var(--accent-soft); }
+  button.link { background: none; border: none; color: var(--muted); text-decoration: underline; padding: 8px 4px; }
+  input[type="date"], textarea {
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--text);
+  }
+  textarea { width: 100%; min-height: 90px; resize: vertical; }
+  .dots { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 4px; }
+  .dot { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); }
+  .dot.good { background: var(--good); border-color: var(--good); }
+  .dot.okay { background: var(--okay); border-color: var(--okay); }
+  .dot.bad { background: var(--bad); border-color: var(--bad); }
+  .legend { font-size: 14px; color: var(--muted); }
+  .scale-item { margin: 14px 0; }
+  .scale-item label { display: flex; justify-content: space-between; gap: 12px; }
+  .scale-item small { display: block; color: var(--muted); font-size: 14px; }
+  .scale-item input[type="range"] { width: 100%; accent-color: var(--accent); }
+  .total { font-size: 20px; margin: 12px 0; }
+  .note { font-size: 14px; color: var(--muted); }
+  ul.log { list-style: none; padding: 0; margin: 8px 0 0; font-size: 15px; }
+  ul.log li { padding: 6px 0; border-top: 1px solid var(--line); }
+
+  ol.steps li, ul.plain li { margin-bottom: 8px; }
+
+  footer {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+    font-size: 14px;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+  }
+
+  @media print {
+    .help-bar, nav.paths, header.hero, footer, #after, #help, #letter, #before > :not(#tracker) { display: none !important; }
+    .no-print { display: none !important; }
+    body { background: #fff; color: #000; }
+  }
+</style>
+</head>
+<body>
+
+<div class="help-bar" role="note">
+  If you are struggling to cope or thinking of harming yourself, please <a href="#help">find someone to talk to right now</a>.
+</div>
+
+<header class="hero">
+  <h1>The hardest kindness</h1>
+  <p>For people deciding whether it is time to say goodbye to their dog, and for those who already have, and can't stop asking whether they did the right thing.</p>
+</header>
+
+<nav class="paths" aria-label="Choose where you are">
+  <a href="#before"><strong>I'm facing the decision</strong><span>Is it time? What will happen? How do I prepare?</span></a>
+  <a href="#after"><strong>I've already said goodbye</strong><span>The guilt, the last moment, and the questions that won't stop.</span></a>
+</nav>
+
+<main>
+
+<!-- ============ BEFORE ============ -->
+<section id="before">
+  <h2>Facing the decision</h2>
+  <p class="lead">There is rarely one obvious moment. Most people are waiting for a sign that never comes clearly. These pages can't decide for you, but they can help you see more clearly and talk more openly with your vet.</p>
+
+  <div id="tracker">
+    <h3>Keep track of the days</h3>
+    <p>When you are living with a sick or old dog, the good days and bad days blur together. Writing down one word a day makes the pattern visible. It also leaves you a record that may help later, when your mind starts asking "was it too soon?"</p>
+    <p class="note ui">Everything you enter stays only in this browser on this device. Nothing is sent anywhere.</p>
+
+    <div class="card ui">
+      <strong>How was today?</strong>
+      <div class="row" style="margin-top:10px">
+        <input type="date" id="dayDate" aria-label="Date">
+      </div>
+      <div class="row" style="margin-top:10px" role="group" aria-label="Kind of day">
+        <button class="choice" data-kind="good" aria-pressed="false">A good day</button>
+        <button class="choice" data-kind="okay" aria-pressed="false">Somewhere in between</button>
+        <button class="choice" data-kind="bad" aria-pressed="false">A bad day</button>
+      </div>
+      <label for="dayNote" class="note" style="display:block;margin-top:12px">Anything you noticed? (ate, walked, slept, seemed in pain, wagged…)</label>
+      <textarea id="dayNote"></textarea>
+      <div class="row" style="margin-top:10px"><button class="primary" id="saveDay">Save today</button><span id="daySaved" class="note" aria-live="polite"></span></div>
+
+      <div id="dayHistory"></div>
+    </div>
+
+    <h3>A closer look: the quality-of-life scale</h3>
+    <p>Many vets use a scale developed by veterinary oncologist Dr Alice Villalobos, sometimes called "HHHHHMM". Score each area from 0 (very poor) to 10 (excellent). It is a conversation starter for you and your vet, not a verdict.</p>
+
+    <div class="card ui" id="scale">
+      <div id="scaleItems"></div>
+      <p class="total">Total: <strong id="scaleTotal">0</strong> / 70</p>
+      <p class="note">Dr Villalobos suggests that a total above 35 generally reflects acceptable quality of life for a dog in end-of-life care. Below that, it is worth talking honestly with your vet. A single score matters less than the direction it is moving in over days and weeks.</p>
+      <div class="row"><button class="primary" id="saveScale">Save this score</button><span id="scaleSaved" class="note" aria-live="polite"></span></div>
+      <ul class="log" id="scaleHistory"></ul>
+    </div>
+
+    <div class="row ui no-print">
+      <button id="printBtn">Print or save for your vet</button>
+      <button class="link" id="clearBtn">Delete everything I've entered</button>
+    </div>
+  </div>
+
+  <h3>Questions to ask your vet</h3>
+  <ul class="plain">
+    <li>Is my dog in pain, even if they don't show it? Can that pain be controlled?</li>
+    <li>What is likely to happen next with this illness, and how quickly?</li>
+    <li>What would a "bad end" look like if we waited? What signs would mean we've waited too long?</li>
+    <li>If this were your dog, what would you be thinking about?</li>
+    <li>Can it be done at home? Can I stay with them the whole time?</li>
+    <li>Will they be sedated first? What will I see?</li>
+    <li>What are the options afterwards (cremation, burial), and do I need to decide now?</li>
+  </ul>
+  <p>Many vets say a phrase that helps people: <em>"Better a week too early than a day too late."</em> It does not mean there is a perfect day. It means that when the choice is between some good time lost and some suffering endured, most vets would rather lose the good time.</p>
+
+  <h3>What happens during the appointment</h3>
+  <p>Knowing what to expect can make the moment less frightening, and protects you from being shocked by things that are normal.</p>
+  <ol class="steps">
+    <li><strong>Sedation.</strong> Most vets first give a sedative injection. Your dog becomes deeply relaxed and sleepy over a few minutes. This is a good time to hold them and talk to them.</li>
+    <li><strong>The final injection.</strong> The vet gives an overdose of anaesthetic, usually into a vein. Your dog loses consciousness within seconds, then their heart stops, usually within a minute or two. They are not aware of this.</li>
+    <li><strong>Things that can happen afterwards, and are normal.</strong> Their eyes usually stay open. There may be twitching muscles, a deep breath or a few gasps after the heart has stopped, or the bladder releasing. These are reflexes of the body; your dog is no longer aware and is not suffering.</li>
+    <li><strong>Time afterwards.</strong> You can usually stay with them for as long as you need. You don't have to rush.</li>
+  </ol>
+
+  <h3>Should I be in the room?</h3>
+  <p>There is no wrong answer. Many people find that being there, with their hand on their dog and their voice the last thing they hear, is something they are later grateful for. Others know they could not bear it, or that their distress would frighten their dog. Both are acts of love. If you can't be present for the final injection, you might stay for the sedation and say goodbye while they are falling asleep.</p>
+
+  <h3>Planning the last day</h3>
+  <ul class="plain">
+    <li>Their favourite food, even the forbidden kind.</li>
+    <li>A slow visit to a favourite place, carried if needed.</li>
+    <li>Time lying together in the sun or on the bed they weren't allowed on.</li>
+    <li>Photos, a short video of their breathing or their paws, a recording of their sounds.</li>
+    <li>A paw print in clay or ink, or a clipping of fur. Ask your vet; many clinics can do this.</li>
+    <li>Saying everything you want to say. They may not understand the words, but they know your voice.</li>
+  </ul>
+  <p>It is also fine if the last day is quiet and ordinary. The love was in all the other days too.</p>
+
+  <h3>Children and other pets</h3>
+  <p>With children, use clear words like "died" rather than "went to sleep", which can make sleep frightening. Let them say goodbye in their own way, such as a drawing or a letter. Other dogs and cats in the home sometimes benefit from seeing or smelling their companion's body afterwards; it seems to help some of them understand the absence.</p>
+</section>
+
+<!-- ============ AFTER ============ -->
+<section id="after">
+  <h2>After the goodbye</h2>
+  <p class="lead">Choosing euthanasia brings a particular kind of grief. As well as losing them, many people feel that they caused the loss. Below are the thoughts that come back most often. Open the one that sounds like you.</p>
+
+  <details class="piece">
+    <summary>"It was too early. They could have had more good days."<span class="hint">If you keep counting the days you might have had</span></summary>
+    <div class="body">
+      <p>This thought often grows louder after the death, when your memory starts replaying the better moments of the last weeks: the time they wagged, the time they ate. Grief edits the story. It keeps the bright moments and quietly drops the nights of panting, the pain medication that wasn't quite enough, the look in their eyes that made you start thinking about this in the first place.</p>
+      <p>Nobody chooses euthanasia lightly. If you made the decision, it is because you saw something real. Your vet saw it too. The question "could they have had more good days?" usually has no certain answer, but the cost of guessing wrong in the other direction was your dog's suffering, and you chose to protect them from that.</p>
+      <p>A day you gave up so that they would not have to suffer is not a day you took from them. It is a gift you paid for with your own heart.</p>
+      <div class="exercise"><b>Try this</b><p>Write down, as honestly as you can, what the last two weeks were actually like for your dog: not the best moments, but an ordinary day. What could they no longer do? What did you notice that worried you? Keep this list. Read it when the "too early" thought comes back.</p></div>
+    </div>
+  </details>
+
+  <details class="piece">
+    <summary>"I waited too long. They suffered because I couldn't let go."<span class="hint">If you are haunted by the last days</span></summary>
+    <div class="body">
+      <p>Almost everyone who has made this decision feels, in hindsight, that it should have been sooner. Vets hear this constantly. Decline in dogs is often gradual, and dogs are very good at hiding pain. What looks obvious looking back was blurry when you were living it day by day.</p>
+      <p>Not being able to let go is not selfishness. It is love that hadn't yet found its way to goodbye. You held on because they mattered so much. And then, when you saw clearly, you did let go, which is the hardest thing love ever asks.</p>
+      <p>Their last days were not the whole of their life. Most of their life was spent being loved by you.</p>
+      <div class="exercise"><b>Try this</b><p>Think of a friend telling you this exact story about their own dog. What would you say to them? Write it down, then read it back slowly, as if it were addressed to you. It is.</p></div>
+    </div>
+  </details>
+
+  <details class="piece">
+    <summary>"They trusted me, and I ended their life."<span class="hint">If the decision feels like a betrayal</span></summary>
+    <div class="body">
+      <p>This is often the deepest guilt, and the one people find hardest to say out loud.</p>
+      <p>Your dog trusted you to look after them. For their whole life that meant food, walks, a warm place to sleep and protection from harm. At the end, when their body could no longer give them a life worth living, looking after them meant protecting them from what was coming. That trust was not betrayed. It was honoured, in the only way that was left.</p>
+      <p>Dogs cannot understand illness or what lies ahead, and they cannot choose for themselves. That is exactly why they need someone who loves them to choose for them. You carried that weight so they didn't have to.</p>
+      <div class="exercise"><b>Try this</b><p>Finish this sentence, as many times as you need: "Because I loved you, I…" Let the list run from the first day you met to the last.</p></div>
+    </div>
+  </details>
+
+  <details class="piece">
+    <summary>"I can't stop seeing the last moment."<span class="hint">If the memory of the appointment keeps coming back</span></summary>
+    <div class="body">
+      <p>The final minutes are often the sharpest memory for weeks or months. It is common to replay them: the needle, the stillness, their eyes staying open, a breath after the vet said they were gone. Many of those things are normal reflexes of the body after death, and they do not mean your dog was aware or in pain.</p>
+      <p>Your mind is replaying that moment because it was overwhelming, not because it was the most important. It was a few minutes at the end of thousands of days together.</p>
+      <div class="exercise"><b>Try this</b><p>When the image comes, don't fight it. Let it be there, and then deliberately bring in another memory alongside it: one ordinary, happy moment with all its details. The sound of their nails on the floor. The weight of their head on your lap. Over time, practising this helps the last moment become one memory among many instead of the only one.</p></div>
+      <p class="note ui">If the images are intrusive for months, wake you at night or stop you functioning, please talk to a doctor or counsellor. This kind of grief responds well to help.</p>
+    </div>
+  </details>
+
+  <details class="piece">
+    <summary>"I wasn't there with them at the end."<span class="hint">If you couldn't be in the room, or weren't allowed to be</span></summary>
+    <div class="body">
+      <p>Sometimes people can't be present: they couldn't bear it, the clinic rules didn't allow it, it happened suddenly, or someone else in the family took them. Afterwards it can feel as if you abandoned them at the moment that mattered most.</p>
+      <p>Your dog's experience of you was not those last minutes. It was years of your voice, your smell, your hands. That is what they carried with them. Being unable to watch them die is not a failure of love; for many people, it is what love feels like when it is overwhelmed.</p>
+      <div class="exercise"><b>Try this</b><p>Write them the goodbye you didn't get to say. Say it out loud if you can, somewhere that meant something to both of you.</p></div>
+    </div>
+  </details>
+
+  <details class="piece">
+    <summary>"Part of me feels relieved, and I hate myself for it."<span class="hint">If relief is mixed in with the grief</span></summary>
+    <div class="body">
+      <p>If your dog was ill for a long time, you probably lived for weeks or months with medication schedules, sleepless nights, cleaning up, worrying, carrying them up the stairs and watching for signs. When that ends, relief is a completely natural response. It sits right next to grief, and it doesn't make the grief any less real.</p>
+      <p>Relief is often relief that <em>their</em> suffering is over, too. You no longer have to watch them struggle. That is not a betrayal of them; it is part of how much you cared.</p>
+      <div class="exercise"><b>Try this</b><p>Name both feelings out loud or on paper: "I miss you so much, and I am relieved you are not hurting anymore." Both are true. Neither cancels the other.</p></div>
+    </div>
+  </details>
+
+  <h3>The empty routine</h3>
+  <p>For many people the hardest moments are not the big ones but the small daily ones: the time you used to go for a walk, the food bowl, coming home to a silent door. If you can, decide gently what to do with those times instead of meeting them unprepared. Some people take the walk anyway. Some light a candle at dinner time. There is no right way, only your way.</p>
+</section>
+
+<!-- ============ LETTER ============ -->
+<section id="letter">
+  <h2>Write to them</h2>
+  <p class="lead">Writing to the one you've lost is one of the most helpful things people do in grief. Tell them about your day, about how much you miss them, about what you wish you'd said. Come back whenever you need to.</p>
+  <div class="card ui">
+    <label for="letterText" class="note">This stays only on this device. Nobody else can read it.</label>
+    <textarea id="letterText" style="min-height:160px" placeholder="Dear…"></textarea>
+    <div class="row" style="margin-top:10px"><button class="primary" id="saveLetter">Keep this letter</button><span id="letterSaved" class="note" aria-live="polite"></span></div>
+    <ul class="log" id="letterHistory"></ul>
+  </div>
+</section>
+
+<!-- ============ HELP ============ -->
+<section id="help">
+  <h2>Talk to someone</h2>
+  <p class="lead">Grief for a dog is real grief. You do not have to justify it, and you don't have to carry it alone.</p>
+  <div class="card">
+    <p><strong>If you are thinking about harming yourself or feel you can't go on, please reach out now:</strong></p>
+    <ul class="plain">
+      <li>United States: call or text <strong>988</strong>, or chat at <a href="https://988lifeline.org" rel="noopener">988lifeline.org</a></li>
+      <li>UK and Ireland: call Samaritans on <strong>116 123</strong> (<a href="https://www.samaritans.org" rel="noopener">samaritans.org</a>)</li>
+      <li>Anywhere else: find a free helpline in your country at <a href="https://findahelpline.com" rel="noopener">findahelpline.com</a></li>
+      <li>If you are in immediate danger, call your local emergency number.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <p><strong>Pet-loss support from people who understand:</strong></p>
+    <ul class="plain">
+      <li>Blue Cross Pet Bereavement Support Service (UK): <a href="https://www.bluecross.org.uk/pet-bereavement-and-pet-loss" rel="noopener">bluecross.org.uk</a></li>
+      <li>Cornell University Pet Loss Support Hotline (US), staffed by veterinary students</li>
+      <li>Tufts University Pet Loss Support Hotline (US)</li>
+      <li>Association for Pet Loss and Bereavement: chat rooms and a directory of counsellors (<a href="https://www.aplb.org" rel="noopener">aplb.org</a>)</li>
+    </ul>
+    <p class="note ui">Opening hours and contact details change, so please check each service's website.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>This site offers information and comfort. It is not veterinary advice or therapy. Please talk to your vet about your dog, and to a doctor or counsellor if your grief feels unmanageable.</p>
+  <p>Made in memory of a dog who was loved.</p>
+</footer>
+
+<script>
+(function () {
+  var store = {
+    get: function (key, fallback) {
+      try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+      catch (e) { return fallback; }
+    },
+    set: function (key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); return true; }
+      catch (e) { return false; }
+    },
+    remove: function (key) { try { localStorage.removeItem(key); } catch (e) {} }
+  };
+  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters" };
+
+  function today() {
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function niceDate(iso) {
+    var p = iso.split("-");
+    return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+  }
+  function flash(id, text) {
+    var el = document.getElementById(id);
+    el.textContent = text;
+    setTimeout(function () { el.textContent = ""; }, 4000);
+  }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  var unsaved = "Saved for now, but this browser isn't keeping data, so it may be lost when you close the page.";
+
+  // ---- Daily log ----
+  var dateInput = document.getElementById("dayDate");
+  dateInput.value = today();
+  dateInput.max = today();
+  var kind = null;
+  var choices = document.querySelectorAll("button.choice");
+  choices.forEach(function (b) {
+    b.addEventListener("click", function () {
+      kind = b.dataset.kind;
+      choices.forEach(function (c) { c.setAttribute("aria-pressed", String(c === b)); });
+    });
+  });
+
+  function loadDayIntoForm() {
+    var days = store.get(KEYS.days, {});
+    var entry = days[dateInput.value];
+    kind = entry ? entry.kind : null;
+    choices.forEach(function (c) { c.setAttribute("aria-pressed", String(c.dataset.kind === kind)); });
+    document.getElementById("dayNote").value = entry ? entry.note : "";
+  }
+  dateInput.addEventListener("change", loadDayIntoForm);
+
+  function renderDays() {
+    var days = store.get(KEYS.days, {});
+    var box = document.getElementById("dayHistory");
+    box.innerHTML = "";
+    var dates = Object.keys(days).sort();
+    if (!dates.length) return;
+
+    box.appendChild(el("h4", null, "The last 14 days"));
+    var dots = el("div", "dots");
+    var counts = { good: 0, okay: 0, bad: 0 };
+    for (var i = 13; i >= 0; i--) {
+      var d = new Date();
+      d.setDate(d.getDate() - i);
+      var iso = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+      var entry = days[iso];
+      var dot = el("span", "dot" + (entry ? " " + entry.kind : ""));
+      var label = niceDate(iso) + ": " + (entry ? { good: "good day", okay: "in between", bad: "bad day" }[entry.kind] : "not recorded");
+      dot.title = label;
+      dot.setAttribute("role", "img");
+      dot.setAttribute("aria-label", label);
+      dots.appendChild(dot);
+      if (entry) counts[entry.kind]++;
+    }
+    box.appendChild(dots);
+    box.appendChild(el("p", "legend",
+      counts.good + " good, " + counts.okay + " in between, " + counts.bad + " bad. Empty circles are days not recorded."));
+    if (counts.good + counts.okay + counts.bad >= 5 && counts.bad > counts.good) {
+      box.appendChild(el("p", "note",
+        "Recently there have been more bad days than good ones. That doesn't decide anything on its own, but it may be a good time to talk honestly with your vet."));
+    }
+
+    var list = el("ul", "log");
+    dates.slice().reverse().forEach(function (iso) {
+      var e = days[iso];
+      var word = { good: "Good day", okay: "In between", bad: "Bad day" }[e.kind];
+      list.appendChild(el("li", null, niceDate(iso) + " · " + word + (e.note ? " · " + e.note : "")));
+    });
+    box.appendChild(list);
+  }
+
+  document.getElementById("saveDay").addEventListener("click", function () {
+    if (!kind) { flash("daySaved", "Choose what kind of day it was first."); return; }
+    var days = store.get(KEYS.days, {});
+    days[dateInput.value || today()] = { kind: kind, note: document.getElementById("dayNote").value.trim() };
+    var ok = store.set(KEYS.days, days);
+    flash("daySaved", ok ? "Saved." : unsaved);
+    renderDays();
+  });
+
+  // ---- Quality-of-life scale ----
+  var items = [
+    ["hurt", "Hurt", "Is pain well controlled? Is breathing comfortable?"],
+    ["hunger", "Hunger", "Are they eating enough, with or without help?"],
+    ["hydration", "Hydration", "Are they drinking enough?"],
+    ["hygiene", "Hygiene", "Can they keep clean? Are there sores or accidents?"],
+    ["happiness", "Happiness", "Do they show interest, joy, response to family and toys?"],
+    ["mobility", "Mobility", "Can they get up, walk and move around as they need to?"],
+    ["more", "More good days than bad", "Overall, are good days still outnumbering bad ones?"]
+  ];
+  var scaleBox = document.getElementById("scaleItems");
+  items.forEach(function (it) {
+    var wrap = el("div", "scale-item");
+    var label = el("label");
+    label.setAttribute("for", "s-" + it[0]);
+    label.appendChild(el("span", null, it[1]));
+    var val = el("strong", null, "5");
+    val.id = "v-" + it[0];
+    label.appendChild(val);
+    wrap.appendChild(label);
+    wrap.appendChild(el("small", null, it[2]));
+    var range = document.createElement("input");
+    range.type = "range"; range.min = 0; range.max = 10; range.value = 5; range.id = "s-" + it[0];
+    range.addEventListener("input", function () { val.textContent = range.value; updateTotal(); });
+    wrap.appendChild(range);
+    scaleBox.appendChild(wrap);
+  });
+  function scaleValues() {
+    var v = {};
+    items.forEach(function (it) { v[it[0]] = +document.getElementById("s-" + it[0]).value; });
+    return v;
+  }
+  function updateTotal() {
+    var v = scaleValues(), t = 0;
+    for (var k in v) t += v[k];
+    document.getElementById("scaleTotal").textContent = t;
+    return t;
+  }
+  updateTotal();
+
+  function renderScores() {
+    var scores = store.get(KEYS.scores, []);
+    var list = document.getElementById("scaleHistory");
+    list.innerHTML = "";
+    scores.slice().reverse().forEach(function (s) {
+      list.appendChild(el("li", null, niceDate(s.date) + " · total " + s.total + " / 70"));
+    });
+  }
+  document.getElementById("saveScale").addEventListener("click", function () {
+    var scores = store.get(KEYS.scores, []);
+    scores.push({ date: today(), total: updateTotal(), values: scaleValues() });
+    var ok = store.set(KEYS.scores, scores);
+    flash("scaleSaved", ok ? "Saved." : unsaved);
+    renderScores();
+  });
+
+  // ---- Letters ----
+  function renderLetters() {
+    var letters = store.get(KEYS.letters, []);
+    var list = document.getElementById("letterHistory");
+    list.innerHTML = "";
+    letters.slice().reverse().forEach(function (l) {
+      var li = el("li");
+      var det = el("details");
+      det.appendChild(el("summary", null, niceDate(l.date)));
+      var p = el("p", null, l.text);
+      p.style.whiteSpace = "pre-wrap";
+      det.appendChild(p);
+      li.appendChild(det);
+      list.appendChild(li);
+    });
+  }
+  document.getElementById("saveLetter").addEventListener("click", function () {
+    var ta = document.getElementById("letterText");
+    var text = ta.value.trim();
+    if (!text) return;
+    var letters = store.get(KEYS.letters, []);
+    letters.push({ date: today(), text: text });
+    var ok = store.set(KEYS.letters, letters);
+    ta.value = "";
+    flash("letterSaved", ok ? "Kept." : unsaved);
+    renderLetters();
+  });
+
+  // ---- Print / clear ----
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
+  document.getElementById("clearBtn").addEventListener("click", function () {
+    if (!confirm("Delete all your saved days, scores and letters from this device? This can't be undone.")) return;
+    store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters);
+    loadDayIntoForm(); renderDays(); renderScores(); renderLetters();
+  });
+
+  loadDayIntoForm();
+  renderDays();
+  renderScores();
+  renderLetters();
+})();
+</script>
+</body>
+</html>
