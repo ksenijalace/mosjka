@@ -915,6 +915,15 @@
         <div class="row"><button type="button" class="btn primary" id="starLight">Light the star</button><span class="status" id="starMsg" aria-live="polite"></span></div>
       </div>
       <p class="moment" id="starLit" hidden></p>
+      <div id="starRemoveBox" class="stack" style="gap: 10px" hidden>
+        <div><button type="button" class="btn quiet" id="starRemove">Take the star down</button></div>
+        <div id="starRemoveAsk" class="stack" style="gap: 10px" hidden>
+          <p class="small" id="starRemoveText"></p>
+          <div class="row"><button type="button" class="btn" id="starRemoveYes">Take it down</button><button type="button" class="btn quiet" id="starRemoveNo">Keep it</button></div>
+        </div>
+        <p class="small muted" id="starRemoveNoKey" hidden>This star was lit on another device or before stars could be taken down. To remove it, <a href="#contact">write to me</a> and I'll take it down for you.</p>
+        <span class="status" id="starRemoveMsg" aria-live="polite"></span>
+      </div>
     </div>
   </div>
 </section>
@@ -1953,7 +1962,7 @@
         if (!dog.photo && data.dog.photo) dog.photo = data.dog.photo;
         if (!dog.breed && data.dog.breed) dog.breed = data.dog.breed;
         if (!dog.goodbye && data.dog.goodbye) dog.goodbye = data.dog.goodbye;
-        if (!dog.starId && data.dog.starId) { dog.starId = data.dog.starId; dog.starName = data.dog.starName; }
+        if (!dog.starId && data.dog.starId) { dog.starId = data.dog.starId; dog.starName = data.dog.starName; dog.starToken = data.dog.starToken || null; }
         if (!dog.size && data.dog.size) { dog.size = data.dog.size; dog.sizeFromBreed = !!data.dog.sizeFromBreed; dog.profileT = data.dog.profileT || Date.now(); }
         ok = store.set(KEYS.dog, dog);
       }
@@ -2868,8 +2877,26 @@
     var lit = !!dog.starId;
     document.getElementById("lightForm").hidden = lit;
     document.getElementById("starLit").hidden = !lit;
-    if (lit) moment("starLit", (dog.starName || dog.name || "Their") + "’s star is lit. It will stay here, among the others.");
+    if (lit) moment("starLit", (dog.starName || dog.name || "Their") + "\u2019s star is lit. It will stay here, among the others.");
+    document.getElementById("starRemoveBox").hidden = !lit;
+    document.getElementById("starRemove").hidden = lit && !dog.starToken;
+    document.getElementById("starRemoveNoKey").hidden = !lit || !!dog.starToken;
+    document.getElementById("starRemoveText").textContent = "Take " + (dog.starName || "their") + "\u2019s star down from the field? Their name and dates will be removed. You can light it again whenever you like.";
   }
+  document.getElementById("starRemove").addEventListener("click", function () { document.getElementById("starRemoveAsk").hidden = false; });
+  document.getElementById("starRemoveNo").addEventListener("click", function () { document.getElementById("starRemoveAsk").hidden = true; });
+  document.getElementById("starRemoveYes").addEventListener("click", function () {
+    var dog = store.get(KEYS.dog, {});
+    rpc("remove_star", { p_id: dog.starId, p_token: dog.starToken }).then(function (ok) {
+      if (!ok) { flash("starRemoveMsg", "The star couldn't be taken down. Please write to me and I'll do it for you."); return; }
+      document.getElementById("starRemoveAsk").hidden = true;
+      document.getElementById("starConsent").checked = false;
+      saveProfile({ starId: null, starToken: null, starName: null });
+      starsAll = starsAll.filter(function (st) { return st.id !== dog.starId; });
+      renderStars(); renderLight();
+      flash("starMsg", "The star has been taken down. You can light it again whenever you like.");
+    }).catch(function () { flash("starRemoveMsg", "That didn't work just now. Please try again in a little while."); });
+  });
   document.getElementById("starLight").addEventListener("click", function () {
     var name = document.getElementById("starName").value.trim(), born = document.getElementById("starBorn").value || null, died = document.getElementById("starDied").value || null;
     if (!name) { flash("starMsg", "Write their name first."); return; }
@@ -2877,8 +2904,13 @@
     if (!document.getElementById("starConsent").checked) { flash("starMsg", "Tick the box to show it in the field of stars."); return; }
     if (born && died && died < born) { flash("starMsg", "The goodbye date is before the birthday."); return; }
     flash("starMsg", "Lighting…");
-    rpc("light_star", { p_name: name, p_born: born, p_died: died }).then(function (id) {
-      saveProfile({ starId: id, starName: name });
+    // light_star_v2 also returns a private key for taking the star down; fall back if it isn't set up yet.
+    rpc("light_star_v2", { p_name: name, p_born: born, p_died: died })
+      .then(function (r) { return { id: r.id, token: r.token || null }; })
+      .catch(function () { return rpc("light_star", { p_name: name, p_born: born, p_died: died }).then(function (id) { return { id: id, token: null }; }); })
+      .then(function (res) {
+      var id = res.id;
+      saveProfile({ starId: id, starName: name, starToken: res.token });
       risingId = id; starsRisen = true;
       renderLight();
       loadStars();
@@ -3098,11 +3130,11 @@
       var dogNow = store.get(KEYS.dog, {}), prof = mergeProfile(dogNow, remote.profile);
       if (prof) {
         dogNow.breed = prof.breed || ""; dogNow.size = prof.size || null; dogNow.sizeFromBreed = !!prof.sizeFromBreed;
-        dogNow.goodbye = prof.goodbye || null; dogNow.stage = prof.stage || null; dogNow.starId = prof.starId || null; dogNow.starName = prof.starName || null; dogNow.profileT = prof.t;
+        dogNow.goodbye = prof.goodbye || null; dogNow.stage = prof.stage || null; dogNow.starId = prof.starId || null; dogNow.starName = prof.starName || null; dogNow.starToken = prof.starToken || null; dogNow.profileT = prof.t;
         store.set(KEYS.dog, dogNow);
       }
       var profile = dogNow.profileT ? { breed: dogNow.breed || "", size: dogNow.size || null, sizeFromBreed: !!dogNow.sizeFromBreed,
-        goodbye: dogNow.goodbye || null, stage: dogNow.stage || null, starId: dogNow.starId || null, starName: dogNow.starName || null, t: dogNow.profileT } : null;
+        goodbye: dogNow.goodbye || null, stage: dogNow.stage || null, starId: dogNow.starId || null, starName: dogNow.starName || null, starToken: dogNow.starToken || null, t: dogNow.profileT } : null;
       var localPt = store.get(KEYS.portrait, null), remotePt = remote.portrait || null;
       var portraitNow = remotePt && (!localPt || (remotePt.t || 0) > (localPt.t || 0)) ? remotePt : localPt;
       if (portraitNow) store.set(KEYS.portrait, portraitNow);
