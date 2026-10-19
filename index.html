@@ -270,6 +270,21 @@
   .line .num { font-family: var(--font-quote); font-size: 20px; text-align: right; font-variant-numeric: tabular-nums; }
   .line .who { grid-column: 1 / -1; font-size: 14px; color: var(--muted); }
 
+  .dog-card { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 24px; align-items: start; }
+  @media (max-width: 560px) { .dog-card { grid-template-columns: 1fr; } }
+  .dog-photo {
+    width: 100%; max-width: 180px; aspect-ratio: 1; border-radius: 4px; overflow: hidden;
+    border: 1px dashed var(--line-strong); background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dog-photo.has-photo { border: 0; }
+  .dog-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .dog-photo-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+  input[type="text"] {
+    font: inherit; font-size: 16px; color: var(--text); background: var(--bg);
+    border: 1px solid var(--line-strong); border-radius: 6px; padding: 10px 12px; min-height: 46px;
+  }
+
   .about { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 40px 64px; }
   .about > div { display: flex; flex-direction: column; gap: 12px; }
   .about h3 { font-size: 26px; }
@@ -325,7 +340,7 @@
       <nav class="site-nav" id="siteNav" aria-label="Main">
         <a href="#before">Facing the decision</a>
         <a href="#after">After the goodbye</a>
-        <a href="#letter">Write to them</a>
+        <a href="#letter" data-named="Write to {name}">Write to them</a>
         <a href="#help" class="help-link">Get help now</a>
       </nav>
     </header>
@@ -386,7 +401,7 @@
     <div class="main stack">
       <div class="card tracker" id="tracker">
         <div class="tracker-head">
-          <span class="card-title">How was today?</span>
+          <span class="card-title" data-named="How was {possessive} day?">How was today?</span>
           <input type="date" id="dayDate" aria-label="Date of the entry">
         </div>
         <div class="segmented" role="group" aria-label="Kind of day">
@@ -401,10 +416,10 @@
         <div class="row"><button type="button" class="btn primary" id="saveDay">Save this day</button><span class="status" id="daySaved" aria-live="polite"></span></div>
 
         <div>
-          <div class="card-title" style="font-size: 16px; margin-bottom: 10px">Last 14 days</div>
+          <div class="card-title" style="font-size: 16px; margin-bottom: 10px" data-named="{possessive} last 14 days">Last 14 days</div>
           <div class="days" id="days"></div>
           <div class="legend" id="legend"></div>
-          <p class="small muted" id="daysEmpty" style="margin-top: 12px">Your days will appear here, one square for each. Start with today; it takes a few seconds.</p>
+          <p class="small muted" id="daysEmpty" style="margin-top: 12px">Your days will appear here, one square for each. Start with today; it takes a few seconds. <a href="#yourdog" id="addNameLink">Add your dog's name</a></p>
           <p class="nudge" id="nudge" hidden style="margin-top: 14px">Recently there have been more bad days than good ones. That doesn't decide anything on its own, but it may be a good time to talk honestly with your vet.</p>
         </div>
         <details>
@@ -442,7 +457,7 @@
           <button type="button" class="btn quiet" id="clearBtn">Delete everything I've entered</button>
         </div>
         <div id="clearConfirm" class="stack" style="gap: 10px" hidden>
-          <p class="small">Delete all your saved days, scores and letters from this device? This can't be undone. If you might want them later, download a backup first.</p>
+          <p class="small">Delete all your saved days, scores, letters, and your dog's name and photo from this device? This can't be undone. If you might want them later, download a backup first.</p>
           <div class="row"><button type="button" class="btn danger" id="clearYes">Delete everything</button><button type="button" class="btn" id="clearNo">Keep my records</button></div>
         </div>
       </div>
@@ -571,14 +586,43 @@
 <section id="letter">
   <div class="wrap split">
     <div class="side">
-      <h2>Write to them</h2>
+      <h2 data-named="Write to {name}">Write to them</h2>
       <p>Writing to the one you've lost is one of the most helpful things people do in grief. Tell them about your day, about how much you miss them, about what you wish you'd said. Come back whenever you need to.</p>
     </div>
-    <div class="main card stack" style="gap: 14px">
-      <label for="letterText" class="field-label" style="margin: 0">Your letters stay only on this device. Nobody else can read them.</label>
-      <textarea id="letterText" style="min-height: 180px; font-family: var(--font-quote); font-size: 19px; line-height: 1.5" placeholder="Dear…"></textarea>
-      <div class="row"><button type="button" class="btn primary" id="saveLetter">Keep this letter</button><span class="status" id="letterSaved" aria-live="polite"></span></div>
-      <ul class="log" id="letterHistory"></ul>
+    <div class="main stack">
+      <div class="card dog-card" id="yourdog">
+        <div class="dog-photo" id="dogPhotoBox">
+          <img id="dogPhoto" alt="" hidden>
+          <span class="dog-photo-empty" id="dogPhotoEmpty">
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><use href="#starShape" fill="none" stroke="#b4c0dd" stroke-width="1.4" stroke-linejoin="round"/></svg>
+            <span>Add a photo</span>
+          </span>
+        </div>
+        <div class="stack" style="gap: 12px; min-width: 0">
+          <span class="card-title">Your dog</span>
+          <p class="small muted">Add their name, and a photo if you like. The site will speak about them by name. Both stay only on this device.</p>
+          <div>
+            <label for="dogName" class="field-label">Their name</label>
+            <div class="row">
+              <input type="text" id="dogName" maxlength="40" autocomplete="off" placeholder="For example, Mosjka" style="flex: 1 1 180px; min-width: 0">
+              <button type="button" class="btn primary" id="saveDog">Save</button>
+            </div>
+          </div>
+          <div class="row">
+            <button type="button" class="btn" id="dogPhotoBtn">Choose a photo</button>
+            <button type="button" class="btn quiet" id="dogPhotoRemove" hidden>Remove photo</button>
+            <input type="file" id="dogPhotoFile" accept="image/*" hidden>
+          </div>
+          <span class="status" id="dogMsg" aria-live="polite"></span>
+        </div>
+      </div>
+
+      <div class="card stack" style="gap: 14px">
+        <label for="letterText" class="field-label" style="margin: 0">Your letters stay only on this device. Nobody else can read them.</label>
+        <textarea id="letterText" style="min-height: 180px; font-family: var(--font-quote); font-size: 19px; line-height: 1.5" placeholder="Dear…" data-named-placeholder="Dear {name},"></textarea>
+        <div class="row"><button type="button" class="btn primary" id="saveLetter">Keep this letter</button><span class="status" id="letterSaved" aria-live="polite"></span></div>
+        <ul class="log" id="letterHistory"></ul>
+      </div>
     </div>
   </div>
 </section>
@@ -676,7 +720,7 @@
     },
     remove: function (key) { try { localStorage.removeItem(key); } catch (e) {} }
   };
-  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", country: "hk.country" };
+  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", country: "hk.country", dog: "hk.dog" };
   var unsaved = "Saved for now, but this browser isn't keeping data, so it may be lost when you close the page.";
 
   function iso(d) {
@@ -858,11 +902,93 @@
     renderLetters();
   });
 
+  // ---- Your dog: name and photo ----
+  var dogNameInput = document.getElementById("dogName");
+  var dogPhoto = document.getElementById("dogPhoto");
+  var dogPhotoBox = document.getElementById("dogPhotoBox");
+  var dogPhotoFile = document.getElementById("dogPhotoFile");
+
+  function possessive(name) { return name + "’s"; }
+
+  function applyDog() {
+    var dog = store.get(KEYS.dog, {});
+    var name = (dog.name || "").trim();
+    document.querySelectorAll("[data-named]").forEach(function (node) {
+      if (node.dataset.original == null) node.dataset.original = node.textContent;
+      node.textContent = name
+        ? node.dataset.named.replace("{possessive}", possessive(name)).replace("{name}", name)
+        : node.dataset.original;
+    });
+    var letter = document.getElementById("letterText");
+    letter.placeholder = name ? letter.dataset.namedPlaceholder.replace("{name}", name) : "Dear…";
+    document.getElementById("addNameLink").hidden = !!name;
+    dogNameInput.value = name;
+
+    var hasPhoto = !!dog.photo;
+    dogPhoto.hidden = !hasPhoto;
+    document.getElementById("dogPhotoEmpty").hidden = hasPhoto;
+    dogPhotoBox.classList.toggle("has-photo", hasPhoto);
+    document.getElementById("dogPhotoRemove").hidden = !hasPhoto;
+    document.getElementById("dogPhotoBtn").textContent = hasPhoto ? "Change photo" : "Choose a photo";
+    if (hasPhoto) {
+      dogPhoto.src = dog.photo;
+      dogPhoto.alt = name ? "Photo of " + name : "Photo of your dog";
+    } else {
+      dogPhoto.removeAttribute("src");
+    }
+  }
+
+  function saveDog(changes, okText) {
+    var dog = store.get(KEYS.dog, {});
+    for (var k in changes) dog[k] = changes[k];
+    var ok = store.set(KEYS.dog, dog);
+    flash("dogMsg", ok ? okText : "This browser couldn't save it. If it was a photo, try a smaller one.");
+    applyDog();
+  }
+
+  document.getElementById("saveDog").addEventListener("click", function () {
+    var name = dogNameInput.value.trim();
+    saveDog({ name: name }, name ? "Saved. The site will now speak about " + name + " by name." : "Name removed.");
+  });
+  dogNameInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); document.getElementById("saveDog").click(); }
+  });
+
+  document.getElementById("dogPhotoBtn").addEventListener("click", function () { dogPhotoFile.click(); });
+  dogPhotoBox.addEventListener("click", function () { if (dogPhoto.hidden) dogPhotoFile.click(); });
+  document.getElementById("dogPhotoRemove").addEventListener("click", function () {
+    saveDog({ photo: null }, "Photo removed.");
+  });
+  dogPhotoFile.addEventListener("change", function () {
+    var file = dogPhotoFile.files[0];
+    dogPhotoFile.value = "";
+    if (!file) return;
+    if (!/^image\//.test(file.type)) { flash("dogMsg", "That file isn't a photo. Please choose a JPG or PNG."); return; }
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function () {
+      // Shrink to a small square-ish copy so it fits comfortably in browser storage.
+      var max = 640, scale = Math.min(1, max / Math.max(img.width, img.height));
+      var canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      saveDog({ photo: canvas.toDataURL("image/jpeg", 0.85) }, "Photo saved on this device.");
+    };
+    img.onerror = function () {
+      URL.revokeObjectURL(url);
+      flash("dogMsg", "This photo couldn't be opened. Please try another one.");
+    };
+    img.src = url;
+  });
+
   // ---- Backup / restore / print / clear ----
   document.getElementById("backupBtn").addEventListener("click", function () {
     var data = {
       app: "the-hardest-kindness", version: 1, exported: new Date().toISOString(),
-      days: store.get(KEYS.days, {}), scores: store.get(KEYS.scores, []), letters: store.get(KEYS.letters, [])
+      days: store.get(KEYS.days, {}), scores: store.get(KEYS.scores, []), letters: store.get(KEYS.letters, []),
+      dog: store.get(KEYS.dog, {})
     };
     var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     var a = document.createElement("a");
@@ -900,6 +1026,13 @@
       var ok = store.set(KEYS.days, days)
         && store.set(KEYS.scores, mergeList(store.get(KEYS.scores, []), data.scores))
         && store.set(KEYS.letters, mergeList(store.get(KEYS.letters, []), data.letters));
+      // Keep anything already set on this device; fill in only what is missing.
+      if (ok && data.dog) {
+        var dog = store.get(KEYS.dog, {});
+        if (!dog.name && data.dog.name) dog.name = data.dog.name;
+        if (!dog.photo && data.dog.photo) dog.photo = data.dog.photo;
+        ok = store.set(KEYS.dog, dog);
+      }
       flash("backupMsg", ok ? "Your records have been restored." : unsaved);
       refreshAll();
     };
@@ -913,7 +1046,7 @@
   document.getElementById("clearBtn").addEventListener("click", function () { clearConfirm.hidden = false; });
   document.getElementById("clearNo").addEventListener("click", function () { clearConfirm.hidden = true; });
   document.getElementById("clearYes").addEventListener("click", function () {
-    store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters);
+    store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters); store.remove(KEYS.dog);
     clearConfirm.hidden = true;
     refreshAll();
   });
@@ -988,7 +1121,7 @@
   });
 
   function refreshAll() {
-    loadDayIntoForm(); renderDays(); renderScores(); renderLetters();
+    loadDayIntoForm(); renderDays(); renderScores(); renderLetters(); applyDog();
   }
   refreshAll();
 })();
