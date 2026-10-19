@@ -241,6 +241,22 @@
   .day.good { background: var(--good); color: var(--good-ink); border: 0; }
   .day.okay { background: var(--okay); color: var(--okay-ink); border: 0; }
   .day.bad { background: var(--bad); color: var(--bad-ink); border: 0; }
+  .weeks { display: flex; flex-direction: column; gap: 4px; }
+  .week { display: grid; grid-template-columns: 76px repeat(7, minmax(0, 1fr)); gap: 4px; align-items: center; }
+  .week-label { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .week .day { height: 26px; font-size: 13px; }
+  .week .day.future { border-color: transparent; }
+  .score-bars { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+  .score-row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 54px; gap: 10px; align-items: center; color: var(--muted); }
+  .score-track { height: 10px; border-radius: 5px; background: var(--bg); position: relative; overflow: hidden; }
+  .score-fill { position: absolute; inset: 0 auto 0 0; background: var(--honey); border-radius: 5px; }
+  .score-row .val { text-align: right; color: var(--text); font-variant-numeric: tabular-nums; }
+  .sync-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+  .sync-fields input { width: 100%; min-height: 46px; }
+  input[type="password"] {
+    font: inherit; font-size: 16px; color: var(--text); background: var(--bg);
+    border: 1px solid var(--line-strong); border-radius: 6px; padding: 10px 12px; letter-spacing: .3em;
+  }
   .legend { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 14px; color: var(--muted); margin-top: 10px; }
   .nudge { background: var(--sage-bg); border-radius: 4px; padding: 12px 16px; font-size: 15px; }
   .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
@@ -432,7 +448,7 @@
           <label for="dayNote" class="field-label">Anything you noticed? Eating, walking, sleeping, pain, a wag.</label>
           <textarea id="dayNote"></textarea>
         </div>
-        <div class="row"><button type="button" class="btn primary" id="saveDay">Save this day</button><span class="status" id="daySaved" aria-live="polite"></span></div>
+        <div class="row"><button type="button" class="btn" id="saveDay">Save note</button><span class="status" id="daySaved" aria-live="polite"></span></div>
 
         <div>
           <div class="card-title" style="font-size: 16px; margin-bottom: 10px" data-named="{possessive} last 14 days">Last 14 days</div>
@@ -441,10 +457,39 @@
           <p class="small muted" id="daysEmpty" style="margin-top: 12px">Your days will appear here, one square for each. Start with today; it takes a few seconds. <a href="#yourdog" id="addNameLink">Add your dog's name</a></p>
           <p class="nudge" id="nudge" hidden style="margin-top: 14px">Recently there have been more bad days than good ones. That doesn't decide anything on its own, but it may be a good time to talk honestly with your vet.</p>
         </div>
-        <details>
-          <summary class="small" style="cursor: pointer; color: var(--accent); font-weight: 600">All saved days</summary>
-          <ul class="log" id="dayLog" style="margin-top: 8px"></ul>
+        <details id="historyBox">
+          <summary class="small" style="cursor: pointer; color: var(--accent); font-weight: 600">Full history</summary>
+          <div class="stack" style="gap: 18px; margin-top: 14px">
+            <div class="weeks" id="weeks" role="list" aria-label="Every week since the first entry"></div>
+            <div>
+              <div class="card-title" style="font-size: 16px; margin-bottom: 6px">Quality-of-life scores</div>
+              <div class="score-bars" id="scoreBars"></div>
+            </div>
+            <div>
+              <div class="card-title" style="font-size: 16px; margin-bottom: 6px">Notes</div>
+              <ul class="log" id="dayLog"></ul>
+            </div>
+          </div>
         </details>
+      </div>
+
+      <div class="card stack no-print" id="sync" style="gap: 14px" hidden>
+        <span class="card-title">Keep the history on all your devices</span>
+        <div id="syncOff" class="stack" style="gap: 14px">
+          <p class="small muted">Enter your dog's nickname, their date of birth and a 4-digit PIN you choose. Use the same three on any phone or computer to see the same history. Only the days, notes and scores are stored online; letters and photos stay on this device.</p>
+          <div class="sync-fields">
+            <div><label for="syncNick" class="field-label">Nickname</label><input type="text" id="syncNick" maxlength="40" autocomplete="off"></div>
+            <div><label for="syncDob" class="field-label">Date of birth</label><input type="date" id="syncDob"></div>
+            <div><label for="syncPin" class="field-label">4-digit PIN</label><input type="password" id="syncPin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off"></div>
+          </div>
+          <div class="row"><button type="button" class="btn primary" id="syncConnect">Open or start the history</button></div>
+          <p class="small muted">Write the PIN down somewhere safe. Nobody, including the person who made this site, can recover it.</p>
+        </div>
+        <div id="syncOn" class="stack" style="gap: 10px" hidden>
+          <p class="small">History saved online for <strong id="syncLabel"></strong>. New entries on this device are saved there automatically.</p>
+          <div class="row"><button type="button" class="btn" id="syncNow">Sync now</button><button type="button" class="btn quiet" id="syncDisconnect">Disconnect this device</button></div>
+        </div>
+        <span class="status" id="syncMsg" aria-live="polite"></span>
       </div>
 
       <div class="card stack" id="scale">
@@ -833,7 +878,7 @@
     },
     remove: function (key) { try { localStorage.removeItem(key); } catch (e) {} }
   };
-  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", country: "hk.country", dog: "hk.dog" };
+  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", country: "hk.country", dog: "hk.dog", sync: "hk.sync" };
   var unsaved = "Saved for now, but this browser isn't keeping data, so it may be lost when you close the page.";
 
   function iso(d) {
@@ -876,10 +921,19 @@
   dateInput.max = today();
   var kind = null;
   var choices = document.querySelectorAll("button.choice");
+  // One tap on a choice saves the day straight away; the note is optional.
+  function saveEntry(message) {
+    var days = store.get(KEYS.days, {});
+    days[dateInput.value || today()] = { kind: kind, note: document.getElementById("dayNote").value.trim(), t: Date.now() };
+    flash("daySaved", store.set(KEYS.days, days) ? message : unsaved);
+    renderDays();
+    scheduleSync();
+  }
   choices.forEach(function (b) {
     b.addEventListener("click", function () {
       kind = b.dataset.kind;
       choices.forEach(function (c) { c.setAttribute("aria-pressed", String(c === b)); });
+      saveEntry("Saved: " + WORD[kind].toLowerCase() + ".");
     });
   });
 
@@ -922,22 +976,51 @@
     document.getElementById("daysEmpty").hidden = Object.keys(days).length > 0;
     document.getElementById("nudge").hidden = !(recorded >= 5 && counts.bad > counts.good);
 
+    renderHistory(days);
+  }
+
+  // Every week from the first entry to today, newest first.
+  function renderHistory(days) {
+    var weeks = document.getElementById("weeks");
+    weeks.innerHTML = "";
+    var dates = Object.keys(days).sort();
     var log = document.getElementById("dayLog");
     log.innerHTML = "";
-    var dates = Object.keys(days).sort().reverse();
-    if (!dates.length) log.appendChild(el("li", "muted", "Nothing saved yet."));
-    dates.forEach(function (k) {
-      var e = days[k];
-      log.appendChild(el("li", null, niceDate(k) + " · " + WORD[e.kind] + (e.note ? " · " + e.note : "")));
+    if (!dates.length) {
+      weeks.appendChild(el("p", "small muted", "Nothing saved yet."));
+    } else {
+      var p = dates[0].split("-");
+      var start = new Date(+p[0], +p[1] - 1, +p[2]);
+      start.setDate(start.getDate() - ((start.getDay() + 6) % 7)); // back to Monday
+      var now = new Date(); now.setHours(0, 0, 0, 0);
+      var rows = [];
+      for (var w = new Date(start); w <= now; w.setDate(w.getDate() + 7)) {
+        var row = el("div", "week");
+        row.setAttribute("role", "listitem");
+        row.appendChild(el("span", "week-label", new Date(w).toLocaleDateString(undefined, { day: "numeric", month: "short" })));
+        for (var i = 0; i < 7; i++) {
+          var d = new Date(w); d.setDate(d.getDate() + i);
+          var key = iso(d), entry = days[key];
+          var cell = el("span", "day" + (entry ? " " + entry.kind : "") + (d > now ? " future" : ""), entry ? MARK[entry.kind] : "");
+          var label = niceDate(key) + ": " + (entry ? WORD[entry.kind] : d > now ? "" : "not recorded");
+          cell.title = label;
+          cell.setAttribute("aria-label", label);
+          row.appendChild(cell);
+        }
+        rows.push(row);
+      }
+      rows.reverse().forEach(function (r) { weeks.appendChild(r); });
+    }
+    var withNotes = dates.filter(function (k) { return days[k].note; }).reverse();
+    if (!withNotes.length) log.appendChild(el("li", "muted", "No notes yet."));
+    withNotes.forEach(function (k) {
+      log.appendChild(el("li", null, niceDate(k) + " · " + WORD[days[k].kind] + " · " + days[k].note));
     });
   }
 
   document.getElementById("saveDay").addEventListener("click", function () {
     if (!kind) { flash("daySaved", "Choose what kind of day it was first."); return; }
-    var days = store.get(KEYS.days, {});
-    days[dateInput.value || today()] = { kind: kind, note: document.getElementById("dayNote").value.trim() };
-    flash("daySaved", store.set(KEYS.days, days) ? "Saved." : unsaved);
-    renderDays();
+    saveEntry("Note saved.");
   });
 
   // ---- Quality-of-life scale ----
@@ -978,17 +1061,33 @@
     return t;
   }
   function renderScores() {
+    var scores = store.get(KEYS.scores, []);
     var list = document.getElementById("scaleHistory");
     list.innerHTML = "";
-    store.get(KEYS.scores, []).slice().reverse().forEach(function (s) {
+    scores.slice().reverse().forEach(function (s) {
       list.appendChild(el("li", null, niceDate(s.date) + " · total " + s.total + " / 70"));
+    });
+    var bars = document.getElementById("scoreBars");
+    bars.innerHTML = "";
+    if (!scores.length) bars.appendChild(el("p", "small muted", "No scores yet."));
+    scores.slice().reverse().forEach(function (s) {
+      var row = el("div", "score-row");
+      row.appendChild(el("span", null, niceDate(s.date)));
+      var track = el("span", "score-track");
+      var fill = el("span", "score-fill");
+      fill.style.width = Math.round(s.total / 70 * 100) + "%";
+      track.appendChild(fill);
+      row.appendChild(track);
+      row.appendChild(el("span", "val", s.total + " / 70"));
+      bars.appendChild(row);
     });
   }
   document.getElementById("saveScale").addEventListener("click", function () {
     var scores = store.get(KEYS.scores, []);
-    scores.push({ date: today(), total: updateTotal(), values: scaleValues() });
+    scores.push({ date: today(), total: updateTotal(), values: scaleValues(), t: Date.now() });
     flash("scaleSaved", store.set(KEYS.scores, scores) ? "Saved." : unsaved);
     renderScores();
+    scheduleSync();
   });
 
   // ---- Letters ----
@@ -1148,6 +1247,7 @@
       }
       flash("backupMsg", ok ? "Your records have been restored." : unsaved);
       refreshAll();
+      scheduleSync();
     };
     reader.readAsText(file);
     restoreFile.value = "";
@@ -1160,7 +1260,9 @@
   document.getElementById("clearNo").addEventListener("click", function () { clearConfirm.hidden = true; });
   document.getElementById("clearYes").addEventListener("click", function () {
     store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters); store.remove(KEYS.dog);
+    store.remove(KEYS.sync); // disconnect too, so the empty device doesn't overwrite anything online
     clearConfirm.hidden = true;
+    if (!syncCard.hidden) renderSync();
     refreshAll();
   });
 
@@ -1232,6 +1334,111 @@
     row.appendChild(el("span", "who", l[3]));
     all.appendChild(row);
   });
+
+  // ---- Online history (nickname + date of birth + PIN) ----
+  // Public project address and publishable key; both are safe to ship in the page.
+  var SYNC_CONFIG = { url: "", key: "" };
+  var syncCard = document.getElementById("sync");
+  var syncTimer = null;
+
+  function syncConn() { return store.get(KEYS.sync, null); }
+
+  function sha256hex(text) {
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function (buf) {
+      return Array.prototype.map.call(new Uint8Array(buf), function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+    });
+  }
+
+  function rpc(name, body) {
+    var headers = { apikey: SYNC_CONFIG.key, "Content-Type": "application/json" };
+    if (/^eyJ/.test(SYNC_CONFIG.key)) headers.Authorization = "Bearer " + SYNC_CONFIG.key;
+    return fetch(SYNC_CONFIG.url.replace(/\/$/, "") + "/rest/v1/rpc/" + name, {
+      method: "POST", headers: headers, body: JSON.stringify(body)
+    }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.text();
+    }).then(function (t) { return t ? JSON.parse(t) : null; });
+  }
+
+  function mergeDays(a, b) {
+    var out = {};
+    Object.keys(a || {}).forEach(function (k) { out[k] = a[k]; });
+    Object.keys(b || {}).forEach(function (k) {
+      if (!out[k] || (b[k].t || 0) > (out[k].t || 0)) out[k] = b[k];
+    });
+    return out;
+  }
+  function mergeScores(a, b) {
+    var seen = {}, out = [];
+    (a || []).concat(b || []).forEach(function (s) {
+      var id = s.date + "|" + s.total + "|" + (s.t || "");
+      if (!seen[id]) { seen[id] = true; out.push(s); }
+    });
+    return out.sort(function (x, y) { return x.date < y.date ? -1 : x.date > y.date ? 1 : 0; });
+  }
+
+  function renderSync() {
+    var conn = syncConn();
+    document.getElementById("syncOff").hidden = !!conn;
+    document.getElementById("syncOn").hidden = !conn;
+    if (conn) document.getElementById("syncLabel").textContent = conn.label;
+    var dog = store.get(KEYS.dog, {});
+    var nick = document.getElementById("syncNick");
+    if (!nick.value && dog.name) nick.value = dog.name;
+  }
+
+  function syncNow(quiet) {
+    var conn = syncConn();
+    if (!conn) return Promise.resolve();
+    if (!quiet) flash("syncMsg", "Syncing…");
+    return rpc("get_history", { p_key: conn.key }).then(function (remote) {
+      remote = remote || {};
+      var days = mergeDays(store.get(KEYS.days, {}), remote.days);
+      var scores = mergeScores(store.get(KEYS.scores, []), remote.scores);
+      store.set(KEYS.days, days);
+      store.set(KEYS.scores, scores);
+      renderDays(); renderScores(); loadDayIntoForm();
+      return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores } });
+    }).then(function () {
+      flash("syncMsg", "Saved online " + new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) + ".");
+    }).catch(function () {
+      flash("syncMsg", "Couldn't reach the online history. Everything is still saved on this device and will sync next time.");
+    });
+  }
+
+  function scheduleSync() {
+    if (!syncConn()) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(function () { syncNow(true); }, 1500);
+  }
+
+  if (SYNC_CONFIG.url && SYNC_CONFIG.key && window.crypto && crypto.subtle) {
+    syncCard.hidden = false;
+    document.getElementById("syncConnect").addEventListener("click", function () {
+      var nick = document.getElementById("syncNick").value.trim();
+      var dob = document.getElementById("syncDob").value;
+      var pin = document.getElementById("syncPin").value.trim();
+      if (!nick || !dob || !/^\d{4}$/.test(pin)) {
+        flash("syncMsg", "Please fill in the nickname, the date of birth and a PIN of exactly 4 digits.");
+        return;
+      }
+      var secret = "hk1|" + nick.toLowerCase().replace(/\s+/g, " ") + "|" + dob + "|" + pin;
+      sha256hex(secret).then(function (key) {
+        store.set(KEYS.sync, { key: key, label: nick });
+        document.getElementById("syncPin").value = "";
+        renderSync();
+        return syncNow();
+      });
+    });
+    document.getElementById("syncNow").addEventListener("click", function () { syncNow(); });
+    document.getElementById("syncDisconnect").addEventListener("click", function () {
+      store.remove(KEYS.sync);
+      renderSync();
+      flash("syncMsg", "This device is disconnected. The history stays online; open it again with the same nickname, date of birth and PIN.");
+    });
+    renderSync();
+    syncNow(true);
+  }
 
   // ---- Copy a link to the family section ----
   document.getElementById("copyFamily").addEventListener("click", function () {
