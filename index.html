@@ -657,7 +657,7 @@
           <p class="small muted">First, your dog. New here? Enter their name and date of birth, and you'll get a 4-digit PIN. Already set up on another phone or computer? Enter the same name, date of birth and your PIN.</p>
           <div class="sync-fields">
             <div><label for="nick-tracker" class="field-label">Their name</label><input type="text" id="nick-tracker" class="s-nick" maxlength="40" autocomplete="off"></div>
-            <div><label for="dob-tracker" class="field-label">Date of birth</label><input type="date" id="dob-tracker" class="s-dob"></div>
+            <div><label for="dob-tracker" class="field-label">Their birthday</label><input type="date" id="dob-tracker" class="s-dob"></div>
             <div class="s-pin-field" hidden><label for="pin-tracker" class="field-label">Your PIN</label><input type="password" id="pin-tracker" class="s-pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off"></div>
           </div>
           <div class="row">
@@ -673,10 +673,10 @@
         </div>
         <div class="setup-on row" style="justify-content: space-between" hidden>
           <span class="small s-label"></span>
-          <span class="row"><button type="button" class="btn s-sync-now">Sync now</button><button type="button" class="btn quiet s-disconnect">Use another dog or device</button></span>
+          <span class="row"><button type="button" class="btn s-sync-now">Save online now</button><button type="button" class="btn quiet s-disconnect">For another dog, or a shared device</button></span>
         </div>
         <div class="s-profile stack" style="gap: 14px">
-          <div><label for="breed-tracker" class="field-label">Breed or mix, if you like</label><input type="text" id="breed-tracker" class="s-breed" list="breedList" maxlength="60" autocomplete="off" placeholder="Start typing, or write &ldquo;mixed&rdquo;" style="width: 100%; min-height: 46px"></div>
+          <div><label for="breed-tracker" class="field-label">Breed or mix, if you like</label><input type="text" id="breed-tracker" class="s-breed" list="breedList" maxlength="60" autocomplete="off" placeholder="A breed, or &ldquo;mixed&rdquo;" style="width: 100%; min-height: 46px"></div>
           <div>
             <span class="field-label">Size when grown</span>
             <div class="segmented size-seg s-size" role="group" aria-label="Size when grown">
@@ -737,9 +737,9 @@
         <div>
           <div class="field-label">Overall, how was the day?</div>
           <div class="segmented" role="group" aria-label="Kind of day">
-            <button type="button" class="choice" data-kind="good" aria-pressed="false"><svg class="paw paw-good" viewBox="0 0 24 24" aria-hidden="true"><use class="toes" href="#pawToes"/><use class="pad" href="#pawPad"/></svg> Good day</button>
+            <button type="button" class="choice" data-kind="good" aria-pressed="false"><svg class="paw paw-good" viewBox="0 0 24 24" aria-hidden="true"><use class="toes" href="#pawToes"/><use class="pad" href="#pawPad"/></svg> A good day</button>
             <button type="button" class="choice" data-kind="okay" aria-pressed="false"><svg class="paw paw-okay" viewBox="0 0 24 24" aria-hidden="true"><use class="toes" href="#pawToes"/><use class="pad" href="#pawPad"/></svg> In between</button>
-            <button type="button" class="choice" data-kind="bad" aria-pressed="false"><svg class="paw paw-bad" viewBox="0 0 24 24" aria-hidden="true"><use class="toes" href="#pawToes"/><use class="pad" href="#pawPad"/></svg> Bad day</button>
+            <button type="button" class="choice" data-kind="bad" aria-pressed="false"><svg class="paw paw-bad" viewBox="0 0 24 24" aria-hidden="true"><use class="toes" href="#pawToes"/><use class="pad" href="#pawPad"/></svg> A hard day</button>
           </div>
           <p class="small muted kind-hint" id="kindHint" aria-live="polite">Move the sliders above and a suggestion will appear here. You can always choose differently.</p>
         </div>
@@ -759,7 +759,7 @@
           <div class="breathe-slot" id="meBreathe" hidden></div>
           <p class="nudge" id="meNudge" hidden>You've had several very hard days yourself lately. That doesn't decide anything, but it matters. Please let someone help you with the walks and the nights, and be honest with your vet about how things are at home.</p>
         </div>
-        <div class="row"><button type="button" class="btn primary" id="saveDay" style="min-width: 200px">Save this day</button><span class="status" id="daySaved" aria-live="polite"></span></div>
+        <div class="row"><button type="button" class="btn primary" id="saveDay" style="min-width: 200px">Keep this day</button><span class="status" id="daySaved" aria-live="polite"></span></div>
         <p class="moment" id="dayMoment" aria-live="polite"></p>
 
         <div class="row-split">
@@ -771,7 +771,7 @@
           <div class="days me-days" id="meDays"></div>
           <div class="legend" id="meLegend"></div>
           <p class="small muted" id="daysEmpty" style="margin-top: 12px">Your days will appear here, one for each. Today is enough; it takes a minute. <a href="#setup-tracker" id="addNameLink">Add your dog first</a></p>
-          <p class="nudge" id="nudge" hidden style="margin-top: 14px">Recently there have been more bad days than good ones. That doesn't decide anything on its own, but it may be a good time to talk honestly with your vet.</p>
+          <p class="nudge" id="nudge" hidden style="margin-top: 14px">Recently there have been more hard days than good ones. That doesn't decide anything on its own, but it may be a good moment to talk honestly with your vet.</p>
         </div>
         <details id="historyBox">
           <summary class="small" style="cursor: pointer; color: var(--accent); font-weight: 600">Full history</summary>
@@ -795,16 +795,16 @@
         <div class="row">
           <button type="button" class="btn" id="backupBtn">Download a backup</button>
           <button type="button" class="btn" id="restoreBtn">Restore from a backup</button>
-          <button type="button" class="btn" id="printBtn">Print for your vet</button>
+          <button type="button" class="btn" id="printBtn">Print the days for your vet</button>
           <input type="file" id="restoreFile" accept="application/json,.json" hidden>
         </div>
         <span class="status" id="backupMsg" aria-live="polite"></span>
         <div class="row row-split">
-          <button type="button" class="btn quiet" id="clearBtn">Delete everything I've entered</button>
+          <button type="button" class="btn quiet" id="clearBtn">Clear what's saved on this device</button>
         </div>
         <div id="clearConfirm" class="stack" style="gap: 10px" hidden>
-          <p class="small">Delete all your saved days, scores, letters, and your dog's name and photo from this device? This can't be undone. If you might want them later, download a backup first.</p>
-          <div class="row"><button type="button" class="btn danger" id="clearYes">Delete everything</button><button type="button" class="btn" id="clearNo">Keep my records</button></div>
+          <p class="small">Clear the days, scores, letters, and your dog's name and photo from this device? This can't be undone. If you might want them one day, a backup keeps them safe.</p>
+          <div class="row"><button type="button" class="btn danger" id="clearYes">Yes, clear it</button><button type="button" class="btn" id="clearNo">No, keep everything</button></div>
         </div>
       </div>
 
@@ -862,7 +862,7 @@
   <div class="wrap split">
     <div class="side">
       <h2>The day of the appointment</h2>
-      <p>If you have made the decision and the day is coming, this is a list to lean on, so you don't have to remember everything yourself. Tick what you've done; it's kept with your dog's history.</p>
+      <p>If you have made the decision and the day is coming, this is a list to lean on, so you don't have to remember everything yourself. Tick whatever feels done; it's kept with your dog's history.</p>
       <p class="small">Nothing here is a rule. Skip what doesn't fit you.</p>
     </div>
     <div class="main stack">
@@ -892,11 +892,11 @@
           <fieldset class="check-group"><legend>Afterwards</legend>
             <label class="check"><input type="checkbox" data-check="noRush"><span>Leave the collar, the bowl and the bed for now. There is no hurry to decide what to keep.</span><em class="whisper">Their things can wait. So can you.</em></label>
             <aside class="from-me"><span class="from-label">From Ksenija</span><p>Mosjka&#39;s collar is still in our car. I can&#39;t throw it away. The car still smells of her.</p></aside>
-            <label class="check"><input type="checkbox" data-check="eat"><span>Eat something and drink some water, even if you don't want to.</span><em class="whisper">Even a little. Your body is grieving too.</em></label>
+            <label class="check"><input type="checkbox" data-check="eat"><span>Try to eat something and drink a little water, even if you don't feel like it.</span><em class="whisper">Even a little. Your body is grieving too.</em></label>
             <label class="check"><input type="checkbox" data-check="tonight"><span>Make sure you are not alone tonight, or that you can call someone.</span><em class="whisper">The first nights are the hardest.</em></label>
           </fieldset>
         <p class="moment fade-in" id="checkDone" hidden><svg class="tiny-star" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><use href="#starShape" fill="#b4c0dd" stroke="#b4c0dd" stroke-width="2.2" stroke-linejoin="round"/></svg><span>You've thought of everything you could. Now just be with them.</span></p>
-        <div class="row"><button type="button" class="btn quiet" id="checkReset">Untick everything</button></div>
+        <div class="row"><button type="button" class="btn quiet" id="checkReset">Clear the ticks</button></div>
       </div>
 
       <div class="prose day-steps">
@@ -910,7 +910,7 @@
         <p>Hold them, and let your voice be the last thing they hear. Their eyes may stay open, and there may be a last breath or a twitch after the heart has stopped. These are reflexes; your dog is no longer aware. Take as long as you need afterwards. You don't have to leave the room or let them go straight away.</p>
         <aside class="from-me"><span class="from-label">From Ksenija</span><p>When I came in, she trembled with joy to see me. I sat beside her and stroked her the whole time. I held her head when it grew heavy. She was still warm when the vet said it was over.</p></aside>
         <h3>The first evening</h3>
-        <p>The house will feel very quiet. Many people cry for hours, or feel numb, or both. Don't try to do anything with it. Eat a little, drink water, and have someone with you or within reach. If you want to, <a href="#letter">write to them</a>.</p>
+        <p>The house will feel very quiet. Many people cry for hours, or feel numb, or both. There's nothing you need to do with it. Eat a little, drink water, and have someone with you or within reach. If you want to, <a href="#letter">write to them</a>.</p>
         <aside class="from-me"><span class="from-label">From Ksenija</span><p>I cried for two days without stopping. I couldn&#39;t work. If that is you right now, it isn&#39;t weakness. It is how much they mattered.</p></aside>
         <h3>The next days</h3>
         <p>Expect waves rather than a straight line. The hardest moments are often the small routines: the time of the walk, the bowl, the door. <a href="#after">The thoughts that won't stop</a> are there for when the guilt comes.</p>
@@ -980,7 +980,7 @@
           <p class="moment" id="rmAck" aria-live="polite"></p>
           <div class="row" style="justify-content: space-between">
             <button type="button" class="btn quiet" id="rmBack">&#8592; Back</button>
-            <span class="row"><button type="button" class="btn quiet" id="rmSkip">Skip</button><button type="button" class="btn primary" id="rmNext">Next</button></span>
+            <span class="row"><button type="button" class="btn quiet" id="rmSkip">Not now</button><button type="button" class="btn primary" id="rmNext">Next</button></span>
           </div>
         </div>
         <div id="rmEnd" class="stack" style="gap: 18px" hidden>
@@ -989,7 +989,7 @@
           <div class="row">
             <button type="button" class="btn primary" id="ksImage">Save as image</button>
             <button type="button" class="btn" id="ksPrint">Print or save as PDF</button>
-            <button type="button" class="btn quiet" id="rmEdit">Change answers</button>
+            <button type="button" class="btn quiet" id="rmEdit">Add or change answers</button>
           </div>
           <span class="status" id="ksMsg" aria-live="polite"></span>
           <p><a href="#stars" style="font-weight: 700" data-named="Light a star for {name} &#8594;">Light a star for them &#8594;</a></p>
@@ -1013,7 +1013,7 @@
         <div class="sync-fields">
           <div><label for="starName" class="field-label">Their name</label><input type="text" id="starName" maxlength="40" autocomplete="off"></div>
           <div><label for="starBorn" class="field-label">Born, if you like</label><input type="date" id="starBorn"></div>
-          <div><label for="starDied" class="field-label">Said goodbye</label><input type="date" id="starDied"></div>
+          <div><label for="starDied" class="field-label">The day you said goodbye</label><input type="date" id="starDied"></div>
         </div>
         <label class="check" style="font-size: 15px"><input type="checkbox" id="starConsent"><span>Show this name and these dates in the field of stars. Everyone who visits will see them; nothing else about you or your dog is shared.</span></label>
         <div class="row"><button type="button" class="btn primary" id="starLight">Light the star</button><span class="status" id="starMsg" aria-live="polite"></span></div>
@@ -1023,7 +1023,7 @@
         <div><button type="button" class="btn quiet" id="starRemove">Take the star down</button></div>
         <div id="starRemoveAsk" class="stack" style="gap: 10px" hidden>
           <p class="small" id="starRemoveText"></p>
-          <div class="row"><button type="button" class="btn" id="starRemoveYes">Take it down</button><button type="button" class="btn quiet" id="starRemoveNo">Keep it</button></div>
+          <div class="row"><button type="button" class="btn" id="starRemoveYes">Yes, take it down</button><button type="button" class="btn quiet" id="starRemoveNo">Keep it</button></div>
         </div>
         <p class="small muted" id="starRemoveNoKey" hidden>This star was lit on another device or before stars could be taken down. To remove it, <a href="#contact">write to me</a> and I'll take it down for you.</p>
         <span class="status" id="starRemoveMsg" aria-live="polite"></span>
@@ -1075,7 +1075,7 @@
           <div class="body">
             <p>The final minutes are often the sharpest memory for weeks or months. It is common to replay them: the needle, the stillness, their eyes staying open, a breath after the vet said they were gone. Many of those things are normal reflexes of the body after death, and they do not mean your dog was aware or in pain.</p>
             <p>Your mind is replaying that moment because it was overwhelming, not because it was the most important. It was a few minutes at the end of thousands of days together.</p>
-            <div class="try"><strong>Try this. </strong>When the image comes, don't fight it. Let it be there, then deliberately bring in one ordinary, happy memory beside it, with all its details: the sound of <span class="dog-word">your dog</span>'s nails on the floor, the weight of their head on your lap. Over time this helps the last moment become one memory among many.</div>
+            <div class="try"><strong>Try this. </strong>When the image comes, you don't have to push it away. Let it be there, then deliberately bring in one ordinary, happy memory beside it, with all its details: the sound of <span class="dog-word">your dog</span>'s nails on the floor, the weight of their head on your lap. Over time this helps the last moment become one memory among many.</div>
             <p class="small muted">If the images keep coming for months, wake you at night or stop you functioning, please talk to a doctor or counsellor. This kind of grief responds well to help.</p>
           </div>
         </details>
@@ -1212,7 +1212,7 @@ Ksenija, who loved Mosjka</p>
           <div class="j-near fade-in" id="jNear" hidden></div>
           <div><label for="jWord" class="field-label">A note about today, if you like</label><textarea id="jWord" maxlength="2000" style="min-height: 90px"></textarea></div>
           <div class="breathe-slot" id="jBreathe" hidden></div>
-          <div class="row"><button type="button" class="btn primary" id="jSave">Save today's check-in</button><span class="status" id="jMsg" aria-live="polite"></span></div>
+          <div class="row"><button type="button" class="btn primary" id="jSave">Keep today</button><span class="status" id="jMsg" aria-live="polite"></span></div>
         </div>
         <div class="nudge" id="jSupport" hidden>
           <p><strong>The last few days have been very hard.</strong> That happens in grief, and you don't have to carry it alone. Please consider talking to someone today: a friend, your doctor, or a counsellor.</p>
@@ -1222,11 +1222,11 @@ Ksenija, who loved Mosjka</p>
           <ul class="log" id="jLog" style="margin-top: 8px"></ul>
         </details>
         <div class="row row-split">
-          <button type="button" class="btn quiet" id="jRestart">Start the journey again</button>
+          <button type="button" class="btn quiet" id="jRestart">Walk the 30 days again</button>
         </div>
         <div id="jRestartConfirm" class="stack" style="gap: 10px" hidden>
-          <p class="small">Start again from day 1? Your earlier check-ins will be cleared.</p>
-          <div class="row"><button type="button" class="btn danger" id="jRestartYes">Start again</button><button type="button" class="btn" id="jRestartNo">Keep my journey</button></div>
+          <p class="small">Walk the 30 days again from day 1? Your earlier check-ins will be cleared.</p>
+          <div class="row"><button type="button" class="btn danger" id="jRestartYes">Yes, from day 1</button><button type="button" class="btn" id="jRestartNo">Keep my steps</button></div>
         </div>
       </div>
     </div>
@@ -1283,7 +1283,7 @@ Ksenija, who loved Mosjka</p>
         <li><strong>It's fine to talk about other things.</strong> My daughter helped me most by gently changing the subject.</li>
         <li><strong>Family members may feel differently.</strong> My daughter was against the decision, and still let go and supported me. Disagreeing and loving each other can go together.</li>
         <li><strong>Remind them of the truth they saw:</strong> "Better a little early than too late. She was in pain."</li>
-        <li><strong>Don't ask "what did they die of?"</strong> and don't rush them. Let them keep the collar, the smell in the car, the things that hurt to throw away.</li>
+        <li><strong>Try not to ask "what did they die of?"</strong> and give them time. Let them keep the collar, the smell in the car, the things that hurt to throw away.</li>
       </ul>
     </div>
   </div>
@@ -1303,7 +1303,7 @@ Ksenija, who loved Mosjka</p>
           <p class="small muted">First, your dog. New here? Enter their name and date of birth, and you'll get a 4-digit PIN. Already set up on another phone or computer? Enter the same name, date of birth and your PIN.</p>
           <div class="sync-fields">
             <div><label for="nick-letter" class="field-label">Their name</label><input type="text" id="nick-letter" class="s-nick" maxlength="40" autocomplete="off"></div>
-            <div><label for="dob-letter" class="field-label">Date of birth</label><input type="date" id="dob-letter" class="s-dob"></div>
+            <div><label for="dob-letter" class="field-label">Their birthday</label><input type="date" id="dob-letter" class="s-dob"></div>
             <div class="s-pin-field" hidden><label for="pin-letter" class="field-label">Your PIN</label><input type="password" id="pin-letter" class="s-pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off"></div>
           </div>
           <div class="row">
@@ -1319,10 +1319,10 @@ Ksenija, who loved Mosjka</p>
         </div>
         <div class="setup-on row" style="justify-content: space-between" hidden>
           <span class="small s-label"></span>
-          <span class="row"><button type="button" class="btn s-sync-now">Sync now</button><button type="button" class="btn quiet s-disconnect">Use another dog or device</button></span>
+          <span class="row"><button type="button" class="btn s-sync-now">Save online now</button><button type="button" class="btn quiet s-disconnect">For another dog, or a shared device</button></span>
         </div>
         <div class="s-profile stack" style="gap: 14px">
-          <div><label for="breed-letter" class="field-label">Breed or mix, if you like</label><input type="text" id="breed-letter" class="s-breed" list="breedList" maxlength="60" autocomplete="off" placeholder="Start typing, or write &ldquo;mixed&rdquo;" style="width: 100%; min-height: 46px"></div>
+          <div><label for="breed-letter" class="field-label">Breed or mix, if you like</label><input type="text" id="breed-letter" class="s-breed" list="breedList" maxlength="60" autocomplete="off" placeholder="A breed, or &ldquo;mixed&rdquo;" style="width: 100%; min-height: 46px"></div>
           <div>
             <span class="field-label">Size when grown</span>
             <div class="segmented size-seg s-size" role="group" aria-label="Size when grown">
@@ -1486,7 +1486,7 @@ Ksenija, who loved Mosjka</p>
     remove: function (key) { try { localStorage.removeItem(key); } catch (e) {} }
   };
   var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", dog: "hk.dog", sync: "hk.sync", exercises: "hk.exercises", checklist: "hk.checklist", journey: "hk.journey", portrait: "hk.portrait" };
-  var unsaved = "Saved for now, but this browser isn't keeping data, so it may be lost when you close the page.";
+  var unsaved = "It's here for now, but this browser isn't keeping data, so it may be gone when the page is closed.";
 
   function iso(d) {
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
@@ -1575,7 +1575,7 @@ Ksenija, who loved Mosjka</p>
   });
 
   // ---- Daily log ----
-  var WORD = { good: "Good day", okay: "In between", bad: "Bad day" };
+  var WORD = { good: "A good day", okay: "In between", bad: "A hard day" };
   function paw(k) { return '<svg class="paw paw-' + k + '" viewBox="0 0 24 24" aria-hidden="true"><use class="toes" href="#pawToes"/><use class="pad" href="#pawPad"/></svg>'; }
   var dateInput = document.getElementById("dayDate");
   dateInput.value = today();
@@ -1619,8 +1619,8 @@ Ksenija, who loved Mosjka</p>
     var k = suggestKind();
     if (!scaleTouched) { hint.textContent = ""; return; }
     hint.textContent = kind === k || !kind
-      ? "Suggested from the scores: " + WORD[k] + ". Change it if it doesn't feel right."
-      : "The scores suggest " + WORD[k] + ", but you know the day best.";
+      ? "Suggested from the scores: " + WORD[k].toLowerCase() + ". Change it if it doesn't feel right."
+      : "The scores suggest " + WORD[k].toLowerCase() + ", but you know the day best.";
   }
   function onScaleInput() {
     if (loadingForm) return;
@@ -1701,7 +1701,7 @@ Ksenija, who loved Mosjka</p>
     var legend = document.getElementById("legend");
     legend.innerHTML = "";
     if (recorded) {
-      [["good", "Good"], ["okay", "In between"], ["bad", "Bad"]].forEach(function (k) {
+      [["good", "Good"], ["okay", "In between"], ["bad", "Hard"]].forEach(function (k) {
         var sp = el("span"); sp.innerHTML = paw(k[0]); sp.appendChild(document.createTextNode(k[1] + " " + counts[k[0]])); legend.appendChild(sp);
       });
       legend.appendChild(el("span", null, "Not recorded " + (14 - recorded)));
@@ -1759,7 +1759,7 @@ Ksenija, who loved Mosjka</p>
 
   // One save stores the overall day, the detailed score and the note together.
   document.getElementById("saveDay").addEventListener("click", function () {
-    if (!kind) { flash("daySaved", "Choose Good day, In between or Bad day first."); return; }
+    if (!kind) { flash("daySaved", "When you're ready, choose how the day was overall."); return; }
     var date = dateInput.value || today();
     var t = Date.now();
     var days = store.get(KEYS.days, {});
@@ -1794,7 +1794,7 @@ Ksenija, who loved Mosjka</p>
     ["hygiene", "Hygiene", "Can they keep clean? Are there sores or accidents?", "Near the end she began to wet herself on the stairs. It wasn't her fault, and it wasn't mine. It was her body getting tired."],
     ["happiness", "Happiness", "Do they show interest, joy, response to family and toys?", "One day I realised she had stopped wagging her tail. I don't know when it stopped. Watch for the small things that go quietly."],
     ["mobility", "Mobility", "Can they get up, walk and move around as they need to?", "For her last six months she couldn't get up by herself, but once I lifted her, she could still walk. Both were true. That's why the in-between numbers exist."],
-    ["more", "More good days than bad", "Overall, are good days still outnumbering bad ones?"]
+    ["more", "More good days than bad", "Overall, are good days still outnumbering hard ones?"]
   ];
   // What each score from 0 to 10 looks like in everyday life.
   var MEANS = {
@@ -1871,16 +1871,16 @@ Ksenija, who loved Mosjka</p>
       "Moves freely, only slightly slower than before.",
       "Moves freely; walks and runs as they like."],
     more: [
-      "Every day is a bad day now.",
+      "Every day is a hard day now.",
       "Hardly any good days left.",
       "Maybe one good day in a week.",
       "Two good days in a week.",
-      "Bad days a little more often than good.",
+      "Hard days a little more often than good.",
       "As many good days as bad.",
       "Good days a little more often than bad.",
       "Most days of the week are good.",
-      "Only one bad day in a week.",
-      "A bad day is rare.",
+      "Only one hard day in a week.",
+      "A hard day is rare.",
       "Every day is a good day."]
   };
   function meaning(id, v) { return v + ": " + MEANS[id][v]; }
@@ -2021,7 +2021,7 @@ Ksenija, who loved Mosjka</p>
     var dog = store.get(KEYS.dog, {});
     for (var k in changes) dog[k] = changes[k];
     var ok = store.set(KEYS.dog, dog);
-    flash("dogMsg", ok ? okText : "This browser couldn't save it. If it was a photo, try a smaller one.");
+    flash("dogMsg", ok ? okText : "This browser couldn't keep it. If it was a photo, a smaller one may work.");
     applyDog();
   }
 
@@ -2034,7 +2034,7 @@ Ksenija, who loved Mosjka</p>
     var file = dogPhotoFile.files[0];
     dogPhotoFile.value = "";
     if (!file) return;
-    if (!/^image\//.test(file.type)) { flash("dogMsg", "That file isn't a photo. Please choose a JPG or PNG."); return; }
+    if (!/^image\//.test(file.type)) { flash("dogMsg", "This doesn't seem to be a photo. A JPG or PNG works best."); return; }
     var url = URL.createObjectURL(file);
     var img = new Image();
     img.onload = function () {
@@ -2049,7 +2049,7 @@ Ksenija, who loved Mosjka</p>
     };
     img.onerror = function () {
       URL.revokeObjectURL(url);
-      flash("dogMsg", "This photo couldn't be opened. Please try another one.");
+      flash("dogMsg", "This photo couldn't be opened. Another one may work.");
     };
     img.src = url;
   });
@@ -2069,7 +2069,7 @@ Ksenija, who loved Mosjka</p>
     a.click();
     a.remove();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
-    flash("backupMsg", "Backup downloaded. Keep it somewhere safe, like your email or cloud storage.");
+    flash("backupMsg", "Your backup is downloaded. Somewhere safe, like your email or cloud storage, is a good home for it.");
   });
 
   var restoreFile = document.getElementById("restoreFile");
@@ -2082,7 +2082,7 @@ Ksenija, who loved Mosjka</p>
       var data;
       try { data = JSON.parse(reader.result); } catch (e) { data = null; }
       if (!data || data.app !== "the-hardest-kindness") {
-        flash("backupMsg", "That file doesn't look like a backup from this site.");
+        flash("backupMsg", "This file doesn't seem to be a backup from this site.");
         return;
       }
       // Merge so restoring never wipes anything already on this device.
@@ -2187,7 +2187,7 @@ Ksenija, who loved Mosjka</p>
     tryBox.appendChild(ta); tryBox.appendChild(row); tryBox.appendChild(saved);
     btn.addEventListener("click", function () {
       var text = ta.value.trim();
-      if (!text) { flash(status.id, "Write something first."); return; }
+      if (!text) { flash(status.id, "Write whatever you'd like, and then keep it."); return; }
       var all = store.get(KEYS.exercises, {});
       (all[id] = all[id] || []).push({ date: today(), text: text, t: Date.now() });
       flash(status.id, store.set(KEYS.exercises, all) ? "Saved." : unsaved);
@@ -2266,8 +2266,8 @@ Ksenija, who loved Mosjka</p>
         e.preventDefault();
         var msg = document.getElementById("cMessage").value.trim();
         var email = document.getElementById("cEmail").value.trim();
-        if (!msg) { flash("cStatus", "Please write a message first."); return; }
-        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { flash("cStatus", "That email address doesn't look right."); return; }
+        if (!msg) { flash("cStatus", "Write whatever you'd like to say, and then send it."); return; }
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { flash("cStatus", "The email address may have a small typo."); return; }
         var send = document.getElementById("cSend");
         send.disabled = true;
         flash("cStatus", "Sending\u2026");
@@ -2769,8 +2769,8 @@ Ksenija, who loved Mosjka</p>
   }
   document.getElementById("jDateNext").addEventListener("click", function () {
     var v = document.getElementById("jGoodbye").value;
-    if (!v) { flash("jStartMsg", "Choose the date first."); return; }
-    if (v > today()) { flash("jStartMsg", "That date is still to come."); return; }
+    if (!v) { flash("jStartMsg", "Pick the date whenever you're ready."); return; }
+    if (v > today()) { flash("jStartMsg", "That day hasn't come yet."); return; }
     saveProfile({ goodbye: v });
     renderStart();
   });
@@ -2871,7 +2871,7 @@ Ksenija, who loved Mosjka</p>
     var ta = document.getElementById("jExText");
     var text = ta.value.trim();
     if (!id) return;
-    if (!text) { flash("jExMsg", "Write something first."); return; }
+    if (!text) { flash("jExMsg", "Write whatever you'd like, and then keep it."); return; }
     var all = store.get(KEYS.exercises, {});
     (all[id] = all[id] || []).push({ date: today(), text: text, t: Date.now() });
     flash("jExMsg", store.set(KEYS.exercises, all) ? "Saved." : unsaved);
@@ -2889,7 +2889,7 @@ Ksenija, who loved Mosjka</p>
   });
 
   document.getElementById("jSave").addEventListener("click", function () {
-    if (!jMood) { flash("jMsg", "Choose how you are today first."); return; }
+    if (!jMood) { flash("jMsg", "When you're ready, choose how you are today."); return; }
     var st = journeyState();
     if (jView === 30 && !st.days[30]) finalePlay = true;
     st.days[jView] = { mood: jMood, word: document.getElementById("jWord").value.trim(), date: today(), t: Date.now() };
@@ -3096,8 +3096,8 @@ Ksenija, who loved Mosjka</p>
   }
   document.getElementById("goodbyeSave").addEventListener("click", function () {
     var v = document.getElementById("goodbyeDate").value;
-    if (!v) { flash("goodbyeMsg", "Choose the date first."); return; }
-    if (v > today()) { flash("goodbyeMsg", "That date is still to come."); return; }
+    if (!v) { flash("goodbyeMsg", "Pick the date whenever you're ready."); return; }
+    if (v > today()) { flash("goodbyeMsg", "That day hasn't come yet."); return; }
     document.getElementById("sinceCard").dataset.editing = "";
     saveProfile({ goodbye: v });
   });
@@ -3256,7 +3256,7 @@ Ksenija, who loved Mosjka</p>
       });
       x.fillStyle = "#8b93a8"; x.font = "24px " + sans; x.fillText("Remembered with love · hardestkindness.org", W / 2, H - 70);
       c.toBlob(function (blob) {
-        if (!blob) { flash("ksMsg", "This browser couldn't make the image. Try “Print or save as PDF”."); return; }
+        if (!blob) { flash("ksMsg", "This browser couldn't make the image. “Print or save as PDF” should work instead."); return; }
         var a = document.createElement("a"); a.href = URL.createObjectURL(blob);
         a.download = k.name.replace(/[^\wÀ-ɏЀ-ӿ -]/g, "").trim() + " - keepsake.png";
         document.body.appendChild(a); a.click(); a.remove();
@@ -3400,10 +3400,10 @@ Ksenija, who loved Mosjka</p>
   });
   document.getElementById("starLight").addEventListener("click", function () {
     var name = document.getElementById("starName").value.trim(), born = document.getElementById("starBorn").value || null, died = document.getElementById("starDied").value || null;
-    if (!name) { flash("starMsg", "Write their name first."); return; }
-    if (/(https?:|www\.|@|<|>)/i.test(name)) { flash("starMsg", "Just their name, please."); return; }
-    if (!document.getElementById("starConsent").checked) { flash("starMsg", "Tick the box to show it in the field of stars."); return; }
-    if (born && died && died < born) { flash("starMsg", "The goodbye date is before the birthday."); return; }
+    if (!name) { flash("starMsg", "Their name is needed for the star."); return; }
+    if (/(https?:|www\.|@|<|>)/i.test(name)) { flash("starMsg", "Only their name is needed here."); return; }
+    if (!document.getElementById("starConsent").checked) { flash("starMsg", "To show it in the field of stars, tick the box above."); return; }
+    if (born && died && died < born) { flash("starMsg", "The goodbye date seems to be before the birthday."); return; }
     flash("starMsg", "Lighting…");
     // light_star_v2 also returns a private key for taking the star down; fall back if it isn't set up yet.
     rpc("light_star_v2", { p_name: name, p_born: born, p_died: died })
@@ -3649,7 +3649,7 @@ Ksenija, who loved Mosjka</p>
       if (!quiet) setupMsg(card, "Saved online " + new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) + ".");
       return true;
     }).catch(function () {
-      setupMsg(card, "Couldn't reach the online history. Everything is still saved on this device and will sync next time.");
+      setupMsg(card, "The online history couldn't be reached just now. Everything is safe on this device, and will be saved online next time.");
       return false;
     });
   }
@@ -3672,8 +3672,8 @@ Ksenija, who loved Mosjka</p>
       var nick = card.querySelector(".s-nick").value.trim();
       var dob = card.querySelector(".s-dob").value;
       var pin = pinField.hidden ? "" : pinInput.value.trim();
-      if (!nick || !dob) { setupMsg(card, "Please fill in their name and date of birth."); return; }
-      if (!pinField.hidden && !/^\d{4}$/.test(pin)) { setupMsg(card, "The PIN has exactly 4 digits."); return; }
+      if (!nick || !dob) { setupMsg(card, "Their name and date of birth are needed first."); return; }
+      if (!pinField.hidden && !/^\d{4}$/.test(pin)) { setupMsg(card, "The PIN is 4 digits."); return; }
       // Remember the dog on this device, so every section speaks about them by name.
       var dog = store.get(KEYS.dog, {});
       dog.name = nick; dog.dob = dob;
@@ -3714,7 +3714,7 @@ Ksenija, who loved Mosjka</p>
         setups.forEach(function (c) { c.querySelector(".s-nick").value = ""; c.querySelector(".s-dob").value = ""; });
         refreshAll();
         setupMsg(card, syncEnabled
-          ? "Done. Everything stays saved online; open it again with the same name, date of birth and PIN."
+          ? "Everything is saved online. You can open it again with the same name, date of birth and PIN."
           : "Done. You can start with another dog.");
       });
     });
@@ -3727,7 +3727,7 @@ Ksenija, who loved Mosjka</p>
     var link = location.href.split("#")[0] + "#family";
     function done(text) { flash("copyMsg", text); }
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(link).then(function () { done("Link copied. Paste it into a message."); },
+      navigator.clipboard.writeText(link).then(function () { done("The link is copied, ready to paste into a message."); },
         function () { done("Copy this link: " + link); });
     } else {
       done("Copy this link: " + link);
