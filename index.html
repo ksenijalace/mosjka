@@ -241,6 +241,15 @@
   .week .day .paw { width: 14px; height: 14px; }
   .legend .paw { width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px; }
   .kind-hint { margin-top: 8px; }
+  .days-label { margin-bottom: 6px; font-weight: 600; }
+  .me-days .day { height: 14px; border-radius: 999px; }
+  .me-days .day.today { border-width: 1px; }
+  .me-1 { background: #9a6b62 !important; border: 0 !important; }
+  .me-2 { background: #b98f84 !important; border: 0 !important; }
+  .me-3 { background: #e3d3ab !important; border: 0 !important; }
+  .me-4 { background: #b5c6a9 !important; border: 0 !important; }
+  .me-5 { background: #8ea783 !important; border: 0 !important; }
+  .swatch { display: inline-block; width: 18px; height: 8px; border-radius: 999px; margin-right: 6px; vertical-align: 1px; }
   .owner-check { border-top: 1px solid var(--line); padding-top: 20px; }
   .segmented button[aria-pressed="true"] { background: var(--sage-bg); box-shadow: inset 0 0 0 2px var(--accent); }
   .field-label { display: block; font-size: 15px; color: var(--muted); margin-bottom: 6px; }
@@ -542,9 +551,13 @@
         <div class="row"><button type="button" class="btn primary" id="saveDay" style="min-width: 200px">Save this day</button><span class="status" id="daySaved" aria-live="polite"></span></div>
 
         <div class="row-split">
-          <div class="card-title" style="font-size: 16px; margin-bottom: 10px" data-named="{possessive} last 14 days">Last 14 days</div>
+          <div class="card-title" style="font-size: 16px; margin-bottom: 10px">Last 14 days</div>
+          <div class="days-label small muted" data-named="{name}">Your dog</div>
           <div class="days" id="days"></div>
           <div class="legend" id="legend"></div>
+          <div class="days-label small muted" style="margin-top: 16px">You</div>
+          <div class="days me-days" id="meDays"></div>
+          <div class="legend" id="meLegend"></div>
           <p class="small muted" id="daysEmpty" style="margin-top: 12px">Your days will appear here, one square for each. Start with today; it takes a minute. <a href="#setup-tracker" id="addNameLink">Start with your dog</a></p>
           <p class="nudge" id="nudge" hidden style="margin-top: 14px">Recently there have been more bad days than good ones. That doesn't decide anything on its own, but it may be a good time to talk honestly with your vet.</p>
         </div>
@@ -1117,12 +1130,13 @@
   var dateInput = document.getElementById("dayDate");
   dateInput.value = today();
   dateInput.max = today();
-  var kind = null, kindChosen = false, scaleTouched = false, loadingForm = false;
+  // dayDirty: the form has changes not saved yet, so a background sync mustn't reload it.
+  var kind = null, kindChosen = false, scaleTouched = false, loadingForm = false, dayDirty = false;
   var choices = document.querySelectorAll("button.choice");
   function pressKind() { choices.forEach(function (c) { c.setAttribute("aria-pressed", String(c.dataset.kind === kind)); }); }
   choices.forEach(function (b) {
     b.addEventListener("click", function () {
-      kind = b.dataset.kind; kindChosen = true;
+      kind = b.dataset.kind; kindChosen = true; dayDirty = true;
       pressKind(); updateHint();
     });
   });
@@ -1132,7 +1146,7 @@
   ME.forEach(function (mo) {
     var b = el("button", null, mo[1]);
     b.type = "button"; b.dataset.mood = mo[0]; b.setAttribute("aria-pressed", "false");
-    b.addEventListener("click", function () { meMood = meMood === mo[0] ? null : mo[0]; pressMe(); });
+    b.addEventListener("click", function () { meMood = meMood === mo[0] ? null : mo[0]; dayDirty = true; pressMe(); });
     meBox.appendChild(b);
   });
   function pressMe() { meBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.mood === meMood)); }); }
@@ -1156,12 +1170,13 @@
   }
   function onScaleInput() {
     if (loadingForm) return;
-    scaleTouched = true;
+    scaleTouched = true; dayDirty = true;
     if (!kindChosen) { kind = suggestKind(); pressKind(); }
     updateHint();
   }
 
   function loadDayIntoForm() {
+    dayDirty = false;
     var date = dateInput.value;
     var entry = store.get(KEYS.days, {})[date];
     kind = entry ? entry.kind : null;
@@ -1183,6 +1198,7 @@
     updateHint();
   }
   dateInput.addEventListener("change", loadDayIntoForm);
+  ["dayNote", "meNote"].forEach(function (id) { document.getElementById(id).addEventListener("input", function () { dayDirty = true; }); });
 
   function renderDays() {
     var days = store.get(KEYS.days, {});
@@ -1204,6 +1220,24 @@
       grid.appendChild(cell);
       if (entry) counts[entry.kind]++;
     }
+    // The owner's own days, in the same positions.
+    var meGrid = document.getElementById("meDays"), meCount = 0;
+    meGrid.innerHTML = "";
+    for (var j = 13; j >= 0; j--) {
+      var md = new Date(); md.setDate(md.getDate() - j);
+      var mk = iso(md), me = days[mk] && days[mk].me && days[mk].me.mood;
+      var mc = el("span", "day" + (me ? " me-" + me : "") + (mk === t && !me ? " today" : ""));
+      var ml = niceDate(mk) + ", you: " + (me ? ME[me - 1][1] : "not recorded");
+      mc.title = ml; mc.setAttribute("role", "img"); mc.setAttribute("aria-label", ml);
+      meGrid.appendChild(mc);
+      if (me) meCount++;
+    }
+    var meLegend = document.getElementById("meLegend");
+    meLegend.innerHTML = "";
+    if (meCount) ME.forEach(function (mo) {
+      var sp = el("span"); sp.appendChild(el("span", "swatch me-" + mo[0])); sp.appendChild(document.createTextNode(mo[1])); meLegend.appendChild(sp);
+    });
+    else meLegend.appendChild(el("span", null, "Fill in \u201cAnd you?\u201d when you save a day, and your own days will show here."));
     var recorded = counts.good + counts.okay + counts.bad;
     var legend = document.getElementById("legend");
     legend.innerHTML = "";
@@ -1277,6 +1311,7 @@
     scores.push({ date: date, total: updateTotal(), values: scaleValues(), t: t });
     scores.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
     var ok = store.set(KEYS.days, days) && store.set(KEYS.scores, scores);
+    if (ok) dayDirty = false;
     flash("daySaved", ok ? "Saved for " + niceDate(date) + "." : unsaved);
     renderDays(); renderScores();
     scheduleSync();
@@ -2183,7 +2218,7 @@
       store.set(KEYS.scores, scores);
       store.set(KEYS.exercises, exercises);
       store.set(KEYS.letters, letters);
-      renderDays(); renderScores(); loadDayIntoForm(); renderExercises(); renderLetters(); renderChecklist(); renderJourney();
+      renderDays(); renderScores(); if (!dayDirty) loadDayIntoForm(); renderExercises(); renderLetters(); renderChecklist(); renderJourney();
       return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores, exercises: exercises, letters: letters, checklist: checklist, journey: journey } });
     }).then(function () {
       if (!quiet) setupMsg(card, "Saved online " + new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) + ".");
