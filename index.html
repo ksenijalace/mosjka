@@ -1079,7 +1079,7 @@
     <div id="sources">
       <h3>Sources and privacy</h3>
       <p>The quality-of-life scale is Dr Alice Villalobos's HHHHHMM scale.</p>
-      <p id="privacy">There are no accounts, no ads and no tracking. Photos stay in your browser. If you set up a PIN for your dog, the days, your notes about your dog and about yourself, scores, letters, checklist, 30-day check-ins and your “Try this” answers are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
+      <p id="privacy">There are no accounts, no ads and no cookies. Visits are counted anonymously with GoatCounter (country, page and referring site only); no personal data is collected, and nothing you write is ever part of it. Photos stay in your browser. If you set up a PIN for your dog, the days, your notes about your dog and about yourself, scores, letters, checklist, 30-day check-ins and your “Try this” answers are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
     </div>
   </div>
 </section>
@@ -2463,6 +2463,16 @@
   }
   refreshAll();
 })();
+</script>
+<!-- Anonymous visit count (GoatCounter: no cookies, no personal data). Only on the real site, not on copies or test runs. -->
+<script>
+  if (/^(www\.)?hardestkindness\.org$/.test(location.hostname)) {
+    var gc = document.createElement("script");
+    gc.async = true;
+    gc.src = "https://gc.zgo.at/count.js";
+    gc.dataset.goatcounter = "https://hardestkindness.goatcounter.com/count";
+    document.body.appendChild(gc);
+  }
 </script>
 </body>
 </html>
