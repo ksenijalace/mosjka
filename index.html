@@ -250,6 +250,34 @@
   .me-4 { background: #b5c6a9 !important; border: 0 !important; }
   .me-5 { background: #8ea783 !important; border: 0 !important; }
   .swatch { display: inline-block; width: 18px; height: 8px; border-radius: 999px; margin-right: 6px; vertical-align: 1px; }
+  /* Micro moments */
+  .moment { font-family: var(--font-quote); font-style: italic; font-size: 17px; color: var(--muted); display: flex; gap: 10px; align-items: baseline; }
+  .moment .tiny-star, .moment .moon { flex: none; position: relative; top: 2px; }
+  .moment:empty { display: none; }
+  .fade-in { animation: fadeIn .9s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .day.settle { animation: settle .6s ease-out both; }
+  .day.settle.bad { animation-duration: 1.8s; }
+  @keyframes settle { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: none; } }
+  .check .whisper { grid-column: 2; display: none; font-family: var(--font-quote); font-style: italic; color: var(--muted); font-size: 16px; margin-top: -6px; }
+  .check input:checked ~ .whisper { display: block; animation: fadeIn .7s ease both; }
+  .j-dot.milestone { display: flex; align-items: center; justify-content: center; }
+  .j-dot.milestone.done { background: transparent; border: 0; }
+  .j-dot.milestone svg { width: 14px; height: 14px; }
+  .thought .not-alone { margin-bottom: 14px; }
+  #letterText.sending { transition: opacity 1.2s ease, transform 1.2s ease; opacity: 0; transform: translateY(-18px); }
+  .breathe { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .breathe-btn { display: inline-flex; align-items: center; gap: 8px; }
+  .breathe-run { display: flex; align-items: center; gap: 16px; min-height: 64px; }
+  .breathe-orb { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: radial-gradient(circle, rgba(180,192,221,.22), rgba(180,192,221,0) 70%); }
+  .breathe-orb svg { width: 26px; height: 26px; transform: scale(.7); }
+  .breathe-orb.go svg { animation: breatheCycle 10s ease-in-out both; }
+  @keyframes breatheCycle { 0% { transform: scale(.7); } 40% { transform: scale(1.35); } 100% { transform: scale(.7); } }
+  .breathe-word { font-family: var(--font-quote); font-size: 19px; }
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in, .day.settle, .check input:checked ~ .whisper, .breathe-orb.go svg { animation: none; }
+    #letterText.sending { transition: none; }
+  }
   .owner-check { border-top: 1px solid var(--line); padding-top: 20px; }
   .segmented button[aria-pressed="true"] { background: var(--sage-bg); box-shadow: inset 0 0 0 2px var(--accent); }
   .field-label { display: block; font-size: 15px; color: var(--muted); margin-bottom: 6px; }
@@ -415,6 +443,7 @@
         <h1>Help with the hardest decision, and with what comes after.</h1>
         <div class="hero-side">
           <p>A calm guide for deciding whether it is time to say goodbye to your dog, for the day itself, and for the guilt and grief afterwards. <a href="#story">Written by someone who has been there.</a></p>
+          <p class="moment" id="nightNote" hidden><svg class="moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 1 1 9.4 4a6.9 6.9 0 0 0 10.6 10.6z" fill="#b4c0dd"/></svg><span>Still up? Nights are the hardest. You're not the only one awake.</span></p>
           <div class="actions">
             <a class="btn primary" href="#before">I'm still deciding</a>
             <a class="btn" href="#prepare">The decision is made</a>
@@ -479,6 +508,7 @@
       <h2>Keep track of the days</h2>
       <p>There is rarely one obvious moment. One entry a day makes the pattern visible and gives you something clear to bring to your vet. It also leaves a record you may be grateful for later, when your mind starts asking "was it too soon?"</p>
       <p>Many vets share a phrase that helps people: <em>"Better a week too early than a day too late."</em> It does not mean there is a perfect day. It means that when the choice is between some good time lost and some suffering endured, most vets would rather lose the good time.</p>
+      <p class="moment" id="knowsLine"></p>
       <p class="small">Your entries are saved on this device, and online under your dog's nickname, date of birth and PIN, so you can open them anywhere. Photos never leave this device.</p>
     </div>
     <div class="main stack">
@@ -546,9 +576,11 @@
           </div>
           <div class="moods" role="group" aria-label="How are you holding up today?" id="meMoods"></div>
           <div><label for="meNote" class="field-label">A note about you, if you like: sleep, tiredness, worry, guilt, a good moment together.</label><textarea id="meNote" maxlength="2000" style="min-height: 70px"></textarea></div>
+          <div class="breathe-slot" id="meBreathe" hidden></div>
           <p class="nudge" id="meNudge" hidden>You've had several very hard days yourself lately. That doesn't decide anything, but it matters. Please let someone help you with the walks and the nights, and be honest with your vet about how things are at home.</p>
         </div>
         <div class="row"><button type="button" class="btn primary" id="saveDay" style="min-width: 200px">Save this day</button><span class="status" id="daySaved" aria-live="polite"></span></div>
+        <p class="moment" id="dayMoment" aria-live="polite"></p>
 
         <div class="row-split">
           <div class="card-title" style="font-size: 16px; margin-bottom: 10px">Last 14 days</div>
@@ -657,23 +689,24 @@
             <label class="check"><input type="checkbox" data-check="papers"><span>Ask the vet to prepare the paperwork in advance, and have your dog's passport ready, so the last hour is only for them.</span></label>
             <label class="check"><input type="checkbox" data-check="aftercare"><span>Choose what happens afterwards: individual or communal cremation, or burial. You can decide later, but it helps to know.</span></label>
             <label class="check"><input type="checkbox" data-check="crematorium"><span>Tell the crematorium in advance that you won't help to move or wrap your dog.</span></label>
-            <label class="check"><input type="checkbox" data-check="dayoff"><span>Take the next day off, or two. Cancel what you can.</span></label>
-            <label class="check"><input type="checkbox" data-check="someone"><span>Ask someone to be with you: to open doors, talk to the vet and the crematorium, and stay with you afterwards.</span></label>
+            <label class="check"><input type="checkbox" data-check="dayoff"><span>Take the next day off, or two. Cancel what you can.</span><em class="whisper">Grief needs room. Give it some.</em></label>
+            <label class="check"><input type="checkbox" data-check="someone"><span>Ask someone to be with you: to open doors, talk to the vet and the crematorium, and stay with you afterwards.</span><em class="whisper">You don&#39;t have to hold everything yourself.</em></label>
             <label class="check"><input type="checkbox" data-check="family"><span>Talk with your family about who will be in the room. Children can say goodbye in their own way, before or after.</span></label>
           </fieldset>
           <fieldset class="check-group"><legend>On the day</legend>
-            <label class="check"><input type="checkbox" data-check="treat"><span>Have their favourite food or treat ready, even the forbidden kind.</span></label>
-            <label class="check"><input type="checkbox" data-check="love"><span>Do something they love, if they can: a slow visit to a favourite place, carried if needed, or lying together in the sun, or on the bed they weren't allowed on.</span></label>
-            <label class="check"><input type="checkbox" data-check="bed"><span>Put their own bed or blanket where they will lie.</span></label>
-            <label class="check"><input type="checkbox" data-check="keep"><span>Keep something of them: a little fur, a paw print, photos, a short video, a recording of their sounds.</span></label>
-            <label class="check"><input type="checkbox" data-check="phone"><span>Put your phone on silent.</span></label>
-            <label class="check"><input type="checkbox" data-check="say"><span>Take time to say everything you want to say. They know your voice.</span></label>
+            <label class="check"><input type="checkbox" data-check="treat"><span>Have their favourite food or treat ready, even the forbidden kind.</span><em class="whisper">Let them have all of it.</em></label>
+            <label class="check"><input type="checkbox" data-check="love"><span>Do something they love, if they can: a slow visit to a favourite place, carried if needed, or lying together in the sun, or on the bed they weren't allowed on.</span><em class="whisper">However small it is, they&#39;ll feel it.</em></label>
+            <label class="check"><input type="checkbox" data-check="bed"><span>Put their own bed or blanket where they will lie.</span><em class="whisper">Somewhere that smells of home.</em></label>
+            <label class="check"><input type="checkbox" data-check="keep"><span>Keep something of them: a little fur, a paw print, photos, a short video, a recording of their sounds.</span><em class="whisper">You&#39;ll be glad of it later.</em></label>
+            <label class="check"><input type="checkbox" data-check="phone"><span>Put your phone on silent.</span><em class="whisper">This hour is just for the two of you.</em></label>
+            <label class="check"><input type="checkbox" data-check="say"><span>Take time to say everything you want to say. They know your voice.</span><em class="whisper">Even the things you&#39;ve said a hundred times.</em></label>
           </fieldset>
           <fieldset class="check-group"><legend>Afterwards</legend>
-            <label class="check"><input type="checkbox" data-check="noRush"><span>Leave the collar, the bowl and the bed for now. There is no hurry to decide what to keep.</span></label>
-            <label class="check"><input type="checkbox" data-check="eat"><span>Eat something and drink some water, even if you don't want to.</span></label>
-            <label class="check"><input type="checkbox" data-check="tonight"><span>Make sure you are not alone tonight, or that you can call someone.</span></label>
+            <label class="check"><input type="checkbox" data-check="noRush"><span>Leave the collar, the bowl and the bed for now. There is no hurry to decide what to keep.</span><em class="whisper">Their things can wait. So can you.</em></label>
+            <label class="check"><input type="checkbox" data-check="eat"><span>Eat something and drink some water, even if you don't want to.</span><em class="whisper">Even a little. Your body is grieving too.</em></label>
+            <label class="check"><input type="checkbox" data-check="tonight"><span>Make sure you are not alone tonight, or that you can call someone.</span><em class="whisper">The first nights are the hardest.</em></label>
           </fieldset>
+        <p class="moment fade-in" id="checkDone" hidden><svg class="tiny-star" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><use href="#starShape" fill="#b4c0dd" stroke="#b4c0dd" stroke-width="2.2" stroke-linejoin="round"/></svg><span>You've thought of everything you could. Now just be with them.</span></p>
         <div class="row"><button type="button" class="btn quiet" id="checkReset">Untick everything</button></div>
       </div>
 
@@ -701,6 +734,7 @@
     <div class="side">
       <h2>The thoughts that won't stop</h2>
       <p>Choosing euthanasia brings a particular kind of grief. As well as losing them, many people feel that they caused the loss. Open the thought that sounds like you.</p>
+      <div class="breathe-slot" style="margin-top: 20px"></div>
     </div>
     <div class="main">
       <div class="thoughts">
@@ -817,6 +851,7 @@
         <div class="j-dots" id="jDots" role="group" aria-label="Days of the journey"></div>
         <div class="stack" style="gap: 10px">
           <h3 id="jTitle" style="margin: 0"></h3>
+          <p class="moment fade-in" id="jMilestone" hidden></p>
           <p id="jText"></p>
         </div>
         <div class="try"><strong id="jActionLabel">Today, if you can. </strong><span id="jAction"></span>
@@ -831,6 +866,7 @@
           <span class="card-title" style="font-size: 17px">How are you today?</span>
           <div class="moods" role="group" aria-label="How are you today?" id="jMoods"></div>
           <div><label for="jWord" class="field-label">A note about today, if you like</label><textarea id="jWord" maxlength="2000" style="min-height: 90px"></textarea></div>
+          <div class="breathe-slot" id="jBreathe" hidden></div>
           <div class="row"><button type="button" class="btn primary" id="jSave">Save today's check-in</button><span class="status" id="jMsg" aria-live="polite"></span></div>
         </div>
         <div class="nudge" id="jSupport" hidden>
@@ -947,6 +983,7 @@
         <label for="letterText" class="field-label" style="margin: 0">Your letters are kept with your dog's history, on this device and online if you set up a PIN. They aren't linked to your name.</label>
         <textarea id="letterText" style="min-height: 180px; font-family: var(--font-quote); font-size: 19px; line-height: 1.5" placeholder="Dear…" data-named-placeholder="Dear {name},"></textarea>
         <div class="row"><button type="button" class="btn primary" id="saveLetter">Keep this letter</button><span class="status" id="letterSaved" aria-live="polite"></span></div>
+        <p class="moment" id="letterMoment" aria-live="polite"></p>
         <ul class="log" id="letterHistory"></ul>
       </div>
 
@@ -1112,6 +1149,60 @@
     setTimeout(function () { if (e.textContent === text) e.textContent = ""; }, 5000);
   }
 
+  // ---- Small moments ----
+  var STAR_SVG = '<svg class="tiny-star" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><use href="#starShape" fill="#b4c0dd" stroke="#b4c0dd" stroke-width="2.2" stroke-linejoin="round"/></svg>';
+  function moment(id, text) {
+    var e = document.getElementById(id);
+    e.innerHTML = "";
+    if (!text) return;
+    e.innerHTML = STAR_SVG;
+    e.appendChild(el("span", null, text));
+    e.classList.remove("fade-in"); void e.offsetWidth; e.classList.add("fade-in");
+  }
+  // Ten seconds of breathing with the star: in for four, out for six.
+  function makeBreathe(slot) {
+    var box = el("div", "breathe");
+    var btn = el("button", "btn quiet breathe-btn");
+    btn.type = "button";
+    btn.innerHTML = STAR_SVG;
+    btn.appendChild(el("span", null, "Breathe with me, 10 seconds"));
+    var run = el("div", "breathe-run"); run.hidden = true;
+    var orb = el("span", "breathe-orb"); orb.innerHTML = STAR_SVG.replace('width="14" height="14"', "");
+    var word = el("span", "breathe-word"); word.setAttribute("aria-live", "polite");
+    run.appendChild(orb); run.appendChild(word);
+    var after = el("p", "small muted"); after.hidden = true;
+    btn.addEventListener("click", function () {
+      btn.hidden = true; after.hidden = true; run.hidden = false;
+      orb.classList.remove("go"); void orb.offsetWidth; orb.classList.add("go");
+      word.textContent = "Breathe in\u2026";
+      setTimeout(function () { word.textContent = "\u2026and slowly out"; }, 4000);
+      setTimeout(function () {
+        run.hidden = true; btn.hidden = false; after.hidden = false;
+        btn.lastChild.textContent = "Again";
+        after.textContent = "Take your time. There's no hurry here.";
+      }, 10000);
+    });
+    box.appendChild(btn); box.appendChild(run); box.appendChild(after);
+    slot.appendChild(box);
+  }
+  document.querySelectorAll(".breathe-slot").forEach(makeBreathe);
+
+  // Late at night, say so.
+  var hour = new Date().getHours();
+  document.getElementById("nightNote").hidden = !(hour >= 21 || hour < 5);
+
+  // Things people rarely say out loud; one each visit.
+  var KNOWS = [
+    "You might be searching the same question at 3am. That's normal.",
+    "Checking whether they're still breathing at night. Many people do.",
+    "Feeling relieved for a second, then guilty for it. That's normal too.",
+    "Watching them sleep and trying to remember every detail.",
+    "Cancelling plans so you don't miss a good day with them.",
+    "Hoping they'll give you a clear sign. Many people wait for one.",
+    "Angry at the illness, the vet, yourself. It's part of this."
+  ];
+  moment("knowsLine", KNOWS[Math.floor(Math.random() * KNOWS.length)]);
+
   // ---- Mobile menu ----
   var menuBtn = document.getElementById("menuBtn");
   var siteNav = document.getElementById("siteNav");
@@ -1149,7 +1240,10 @@
     b.addEventListener("click", function () { meMood = meMood === mo[0] ? null : mo[0]; dayDirty = true; pressMe(); });
     meBox.appendChild(b);
   });
-  function pressMe() { meBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.mood === meMood)); }); }
+  function pressMe() {
+    meBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.mood === meMood)); });
+    document.getElementById("meBreathe").hidden = meMood !== 1;
+  }
 
   // The scores propose an overall day; the owner has the last word.
   function suggestKind() {
@@ -1197,7 +1291,11 @@
     showMeanings(!!score);
     updateHint();
   }
-  dateInput.addEventListener("change", loadDayIntoForm);
+  dateInput.addEventListener("change", function () {
+    loadDayIntoForm();
+    var past = dateInput.value && dateInput.value < today() && !store.get(KEYS.days, {})[dateInput.value];
+    moment("dayMoment", past ? "Missed days don't mean you weren't paying attention." : "");
+  });
   ["dayNote", "meNote"].forEach(function (id) { document.getElementById(id).addEventListener("input", function () { dayDirty = true; }); });
 
   function renderDays() {
@@ -1212,6 +1310,7 @@
       var key = iso(d);
       var entry = days[key];
       var cell = el("span", "day" + (entry ? " " + entry.kind : "") + (key === t && !entry ? " today" : ""));
+      cell.dataset.date = key;
       if (entry) cell.innerHTML = paw(entry.kind);
       var label = niceDate(key) + ": " + (entry ? WORD[entry.kind] : "not recorded");
       cell.title = label;
@@ -1313,7 +1412,17 @@
     var ok = store.set(KEYS.days, days) && store.set(KEYS.scores, scores);
     if (ok) dayDirty = false;
     flash("daySaved", ok ? "Saved for " + niceDate(date) + "." : unsaved);
+    if (ok) {
+      var n = Object.keys(days).length;
+      var line = { good: "A good day. Hold onto it.", okay: "Some of the day was still theirs. That counts.",
+        bad: "Hard days are part of this. You saw it clearly, and that is caring." }[kind];
+      if (n >= 7 && n % 7 === 0) line = "You've watched over " + dogWord() + " for " + n + " days. That's what love looks like right now.";
+      if (meMood === 1) line += " And you're carrying a lot. It's okay to be tired of it and still love them.";
+      moment("dayMoment", line);
+    }
     renderDays(); renderScores();
+    var settled = document.querySelector('#days [data-date="' + date + '"]');
+    if (settled) settled.classList.add("settle");
     scheduleSync();
   });
 
@@ -1495,10 +1604,17 @@
     if (!text) return;
     var letters = store.get(KEYS.letters, []);
     letters.push({ date: today(), text: text, t: Date.now() });
-    flash("letterSaved", store.set(KEYS.letters, letters) ? "Kept." : unsaved);
-    ta.value = "";
+    var kept = store.set(KEYS.letters, letters);
+    flash("letterSaved", kept ? "Kept." : unsaved);
     renderLetters();
     scheduleSync();
+    if (!kept) return;
+    // Let the words rise and fade, as if sent.
+    ta.classList.add("sending");
+    setTimeout(function () {
+      ta.value = ""; ta.classList.remove("sending");
+      moment("letterMoment", "They knew your voice. They'd know this too.");
+    }, 1250);
   });
 
   // ---- Your dog: name and photo ----
@@ -1704,6 +1820,26 @@
     });
   });
 
+  // A line at the top of each thought: other people feel this too.
+  var NOT_ALONE = {
+    early: "Almost everyone who chose this asks this, often more than once.",
+    late: "Many people who loved their dog deeply feel exactly this.",
+    trust: "Doubting afterwards is common, even when everything was done right.",
+    moment: "Many people see that moment again and again at first.",
+    notthere: "Many people couldn't be there. Their dogs were still loved, and knew it.",
+    relief: "Relief after a long illness is one of the most common feelings, and one of the least spoken.",
+    lastdays: "Almost everyone wishes the last days had been different.",
+    angry: "Anger is a usual part of grief, even when it surprises you.",
+    myself: "Many owners feel this, especially after caring for a long time."
+  };
+  document.querySelectorAll("details.thought[data-ex]").forEach(function (d) {
+    var line = NOT_ALONE[d.dataset.ex], sum = d.querySelector(":scope > summary");
+    if (!line || !sum) return;
+    var p = el("p", "moment not-alone");
+    p.innerHTML = STAR_SVG; p.appendChild(el("span", null, line));
+    sum.insertAdjacentElement("afterend", p);
+  });
+
   // ---- Checklist for the day ----
   var checks = Array.prototype.slice.call(document.querySelectorAll("[data-check]"));
   function renderChecklist() {
@@ -1714,6 +1850,7 @@
       if (c.checked) done++;
     });
     document.getElementById("checkCount").textContent = done + " of " + checks.length + " done";
+    document.getElementById("checkDone").hidden = done !== checks.length;
   }
   checks.forEach(function (c) {
     c.addEventListener("change", function () {
@@ -1961,10 +2098,17 @@
     b.addEventListener("click", function () {
       jMood = mo[0];
       moodBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      document.getElementById("jBreathe").hidden = jMood !== 1;
     });
     moodBox.appendChild(b);
   });
 
+  var MILESTONES = {
+    7: "You're still here, and so is your love for {dog}.",
+    14: "The waves may be coming less often, or not yet. Both are normal.",
+    21: "You've carried a lot. Be gentle with yourself today.",
+    30: "A month. Nothing is finished. You are still {dog}'s person."
+  };
   function renderJourney() {
     var st = journeyState();
     var started = st.reached > 0;
@@ -1990,6 +2134,10 @@
     }
     jMood = entry ? entry.mood : null;
     moodBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.mood === jMood)); });
+    document.getElementById("jBreathe").hidden = jMood !== 1;
+    var ms = MILESTONES[jView], msBox = document.getElementById("jMilestone");
+    msBox.hidden = !(ms && entry);
+    if (ms && entry) moment("jMilestone", ms.replace(/\{dog\}/g, dogWord()));
     document.getElementById("jWord").value = entry ? entry.word || "" : "";
     document.getElementById("jPrev").disabled = jView <= 1;
     document.getElementById("jNext").disabled = jView >= 30 || jView >= st.reached + 1;
@@ -1997,7 +2145,8 @@
     var dots = document.getElementById("jDots");
     dots.innerHTML = "";
     for (var i = 1; i <= 30; i++) {
-      var dot = el("button", "j-dot" + (st.days[i] ? " done" : i <= st.reached ? " reached" : "") + (i === jView ? " current" : ""));
+      var dot = el("button", "j-dot" + (st.days[i] ? " done" : i <= st.reached ? " reached" : "") + (i === jView ? " current" : "") + (MILESTONES[i] ? " milestone" : ""));
+      if (MILESTONES[i] && st.days[i]) dot.innerHTML = STAR_SVG;
       dot.type = "button";
       dot.disabled = i > st.reached + 1 || i > 30;
       dot.setAttribute("aria-label", "Day " + i + (st.days[i] ? ", checked in" : ""));
