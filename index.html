@@ -284,6 +284,34 @@
     .fade-in, .day.settle, .check input:checked ~ .whisper, .breathe-orb.go svg { animation: none; }
     #letterText.sending { transition: none; }
   }
+  /* Since the goodbye */
+  .since-stage { font-family: var(--font-quote); font-size: 18px; line-height: 1.65; }
+  .since-links { display: flex; flex-wrap: wrap; gap: 8px 20px; font-weight: 600; }
+  /* Tell me about them */
+  .rm-progress { display: flex; gap: 4px; }
+  .rm-progress span { flex: 1; height: 3px; border-radius: 2px; background: var(--line-strong); }
+  .rm-progress span.on { background: var(--accent); }
+  #rmText { font-family: var(--font-display); font-size: clamp(22px, 3vw, 28px); line-height: 1.3; margin: 0; }
+  #rmA { font-family: var(--font-quote); font-size: 18px; min-height: 130px; }
+  .keepsake { background: #1a1e2c; border: 1px solid var(--line-strong); border-radius: 10px; padding: 36px 28px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+  .keepsake img { width: 180px; height: 180px; object-fit: cover; border-radius: 50%; border: 1px solid var(--line-strong); filter: saturate(.75); margin: 6px 0; }
+  .keepsake h3 { font-family: var(--font-display); font-size: 34px; margin: 4px 0 0; }
+  .keepsake .ks-dates { color: var(--muted); font-family: var(--font-quote); }
+  .keepsake .ks-part { max-width: 34em; margin-top: 14px; }
+  .keepsake .ks-part h4 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; font-weight: 700; }
+  .keepsake .ks-part p { font-family: var(--font-quote); font-size: 18px; line-height: 1.6; white-space: pre-wrap; }
+  .keepsake .ks-foot { margin-top: 18px; font-size: 13px; color: var(--muted); }
+  /* Field of stars */
+  .sky { background: radial-gradient(80% 60% at 50% 0%, rgba(180,192,221,.10), rgba(180,192,221,0) 70%), radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.35), transparent), radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,.25), transparent), radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,.3), transparent), radial-gradient(1px 1px at 85% 20%, rgba(255,255,255,.3), transparent), #161a26; }
+  .star-field { position: relative; width: 100%; margin-top: 24px; }
+  .sf-star { position: absolute; display: flex; flex-direction: column; align-items: center; width: 120px; margin-left: -60px; text-align: center; gap: 4px; }
+  .sf-star svg { animation: twinkle 4s ease-in-out infinite; filter: drop-shadow(0 0 6px rgba(180,192,221,.45)); }
+  .sf-star.mine svg { filter: drop-shadow(0 0 10px rgba(233,214,170,.8)); }
+  .sf-name { font-family: var(--font-quote); font-size: 14px; color: var(--text); line-height: 1.2; max-width: 116px; overflow-wrap: anywhere; }
+  .sf-dates { font-size: 11px; color: var(--muted); }
+  @keyframes twinkle { 0%, 100% { opacity: .65; } 50% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .sf-star svg { animation: none; } }
+  .light-card { max-width: 640px; margin-top: 32px; }
   .owner-check { border-top: 1px solid var(--line); padding-top: 20px; }
   .segmented button[aria-pressed="true"] { background: var(--sage-bg); box-shadow: inset 0 0 0 2px var(--accent); }
   .field-label { display: block; font-size: 15px; color: var(--muted); margin-bottom: 6px; }
@@ -410,7 +438,11 @@
 
   @media print {
     body { background: #fff; color: #000; padding: 0; }
-    body > *:not(main), main > *:not(#before), #before .side, #before .no-print { display: none !important; }
+    html:not(.print-keepsake) body > *:not(main), html:not(.print-keepsake) main > *:not(#before), html:not(.print-keepsake) #before .side, html:not(.print-keepsake) #before .no-print { display: none !important; }
+    html.print-keepsake body > *:not(main), html.print-keepsake main > *:not(#remember), html.print-keepsake #remember .side, html.print-keepsake #rmCard > *:not(#rmEnd), html.print-keepsake #rmEnd > *:not(#keepsake) { display: none !important; }
+    html.print-keepsake #rmCard { border: 0; padding: 0; }
+    .keepsake { background: #fff; color: #000; border: 0; }
+    .keepsake .ks-dates, .keepsake .ks-part h4, .keepsake .ks-foot { color: #555; }
     .card { border-color: #999; background: #fff; }
   }
 </style>
@@ -440,7 +472,7 @@
       <nav class="site-nav" id="siteNav" aria-label="Main">
         <a href="#before">Deciding</a>
         <a href="#prepare">The decision is made</a>
-        <a href="#after">After the goodbye</a>
+        <a href="#since">After the goodbye</a>
         <a href="#letter" data-named="Write to {name}">Write to them</a>
       </nav>
     </header>
@@ -454,7 +486,7 @@
           <div class="actions">
             <a class="btn primary" href="#before">I'm still deciding</a>
             <a class="btn" href="#prepare">The decision is made</a>
-            <a class="btn" href="#after">I've already said goodbye</a>
+            <a class="btn" href="#since">I've already said goodbye</a>
           </div>
         </div>
       </div>
@@ -490,7 +522,7 @@
       <span class="path-text">What happens during the appointment, what I wish I'd known, and a checklist for the day itself, so you can be with your dog instead of managing everything.</span>
       <span class="path-more">Start here &#8594;</span>
     </a>
-    <a class="path" href="#after">
+    <a class="path" href="#since">
       <span class="path-step">3 &middot; After the goodbye</span>
       <span class="path-title">I've already said goodbye</span>
       <span class="path-text">The thoughts that come back most often and what is true about them, a gentle 30-day journey for the first month, and a private place to write to your dog.</span>
@@ -760,6 +792,101 @@
         <h3>The next days</h3>
         <p>Expect waves rather than a straight line. The hardest moments are often the small routines: the time of the walk, the bowl, the door. <a href="#after">The thoughts that won't stop</a> are there for when the guilt comes.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SINCE ============ -->
+<section id="since">
+  <div class="wrap split">
+    <div class="side">
+      <h2>After the goodbye</h2>
+      <p>Grief keeps its own time. Tell me when you said goodbye, and this part of the site will meet you where you are.</p>
+    </div>
+    <div class="main stack">
+      <div class="card stack" id="sinceCard" style="gap: 16px">
+        <div id="sinceAsk" class="stack" style="gap: 12px">
+          <label for="goodbyeDate" class="card-title" data-named="When did you say goodbye to {name}?">When did you say goodbye?</label>
+          <div class="row"><input type="date" id="goodbyeDate" aria-label="Date of the goodbye"><button type="button" class="btn primary" id="goodbyeSave">Save</button><span class="status" id="goodbyeMsg" aria-live="polite"></span></div>
+          <p class="small muted">It's kept with your dog's history. Nobody else sees it unless you choose to light a star for them.</p>
+        </div>
+        <div id="sinceShow" class="stack" style="gap: 12px" hidden>
+          <span class="card-title" id="sinceDays"></span>
+          <p class="small muted" id="sinceLived"></p>
+          <p class="since-stage" id="sinceStage"></p>
+          <div class="since-links">
+            <a href="#remember" data-named="Tell me about {name} &#8594;">Tell me about them &#8594;</a>
+            <a href="#after">The thoughts that won't stop</a>
+            <a href="#journey">30 days after</a>
+          </div>
+          <div><button type="button" class="btn quiet" id="goodbyeEdit">Change the date</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REMEMBER ============ -->
+<section id="remember" class="band">
+  <div class="wrap split">
+    <div class="side">
+      <h2 data-named="Tell me about {name}">Tell me about them</h2>
+      <p>Nine gentle questions, one at a time. Skip any you like, and stop whenever you need to; your answers wait for you.</p>
+      <p class="small">At the end they become a keepsake page with their name and dates, to save, print, or come back to.</p>
+    </div>
+    <div class="main">
+      <div class="card stack" id="rmCard" style="gap: 18px">
+        <div id="rmIntro" class="stack" style="gap: 14px">
+          <p class="since-stage" id="rmIntroText">Some things only you know about them. Let's write a few of them down.</p>
+          <div class="row"><button type="button" class="btn primary" id="rmBegin">Begin</button><button type="button" class="btn quiet" id="rmSee" hidden>See the keepsake</button></div>
+        </div>
+        <div id="rmQ" class="stack" style="gap: 14px" hidden>
+          <div class="rm-progress" id="rmProgress" aria-hidden="true"></div>
+          <span class="small muted" id="rmCount"></span>
+          <h3 id="rmText"></h3>
+          <textarea id="rmA" maxlength="3000" aria-labelledby="rmText"></textarea>
+          <p class="moment" id="rmAck" aria-live="polite"></p>
+          <div class="row" style="justify-content: space-between">
+            <button type="button" class="btn quiet" id="rmBack">&#8592; Back</button>
+            <span class="row"><button type="button" class="btn quiet" id="rmSkip">Skip</button><button type="button" class="btn primary" id="rmNext">Next</button></span>
+          </div>
+        </div>
+        <div id="rmEnd" class="stack" style="gap: 18px" hidden>
+          <p class="moment" id="rmThanks"></p>
+          <article class="keepsake" id="keepsake" aria-label="Keepsake page"></article>
+          <div class="row">
+            <button type="button" class="btn primary" id="ksImage">Save as image</button>
+            <button type="button" class="btn" id="ksPrint">Print or save as PDF</button>
+            <button type="button" class="btn quiet" id="rmEdit">Change answers</button>
+          </div>
+          <span class="status" id="ksMsg" aria-live="polite"></span>
+          <p><a href="#stars" style="font-weight: 700" data-named="Light a star for {name} &#8594;">Light a star for them &#8594;</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STARS ============ -->
+<section id="stars" class="sky">
+  <div class="wrap">
+    <h2>The field of stars</h2>
+    <p class="muted" style="max-width: 36em">Each star is a dog someone loved and had to let go. They were lit by the people who said goodbye to them.</p>
+    <div class="star-field" id="starField" role="list" aria-label="Stars lit for dogs"></div>
+    <p class="small muted" id="starCount" style="margin-top: 12px"></p>
+    <div class="row" id="starMoreRow" hidden><button type="button" class="btn quiet" id="starMore">Show more stars</button></div>
+    <div class="card stack light-card" id="lightCard" style="gap: 14px">
+      <span class="card-title" id="lightTitle" data-named="Light a star for {name}">Light a star for your dog</span>
+      <div id="lightForm" class="stack" style="gap: 12px">
+        <div class="sync-fields">
+          <div><label for="starName" class="field-label">Their name</label><input type="text" id="starName" maxlength="40" autocomplete="off"></div>
+          <div><label for="starBorn" class="field-label">Born, if you like</label><input type="date" id="starBorn"></div>
+          <div><label for="starDied" class="field-label">Said goodbye</label><input type="date" id="starDied"></div>
+        </div>
+        <label class="check" style="font-size: 15px"><input type="checkbox" id="starConsent"><span>Show this name and these dates in the field of stars. Everyone who visits will see them; nothing else about you or your dog is shared.</span></label>
+        <div class="row"><button type="button" class="btn primary" id="starLight">Light the star</button><span class="status" id="starMsg" aria-live="polite"></span></div>
+      </div>
+      <p class="moment" id="starLit" hidden></p>
     </div>
   </div>
 </section>
@@ -1128,7 +1255,7 @@
     <div id="sources">
       <h3>Sources and privacy</h3>
       <p>The quality-of-life scale is Dr Alice Villalobos's HHHHHMM scale.</p>
-      <p id="privacy">There are no accounts, no ads and no cookies. Visits are counted anonymously with GoatCounter (country, page and referring site only); no personal data is collected, and nothing you write is ever part of it. Photos stay in your browser. If you set up a PIN for your dog, the days, your notes about your dog and about yourself, scores, letters, checklist, 30-day check-ins and your “Try this” answers are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
+      <p id="privacy">There are no accounts, no ads and no cookies. Visits are counted anonymously with GoatCounter (country, page and referring site only); no personal data is collected, and nothing you write is ever part of it. Photos stay in your browser. If you set up a PIN for your dog, the days, your notes about your dog and about yourself, scores, letters, checklist, 30-day check-ins, your “Try this” answers, the goodbye date and what you wrote in “Tell me about them” are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. If you light a star, only the name and dates you enter are shown publicly, in the field of stars. Fonts are loaded from Google Fonts.</p>
     </div>
   </div>
 </section>
@@ -1175,7 +1302,7 @@
     },
     remove: function (key) { try { localStorage.removeItem(key); } catch (e) {} }
   };
-  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", dog: "hk.dog", sync: "hk.sync", exercises: "hk.exercises", checklist: "hk.checklist", journey: "hk.journey" };
+  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", dog: "hk.dog", sync: "hk.sync", exercises: "hk.exercises", checklist: "hk.checklist", journey: "hk.journey", portrait: "hk.portrait" };
   var unsaved = "Saved for now, but this browser isn't keeping data, so it may be lost when you close the page.";
 
   function iso(d) {
@@ -1744,7 +1871,7 @@
     var data = {
       app: "the-hardest-kindness", version: 1, exported: new Date().toISOString(),
       days: store.get(KEYS.days, {}), scores: store.get(KEYS.scores, []), letters: store.get(KEYS.letters, []),
-      dog: store.get(KEYS.dog, {}), exercises: store.get(KEYS.exercises, {}), checklist: store.get(KEYS.checklist, {}), journey: store.get(KEYS.journey, null)
+      dog: store.get(KEYS.dog, {}), exercises: store.get(KEYS.exercises, {}), checklist: store.get(KEYS.checklist, {}), journey: store.get(KEYS.journey, null), portrait: store.get(KEYS.portrait, null)
     };
     var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     var a = document.createElement("a");
@@ -1785,12 +1912,20 @@
       if (ok && data.journey) ok = store.set(KEYS.journey, mergeJourney(store.get(KEYS.journey, null), data.journey));
       if (ok && data.checklist) ok = store.set(KEYS.checklist, mergeChecklist(store.get(KEYS.checklist, {}), data.checklist));
       if (ok && data.exercises) ok = store.set(KEYS.exercises, mergeExercises(store.get(KEYS.exercises, {}), data.exercises));
+      if (ok && data.portrait && data.portrait.answers) {
+        var pt = store.get(KEYS.portrait, { answers: {}, t: 0 });
+        Object.keys(data.portrait.answers).forEach(function (k) { if (!pt.answers[k]) pt.answers[k] = data.portrait.answers[k]; });
+        pt.t = Date.now();
+        ok = store.set(KEYS.portrait, pt);
+      }
       // Keep anything already set on this device; fill in only what is missing.
       if (ok && data.dog) {
         var dog = store.get(KEYS.dog, {});
         if (!dog.name && data.dog.name) dog.name = data.dog.name;
         if (!dog.photo && data.dog.photo) dog.photo = data.dog.photo;
         if (!dog.breed && data.dog.breed) dog.breed = data.dog.breed;
+        if (!dog.goodbye && data.dog.goodbye) dog.goodbye = data.dog.goodbye;
+        if (!dog.starId && data.dog.starId) { dog.starId = data.dog.starId; dog.starName = data.dog.starName; }
         if (!dog.size && data.dog.size) { dog.size = data.dog.size; dog.sizeFromBreed = !!data.dog.sizeFromBreed; dog.profileT = data.dog.profileT || Date.now(); }
         ok = store.set(KEYS.dog, dog);
       }
@@ -1808,7 +1943,7 @@
   document.getElementById("clearBtn").addEventListener("click", function () { clearConfirm.hidden = false; });
   document.getElementById("clearNo").addEventListener("click", function () { clearConfirm.hidden = true; });
   document.getElementById("clearYes").addEventListener("click", function () {
-    store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters); store.remove(KEYS.dog); store.remove(KEYS.exercises); store.remove(KEYS.checklist); store.remove(KEYS.journey);
+    store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters); store.remove(KEYS.dog); store.remove(KEYS.exercises); store.remove(KEYS.checklist); store.remove(KEYS.journey); store.remove(KEYS.portrait);
     store.remove(KEYS.sync); // disconnect too, so the empty device doesn't overwrite anything online
     clearConfirm.hidden = true;
     renderSync();
@@ -2325,7 +2460,7 @@
         ? "The usual size for a " + dog.breed + ". Change it if " + name + " is bigger or smaller."
         : dog.size ? "" : "Choose the size closest to " + name + " when fully grown. It helps the site understand what their age means.";
     });
-    renderAge();
+    renderAge(); renderSince(); renderRemember(); renderLight();
   }
   setups.forEach(function (card) {
     var breedIn = card.querySelector(".s-breed");
@@ -2342,8 +2477,8 @@
   });
   // What their age means for their size. [senior from, usual lifespan from, to]
   var LIFE = { s: [10, 12, 16], m: [8, 11, 14], l: [7, 10, 12], g: [6, 8, 10] };
-  function ageYears(dob) {
-    var b = new Date(dob + "T00:00:00"), n = new Date();
+  function ageYears(dob, at) {
+    var b = new Date(dob + "T00:00:00"), n = at ? new Date(at + "T00:00:00") : new Date();
     var y = n.getFullYear() - b.getFullYear();
     if (n.getMonth() < b.getMonth() || (n.getMonth() === b.getMonth() && n.getDate() < b.getDate())) y--;
     return y;
@@ -2371,6 +2506,292 @@
     t.textContent = text;
     signs.hidden = age < L[0];
   }
+
+
+  // ---- Since the goodbye ----
+  // What is common at each point; never a timetable.
+  var SINCE = [
+    [2, "The first days. Shock, numbness, crying that won't stop, or a strange calm. Nothing you feel now is wrong. Eat a little, sleep if you can, and let someone be near."],
+    [13, "The first two weeks. The house is loud with their absence: the bowl, the door, the time of the walk. Guilt often comes now, in waves. It is your mind trying to make sense of something it couldn't control."],
+    [30, "The first month. Others may seem to have moved on, and that can feel lonely. Your grief is still new. It's common to replay the last days and the decision, again and again."],
+    [90, "One to three months. The waves may come less often, but they can still knock you over: a smell, a dog in the street, a lead on a hook. Many people feel they should be better by now. There is no should."],
+    [182, "Three to six months. Most days may be manageable, with sudden hard ones. Many people begin to remember more of the good years, not only the end."],
+    [364, "The first year. Dates and seasons bring it back: their birthday, the first summer without them. Grief changes shape rather than ending."],
+    [Infinity, "More than a year. The love stays; the sharpness usually softens. Remembering them can begin to feel warm as well as sad."]
+  ];
+  function daysBetween(a, b) {
+    var x = new Date(a + "T00:00:00"), y = new Date(b + "T00:00:00");
+    return Math.round((y - x) / 86400000);
+  }
+  function renderSince() {
+    var dog = store.get(KEYS.dog, {}), conn = syncConn();
+    var name = (dog.name || (conn && conn.label) || "").trim() || "your dog";
+    var dob = dog.dob || (conn && conn.dob), gb = dog.goodbye;
+    var input = document.getElementById("goodbyeDate");
+    input.max = today();
+    if (document.activeElement !== input) input.value = gb || "";
+    var editing = document.getElementById("sinceCard").dataset.editing === "1";
+    document.getElementById("sinceAsk").hidden = !!gb && !editing;
+    document.getElementById("sinceShow").hidden = !gb || editing;
+    if (!gb) return;
+    var d = daysBetween(gb, today());
+    var span = d === 0 ? "Today you said goodbye to " + name + "."
+      : d < 60 ? "It has been " + d + (d === 1 ? " day" : " days") + " since you said goodbye to " + name + "."
+      : d < 730 ? "It has been " + Math.floor(d / 30.44) + " months since you said goodbye to " + name + "."
+      : "It has been " + Math.floor(d / 365.25) + " years since you said goodbye to " + name + ".";
+    document.getElementById("sinceDays").textContent = span;
+    var lived = "";
+    if (dob) {
+      var age = ageYears(dob, gb);
+      lived = name + " lived " + (age < 1 ? "less than a year" : age + (age === 1 ? " year" : " years"));
+      if (dog.size) {
+        var L = LIFE[dog.size], sz = SIZE_WORD[dog.size];
+        lived += age > L[2] ? ", longer than most " + sz + " dogs." : age >= L[1] ? ", a full life for a " + sz + " dog." : age < L[0] ? ". That is far too short a time." : ".";
+      } else lived += ".";
+    }
+    document.getElementById("sinceLived").textContent = lived;
+    document.getElementById("sinceLived").hidden = !lived;
+    document.getElementById("sinceStage").textContent = SINCE.filter(function (x) { return d <= x[0]; })[0][1];
+  }
+  document.getElementById("goodbyeSave").addEventListener("click", function () {
+    var v = document.getElementById("goodbyeDate").value;
+    if (!v) { flash("goodbyeMsg", "Choose the date first."); return; }
+    if (v > today()) { flash("goodbyeMsg", "That date is still to come."); return; }
+    document.getElementById("sinceCard").dataset.editing = "";
+    saveProfile({ goodbye: v });
+  });
+  document.getElementById("goodbyeEdit").addEventListener("click", function () {
+    document.getElementById("sinceCard").dataset.editing = "1";
+    renderSince();
+    document.getElementById("goodbyeDate").focus();
+  });
+
+  // ---- Tell me about them ----
+  var RM = [
+    ["names", "What did you call {name}? All the names, even the silly ones.", "Every one of those names was love.", "What we called them"],
+    ["arrival", "How did {name} come into your life?", "So that's how it began.", "How they came to us"],
+    ["unique", "What did {name} do that no other dog did?", "That's the kind of thing only you would know.", "Only they did this"],
+    ["favourite", "What were their favourite things? A place, a food, a smell, a person.", "Those are worth remembering.", "Their favourite things"],
+    ["sound", "What did they sound like? Their bark, their sigh, their nails on the floor.", "You can probably still hear it.", "Their sound"],
+    ["taught", "What did {name} teach you?", "In a way, they're still teaching you.", "What they taught me"],
+    ["miss", "When do you miss them most?", "That time may stay tender for a while. That's all right.", "When I miss them most"],
+    ["unsaid", "Is there something you'd still like to say to {name}?", "Thank you for saying it.", "What I'd still like to say"],
+    ["keep", "What would you like to keep doing, for them or because of them?", "That's how they stay with you.", "What I'll keep doing"]
+  ];
+  var rmStep = 0;
+  function rmName() { var d = store.get(KEYS.dog, {}), c = syncConn(); return (d.name || (c && c.label) || "").trim(); }
+  function portrait() { return store.get(KEYS.portrait, { answers: {}, t: 0 }); }
+  function savePortrait(pt) { pt.t = Date.now(); store.set(KEYS.portrait, pt); scheduleSync(); }
+  function rmShow(which) {
+    ["rmIntro", "rmQ", "rmEnd"].forEach(function (id) { document.getElementById(id).hidden = id !== which; });
+  }
+  function rmRender() {
+    var q = RM[rmStep], name = rmName() || "your dog", pt = portrait();
+    document.getElementById("rmText").textContent = q[1].replace(/\{name\}/g, name);
+    document.getElementById("rmCount").textContent = "Question " + (rmStep + 1) + " of " + RM.length;
+    var bar = document.getElementById("rmProgress"); bar.innerHTML = "";
+    RM.forEach(function (_, i) { bar.appendChild(el("span", i <= rmStep ? "on" : "")); });
+    document.getElementById("rmA").value = pt.answers[q[0]] || "";
+    document.getElementById("rmAck").innerHTML = "";
+    document.getElementById("rmBack").disabled = rmStep === 0;
+    document.getElementById("rmNext").textContent = rmStep === RM.length - 1 ? "Finish" : "Next";
+  }
+  function rmStore() {
+    var pt = portrait(), v = document.getElementById("rmA").value.trim(), k = RM[rmStep][0];
+    if (v) pt.answers[k] = v; else delete pt.answers[k];
+    savePortrait(pt);
+    return v;
+  }
+  function rmGo(delta, ack) {
+    if (ack) {
+      moment("rmAck", ack);
+      document.getElementById("rmNext").disabled = true;
+      setTimeout(function () { document.getElementById("rmNext").disabled = false; rmMove(delta); }, 1400);
+    } else rmMove(delta);
+  }
+  function rmMove(delta) {
+    rmStep += delta;
+    if (rmStep >= RM.length) { var pt = portrait(); pt.done = true; savePortrait(pt); rmFinish(); return; }
+    rmStep = Math.max(0, rmStep);
+    rmRender();
+    document.getElementById("rmA").focus();
+  }
+  function rmFinish() {
+    rmShow("rmEnd");
+    moment("rmThanks", "Thank you for telling me about " + (rmName() || "them") + ".");
+    renderKeepsake();
+  }
+  function longDate(iso) { return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); }
+  function keepsakeData() {
+    var dog = store.get(KEYS.dog, {}), c = syncConn(), pt = portrait();
+    var dob = dog.dob || (c && c.dob);
+    return {
+      name: rmName() || "My dog", photo: dog.photo || null, breed: dog.breed && !/^(not sure|mixed breed)$/i.test(dog.breed) ? dog.breed : "",
+      dates: dob && dog.goodbye ? longDate(dob) + " – " + longDate(dog.goodbye) : dob ? "Born " + longDate(dob) : dog.goodbye ? "Said goodbye " + longDate(dog.goodbye) : "",
+      parts: RM.filter(function (q) { return pt.answers[q[0]]; }).map(function (q) { return [q[3], pt.answers[q[0]]]; })
+    };
+  }
+  function renderKeepsake() {
+    var k = keepsakeData(), box = document.getElementById("keepsake");
+    box.innerHTML = STAR_SVG.replace('width="14" height="14"', 'width="26" height="26"');
+    if (k.photo) { var img = el("img"); img.src = k.photo; img.alt = "Photo of " + k.name; box.appendChild(img); }
+    box.appendChild(el("h3", null, k.name));
+    if (k.dates) box.appendChild(el("p", "ks-dates", k.dates));
+    if (k.breed) box.appendChild(el("p", "small muted", k.breed));
+    k.parts.forEach(function (pr) {
+      var part = el("div", "ks-part"); part.appendChild(el("h4", null, pr[0])); part.appendChild(el("p", null, pr[1])); box.appendChild(part);
+    });
+    if (!k.parts.length) box.appendChild(el("p", "small muted", "Answer a question or two, and it will appear here."));
+    box.appendChild(el("p", "ks-foot", "Remembered with love · hardestkindness.org"));
+  }
+  function renderRemember() {
+    var pt = portrait(), n = Object.keys(pt.answers || {}).length, name = rmName();
+    document.getElementById("rmIntroText").textContent = n
+      ? "You've written " + n + (n === 1 ? " answer" : " answers") + " about " + (name || "them") + " so far. Carry on whenever you're ready."
+      : "Some things only you know about " + (name || "them") + ". Let's write a few of them down.";
+    document.getElementById("rmBegin").textContent = n ? "Continue" : "Begin";
+    document.getElementById("rmSee").hidden = !n;
+    if (!document.getElementById("rmEnd").hidden) renderKeepsake();
+  }
+  document.getElementById("rmBegin").addEventListener("click", function () {
+    var pt = portrait();
+    rmStep = 0;
+    while (rmStep < RM.length - 1 && pt.answers[RM[rmStep][0]]) rmStep++;
+    rmShow("rmQ"); rmRender(); document.getElementById("rmA").focus();
+  });
+  document.getElementById("rmSee").addEventListener("click", rmFinish);
+  document.getElementById("rmEdit").addEventListener("click", function () { rmStep = 0; rmShow("rmQ"); rmRender(); });
+  document.getElementById("rmNext").addEventListener("click", function () { var v = rmStore(); rmGo(1, v ? RM[rmStep][2] : null); });
+  document.getElementById("rmSkip").addEventListener("click", function () { rmGo(1, null); });
+  document.getElementById("rmBack").addEventListener("click", function () { rmStore(); rmGo(-1, null); });
+  document.getElementById("ksPrint").addEventListener("click", function () {
+    document.documentElement.classList.add("print-keepsake");
+    window.print();
+    setTimeout(function () { document.documentElement.classList.remove("print-keepsake"); }, 500);
+  });
+  // Draw the keepsake as one image the owner can keep.
+  document.getElementById("ksImage").addEventListener("click", function () {
+    var k = keepsakeData(), W = 1080, pad = 110, c = document.createElement("canvas"), x = c.getContext("2d");
+    function wrap(text, font, maxW) {
+      x.font = font; var out = [];
+      String(text).split("\n").forEach(function (para) {
+        var line = "";
+        para.split(/\s+/).forEach(function (w) {
+          var t = line ? line + " " + w : w;
+          if (x.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t;
+        });
+        out.push(line);
+      });
+      return out;
+    }
+    function draw(img) {
+      var serif = '"Source Serif 4", Georgia, serif', display = '"DM Serif Display", Georgia, serif', sans = '"Source Sans 3", Arial, sans-serif';
+      var blocks = k.parts.map(function (pr) { return [pr[0].toUpperCase(), wrap(pr[1], "34px " + serif, W - pad * 2)]; });
+      var H = 200 + (img ? 400 : 0) + 120 + (k.dates ? 60 : 0) + (k.breed ? 46 : 0) + 40;
+      blocks.forEach(function (b) { H += 70 + b[1].length * 52; });
+      H += 140;
+      c.width = W; c.height = H;
+      x.fillStyle = "#1a1e2c"; x.fillRect(0, 0, W, H);
+      var g = x.createRadialGradient(W / 2, 0, 0, W / 2, 0, H * 0.6); g.addColorStop(0, "rgba(180,192,221,.14)"); g.addColorStop(1, "rgba(180,192,221,0)");
+      x.fillStyle = g; x.fillRect(0, 0, W, H);
+      x.textAlign = "center"; var y = 120;
+      x.fillStyle = "#b4c0dd"; x.font = "64px " + display; x.fillText("★", W / 2, y); y += 60;
+      if (img) {
+        var r = 180, cx = W / 2, cy = y + r;
+        x.save(); x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.clip();
+        var s = Math.max(2 * r / img.width, 2 * r / img.height);
+        x.drawImage(img, cx - img.width * s / 2, cy - img.height * s / 2, img.width * s, img.height * s); x.restore();
+        y += 2 * r + 40;
+      }
+      x.fillStyle = "#f2ece2"; x.font = "84px " + display; y += 70; x.fillText(k.name, W / 2, y);
+      if (k.dates) { y += 60; x.fillStyle = "#aab0c2"; x.font = "italic 34px " + serif; x.fillText(k.dates, W / 2, y); }
+      if (k.breed) { y += 46; x.font = "28px " + sans; x.fillText(k.breed, W / 2, y); }
+      y += 40;
+      blocks.forEach(function (b) {
+        y += 70; x.fillStyle = "#aab0c2"; x.font = "bold 22px " + sans; x.fillText(b[0], W / 2, y);
+        x.fillStyle = "#f2ece2"; x.font = "34px " + serif;
+        b[1].forEach(function (ln) { y += 52; x.fillText(ln, W / 2, y); });
+      });
+      x.fillStyle = "#8b93a8"; x.font = "24px " + sans; x.fillText("Remembered with love · hardestkindness.org", W / 2, H - 70);
+      c.toBlob(function (blob) {
+        if (!blob) { flash("ksMsg", "This browser couldn't make the image. Try “Print or save as PDF”."); return; }
+        var a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+        a.download = k.name.replace(/[^\wÀ-ɏЀ-ӿ -]/g, "").trim() + " - keepsake.png";
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+        flash("ksMsg", "Saved. You'll find it with your downloads.");
+      }, "image/png");
+    }
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () {
+      if (k.photo) { var im = new Image(); im.onload = function () { draw(im); }; im.onerror = function () { draw(null); }; im.src = k.photo; }
+      else draw(null);
+    });
+  });
+
+  // ---- Field of stars ----
+  var starsAll = [], starsShown = 60;
+  function hashOf(n) { var h = 2166136261; String(n).split("").forEach(function (ch) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }); return (h >>> 0) / 4294967296; }
+  function renderStars() {
+    var field = document.getElementById("starField"), mine = store.get(KEYS.dog, {}).starId;
+    field.innerHTML = "";
+    var list = starsAll.slice(0, starsShown);
+    var w = field.clientWidth || 360, cols = Math.max(3, Math.floor(w / 130)), cellW = w / cols, cellH = 104;
+    list.forEach(function (st, i) {
+      var r = Math.floor(i / cols), cIdx = i % cols, h1 = hashOf(st.id + "x"), h2 = hashOf(st.id + "y"), h3 = hashOf(st.id + "s");
+      var item = el("div", "sf-star" + (st.id === mine ? " mine" : ""));
+      item.setAttribute("role", "listitem");
+      item.style.left = (cIdx * cellW + cellW * (0.3 + h1 * 0.4)) + "px";
+      item.style.top = (r * cellH + h2 * 18) + "px";
+      var size = Math.round(14 + h3 * 10);
+      item.innerHTML = STAR_SVG.replace('width="14" height="14"', 'width="' + size + '" height="' + size + '"');
+      item.firstChild.style.animationDelay = (-h1 * 4).toFixed(2) + "s";
+      item.appendChild(el("span", "sf-name", st.name));
+      var yrs = [st.born ? st.born.slice(0, 4) : "", st.died ? st.died.slice(0, 4) : ""].filter(Boolean).join(" – ");
+      if (yrs) item.appendChild(el("span", "sf-dates", yrs));
+      item.title = st.name + (st.born ? ", born " + longDate(st.born) : "") + (st.died ? ", said goodbye " + longDate(st.died) : "");
+      field.appendChild(item);
+    });
+    field.style.height = (Math.ceil(list.length / cols) * cellH + 20) + "px";
+    document.getElementById("starCount").textContent = starsAll.length ? starsAll.length + (starsAll.length === 1 ? " star has" : " stars have") + " been lit." : "";
+    document.getElementById("starMoreRow").hidden = starsAll.length <= starsShown;
+  }
+  function loadStars() {
+    if (!syncEnabled) { document.getElementById("stars").hidden = true; return; }
+    rpc("list_stars", {}).then(function (rows) { starsAll = rows || []; renderStars(); })
+      .catch(function () {
+        // Not set up yet, or offline: rest quietly rather than show an empty sky.
+        document.getElementById("stars").hidden = true;
+        document.querySelectorAll('a[href="#stars"]').forEach(function (l) { l.hidden = true; });
+      });
+  }
+  document.getElementById("starMore").addEventListener("click", function () { starsShown += 60; renderStars(); });
+  window.addEventListener("resize", function () { clearTimeout(renderStars.t); renderStars.t = setTimeout(renderStars, 200); });
+  function renderLight() {
+    var dog = store.get(KEYS.dog, {}), c = syncConn();
+    var nameIn = document.getElementById("starName"), born = document.getElementById("starBorn"), died = document.getElementById("starDied");
+    born.max = today(); died.max = today();
+    if (!nameIn.value) nameIn.value = (dog.name || (c && c.label) || "");
+    if (!born.value) born.value = dog.dob || (c && c.dob) || "";
+    if (!died.value) died.value = dog.goodbye || "";
+    var lit = !!dog.starId;
+    document.getElementById("lightForm").hidden = lit;
+    document.getElementById("starLit").hidden = !lit;
+    if (lit) moment("starLit", (dog.starName || dog.name || "Their") + "’s star is lit. It will stay here, among the others.");
+  }
+  document.getElementById("starLight").addEventListener("click", function () {
+    var name = document.getElementById("starName").value.trim(), born = document.getElementById("starBorn").value || null, died = document.getElementById("starDied").value || null;
+    if (!name) { flash("starMsg", "Write their name first."); return; }
+    if (/(https?:|www\.|@|<|>)/i.test(name)) { flash("starMsg", "Just their name, please."); return; }
+    if (!document.getElementById("starConsent").checked) { flash("starMsg", "Tick the box to show it in the field of stars."); return; }
+    if (born && died && died < born) { flash("starMsg", "The goodbye date is before the birthday."); return; }
+    flash("starMsg", "Lighting…");
+    rpc("light_star", { p_name: name, p_born: born, p_died: died }).then(function (id) {
+      saveProfile({ starId: id, starName: name });
+      renderLight();
+      loadStars();
+      setTimeout(function () { var m = document.querySelector(".sf-star.mine"); if (m) m.scrollIntoView({ block: "center", behavior: "smooth" }); }, 600);
+    }).catch(function () { flash("starMsg", "The star couldn't be lit just now. Please try again in a little while."); });
+  });
 
   // The newer of the two profiles wins.
   function mergeProfile(local, remote) {
@@ -2511,11 +2932,19 @@
       store.set(KEYS.exercises, exercises);
       store.set(KEYS.letters, letters);
       var dogNow = store.get(KEYS.dog, {}), prof = mergeProfile(dogNow, remote.profile);
-      if (prof) { dogNow.breed = prof.breed || ""; dogNow.size = prof.size || null; dogNow.sizeFromBreed = !!prof.sizeFromBreed; dogNow.profileT = prof.t; store.set(KEYS.dog, dogNow); }
-      var profile = dogNow.profileT ? { breed: dogNow.breed || "", size: dogNow.size || null, sizeFromBreed: !!dogNow.sizeFromBreed, t: dogNow.profileT } : null;
+      if (prof) {
+        dogNow.breed = prof.breed || ""; dogNow.size = prof.size || null; dogNow.sizeFromBreed = !!prof.sizeFromBreed;
+        dogNow.goodbye = prof.goodbye || null; dogNow.starId = prof.starId || null; dogNow.starName = prof.starName || null; dogNow.profileT = prof.t;
+        store.set(KEYS.dog, dogNow);
+      }
+      var profile = dogNow.profileT ? { breed: dogNow.breed || "", size: dogNow.size || null, sizeFromBreed: !!dogNow.sizeFromBreed,
+        goodbye: dogNow.goodbye || null, starId: dogNow.starId || null, starName: dogNow.starName || null, t: dogNow.profileT } : null;
+      var localPt = store.get(KEYS.portrait, null), remotePt = remote.portrait || null;
+      var portraitNow = remotePt && (!localPt || (remotePt.t || 0) > (localPt.t || 0)) ? remotePt : localPt;
+      if (portraitNow) store.set(KEYS.portrait, portraitNow);
       renderSync();
       renderDays(); renderScores(); if (!dayDirty) loadDayIntoForm(); renderExercises(); renderLetters(); renderChecklist(); renderJourney();
-      return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores, exercises: exercises, letters: letters, checklist: checklist, journey: journey, profile: profile } });
+      return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores, exercises: exercises, letters: letters, checklist: checklist, journey: journey, profile: profile, portrait: portraitNow } });
     }).then(function () {
       if (!quiet) setupMsg(card, "Saved online " + new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) + ".");
       return true;
@@ -2581,7 +3010,7 @@
       // Save everything online first, then clear this device so the next dog starts fresh.
       syncNow(true, card).then(function (ok) {
         if (!ok) return;
-        [KEYS.days, KEYS.scores, KEYS.letters, KEYS.exercises, KEYS.checklist, KEYS.journey, KEYS.dog, KEYS.sync].forEach(store.remove);
+        [KEYS.days, KEYS.scores, KEYS.letters, KEYS.exercises, KEYS.checklist, KEYS.journey, KEYS.portrait, KEYS.dog, KEYS.sync].forEach(store.remove);
         setups.forEach(function (c) { c.querySelector(".s-nick").value = ""; c.querySelector(".s-dob").value = ""; });
         refreshAll();
         setupMsg(card, syncEnabled
@@ -2609,6 +3038,7 @@
     loadDayIntoForm(); renderDays(); renderScores(); renderLetters(); applyDog(); renderExercises(); renderChecklist(); renderJourney(); renderSync();
   }
   refreshAll();
+  loadStars();
 })();
 </script>
 <!-- Anonymous visit count (GoatCounter: no cookies, no personal data). Only on the real site, not on copies or test runs. -->
