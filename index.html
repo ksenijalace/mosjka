@@ -202,18 +202,22 @@
   /* Accordion of thoughts */
   .thoughts { border-top: 1px solid var(--line); }
   .thought { border-bottom: 1px solid var(--line); }
-  .thought summary {
+  .thought > summary {
     list-style: none; cursor: pointer; padding: 22px 0;
     display: flex; justify-content: space-between; gap: 16px; align-items: baseline;
     font-family: var(--font-quote); font-style: italic; font-size: 22px; line-height: 1.35;
   }
-  .thought summary::-webkit-details-marker { display: none; }
-  .thought summary::after { content: "+"; font-family: var(--font-body); font-style: normal; color: var(--accent); font-size: 22px; flex: none; }
-  .thought[open] summary::after { content: "\2212"; }
+  .thought > summary::-webkit-details-marker { display: none; }
+  .thought > summary::after { content: "+"; font-family: var(--font-body); font-style: normal; color: var(--accent); font-size: 22px; flex: none; }
+  .thought[open] > summary::after { content: "\2212"; }
   .thought .body { padding: 0 0 26px; display: flex; flex-direction: column; gap: 14px; max-width: 40em; }
   .try { background: var(--sage-bg); border-radius: 4px; padding: 16px 20px; }
   .try strong { color: var(--sage-ink); }
-  @media (max-width: 640px) { .thought summary { font-size: 19px; padding: 18px 0; } }
+  .try { display: flex; flex-direction: column; gap: 12px; }
+  .try-text { min-height: 110px; font-family: var(--font-quote); font-size: 18px; line-height: 1.5; background: var(--bg); }
+  .try-saved summary { cursor: pointer; font-size: 15px; font-weight: 600; color: var(--sage-ink); }
+  .try-saved .log { margin-top: 8px; }
+  @media (max-width: 640px) { .thought > summary { font-size: 19px; padding: 18px 0; } }
 
   /* Tracker */
   .tracker { display: flex; flex-direction: column; gap: 22px; font-size: 16px; }
@@ -615,7 +619,7 @@
     </div>
     <div class="main">
       <div class="thoughts">
-        <details class="thought" open>
+        <details class="thought" data-ex="early" open>
           <summary>"It was too early. They could have had more good days."</summary>
           <div class="body">
             <p>This thought often grows louder after the death, when your memory starts replaying the better moments of the last weeks: the time they wagged, the time they ate. Grief edits the story. It keeps the bright moments and quietly drops the nights of panting, the pain medication that wasn't quite enough, the look in their eyes that made you start thinking about this in the first place.</p>
@@ -624,7 +628,7 @@
             <div class="try"><strong>Try this. </strong>Write down, as honestly as you can, what an ordinary day in the last two weeks was really like for your dog. What could they no longer do? What worried you? Keep the list, and read it when the thought comes back.</div>
           </div>
         </details>
-        <details class="thought">
+        <details class="thought" data-ex="late">
           <summary>"I waited too long. They suffered because I couldn't let go."</summary>
           <div class="body">
             <p>Almost everyone who has made this decision feels, in hindsight, that it should have been sooner. Vets hear this constantly. Decline in dogs is often gradual, and dogs are very good at hiding pain. What looks obvious looking back was blurry while you were living it day by day.</p>
@@ -633,7 +637,7 @@
             <div class="try"><strong>Try this. </strong>Think of a friend telling you this exact story about their own dog. What would you say to them? Write it down, then read it back slowly, as if it were addressed to you. It is.</div>
           </div>
         </details>
-        <details class="thought">
+        <details class="thought" data-ex="trust">
           <summary>"They trusted me, and I ended their life."</summary>
           <div class="body">
             <p>This is often the deepest guilt, and the hardest to say out loud.</p>
@@ -642,7 +646,7 @@
             <div class="try"><strong>Try this. </strong>Finish this sentence as many times as you need: "Because I loved you, I…" Let the list run from the first day you met to the last.</div>
           </div>
         </details>
-        <details class="thought">
+        <details class="thought" data-ex="moment">
           <summary>"I can't stop seeing the last moment."</summary>
           <div class="body">
             <p>The final minutes are often the sharpest memory for weeks or months. It is common to replay them: the needle, the stillness, their eyes staying open, a breath after the vet said they were gone. Many of those things are normal reflexes of the body after death, and they do not mean your dog was aware or in pain.</p>
@@ -651,7 +655,7 @@
             <p class="small muted">If the images keep coming for months, wake you at night or stop you functioning, please talk to a doctor or counsellor. This kind of grief responds well to help.</p>
           </div>
         </details>
-        <details class="thought">
+        <details class="thought" data-ex="notthere">
           <summary>"I wasn't there with them at the end."</summary>
           <div class="body">
             <p>Sometimes people can't be present: they couldn't bear it, the clinic didn't allow it, it happened suddenly, or someone else in the family went. Afterwards it can feel as if you abandoned them at the moment that mattered most.</p>
@@ -659,7 +663,7 @@
             <div class="try"><strong>Try this. </strong>Write them the goodbye you didn't get to say. Say it out loud if you can, somewhere that meant something to you both.</div>
           </div>
         </details>
-        <details class="thought">
+        <details class="thought" data-ex="relief">
           <summary>"Part of me feels relieved, and I hate myself for it."</summary>
           <div class="body">
             <p>If your dog was ill for a long time, you probably lived for weeks or months with medication schedules, sleepless nights, cleaning up, carrying them up the stairs and watching for signs. When that ends, relief is a completely natural response. It sits right next to grief, and it doesn't make the grief any less real.</p>
@@ -667,7 +671,7 @@
             <div class="try"><strong>Try this. </strong>Name both feelings: "I miss you so much, and I am relieved you are not hurting anymore." Both are true. Neither cancels the other.</div>
           </div>
         </details>
-        <details class="thought">
+        <details class="thought" data-ex="lastdays">
           <summary>"I didn't spend their last days with them."</summary>
           <div class="body">
             <p class="voice">"I didn't go to see her before the vet came, so that I wouldn't change my mind again. I regret it now."</p>
@@ -676,7 +680,7 @@
             <div class="try"><strong>Try this. </strong>Write down the last ordinary day you did spend together: a walk, a meal, the two of you on the sofa. That was a last day too.</div>
           </div>
         </details>
-        <details class="thought">
+        <details class="thought" data-ex="angry">
           <summary>"In the last months I was often angry with them."</summary>
           <div class="body">
             <p class="voice">"I'm ashamed that I hardly took photos in the last months, because I was so often angry at how hard everything had become."</p>
@@ -685,7 +689,7 @@
             <div class="try"><strong>Try this. </strong>For every moment you remember being angry, write down one thing you did for them that same week. The list of things you did will be longer.</div>
           </div>
         </details>
-        <details class="thought">
+        <details class="thought" data-ex="myself">
           <summary>"I did it partly for myself."</summary>
           <div class="body">
             <p class="voice">"I had been thinking about euthanasia not only for her, but for us too. Last winter I had pneumonia. Autumn was coming again, and I was afraid I wouldn't cope."</p>
@@ -849,7 +853,7 @@
     <div id="sources">
       <h3>Sources and privacy</h3>
       <p>The quality-of-life scale is Dr Alice Villalobos's HHHHHMM scale. Helpline numbers were checked in October 2026 against the services' own websites, national health authorities and helpline directories; numbers can change, so please confirm one before relying on it.</p>
-      <p id="privacy">There are no accounts, no ads and no tracking. Letters, photos and your dog's name stay in your browser. If you use step 1 of the tracker, the days, notes and scores are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
+      <p id="privacy">There are no accounts, no ads and no tracking. Letters, photos and your dog's name stay in your browser. If you use step 1 of the tracker, the days, notes, scores and your “Try this” answers are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
     </div>
   </div>
 </section>
@@ -898,7 +902,7 @@
     },
     remove: function (key) { try { localStorage.removeItem(key); } catch (e) {} }
   };
-  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", country: "hk.country", dog: "hk.dog", sync: "hk.sync" };
+  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", country: "hk.country", dog: "hk.dog", sync: "hk.sync", exercises: "hk.exercises" };
   var unsaved = "Saved for now, but this browser isn't keeping data, so it may be lost when you close the page.";
 
   function iso(d) {
@@ -1218,7 +1222,7 @@
     var data = {
       app: "the-hardest-kindness", version: 1, exported: new Date().toISOString(),
       days: store.get(KEYS.days, {}), scores: store.get(KEYS.scores, []), letters: store.get(KEYS.letters, []),
-      dog: store.get(KEYS.dog, {})
+      dog: store.get(KEYS.dog, {}), exercises: store.get(KEYS.exercises, {})
     };
     var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     var a = document.createElement("a");
@@ -1256,6 +1260,7 @@
       var ok = store.set(KEYS.days, days)
         && store.set(KEYS.scores, mergeList(store.get(KEYS.scores, []), data.scores))
         && store.set(KEYS.letters, mergeList(store.get(KEYS.letters, []), data.letters));
+      if (ok && data.exercises) ok = store.set(KEYS.exercises, mergeExercises(store.get(KEYS.exercises, {}), data.exercises));
       // Keep anything already set on this device; fill in only what is missing.
       if (ok && data.dog) {
         var dog = store.get(KEYS.dog, {});
@@ -1277,7 +1282,7 @@
   document.getElementById("clearBtn").addEventListener("click", function () { clearConfirm.hidden = false; });
   document.getElementById("clearNo").addEventListener("click", function () { clearConfirm.hidden = true; });
   document.getElementById("clearYes").addEventListener("click", function () {
-    store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters); store.remove(KEYS.dog);
+    store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters); store.remove(KEYS.dog); store.remove(KEYS.exercises);
     store.remove(KEYS.sync); // disconnect too, so the empty device doesn't overwrite anything online
     clearConfirm.hidden = true;
     if (!syncCard.hidden) renderSync();
@@ -1353,6 +1358,58 @@
     all.appendChild(row);
   });
 
+  // ---- "Try this" answers, kept under each thought ----
+  function renderExercise(id) {
+    var box = document.querySelector('[data-ex="' + id + '"] .try-saved');
+    if (!box) return;
+    var list = (store.get(KEYS.exercises, {})[id] || []).slice().reverse();
+    box.innerHTML = "";
+    box.hidden = !list.length;
+    if (!list.length) return;
+    var det = el("details");
+    det.appendChild(el("summary", null, list.length === 1 ? "What you wrote before" : "What you wrote before (" + list.length + ")"));
+    var ul = el("ul", "log");
+    list.forEach(function (e) {
+      var li = el("li");
+      li.appendChild(el("div", "small muted", niceDate(e.date)));
+      li.appendChild(el("p", "letter-text", e.text));
+      ul.appendChild(li);
+    });
+    det.appendChild(ul);
+    box.appendChild(det);
+  }
+  function renderExercises() {
+    document.querySelectorAll("details.thought[data-ex]").forEach(function (d) { renderExercise(d.dataset.ex); });
+  }
+  document.querySelectorAll("details.thought[data-ex]").forEach(function (d) {
+    var id = d.dataset.ex;
+    var tryBox = d.querySelector(".try");
+    if (!tryBox) return;
+    var ta = el("textarea", "try-text");
+    ta.id = "try-" + id;
+    ta.setAttribute("aria-label", "Write your answer");
+    ta.placeholder = "Write here. It's saved with your history.";
+    var row = el("div", "row");
+    var btn = el("button", "btn", "Save");
+    btn.type = "button";
+    var status = el("span", "status");
+    status.id = "tryMsg-" + id;
+    status.setAttribute("aria-live", "polite");
+    row.appendChild(btn); row.appendChild(status);
+    var saved = el("div", "try-saved");
+    tryBox.appendChild(ta); tryBox.appendChild(row); tryBox.appendChild(saved);
+    btn.addEventListener("click", function () {
+      var text = ta.value.trim();
+      if (!text) { flash(status.id, "Write something first."); return; }
+      var all = store.get(KEYS.exercises, {});
+      (all[id] = all[id] || []).push({ date: today(), text: text, t: Date.now() });
+      flash(status.id, store.set(KEYS.exercises, all) ? "Saved." : unsaved);
+      ta.value = "";
+      renderExercise(id);
+      scheduleSync();
+    });
+  });
+
   // ---- Online history (nickname + date of birth + PIN) ----
   // Public project address and publishable key; both are safe to ship in the page.
   var SYNC_CONFIG = { url: "https://fqezebcjordsedotvesn.supabase.co", key: "sb_publishable_d4GwV_HElw0vJ6i35sdqTQ_fXtfKEQJ" };
@@ -1394,6 +1451,18 @@
     });
     return Object.keys(byDate).sort().map(function (d) { return byDate[d]; });
   }
+  function mergeExercises(a, b) {
+    var out = {};
+    [a || {}, b || {}].forEach(function (src) {
+      Object.keys(src).forEach(function (id) {
+        var seen = {};
+        (out[id] || []).forEach(function (e) { seen[e.t + "|" + e.text] = true; });
+        out[id] = (out[id] || []).concat((src[id] || []).filter(function (e) { return !seen[e.t + "|" + e.text]; }));
+        out[id].sort(function (x, y) { return (x.t || 0) - (y.t || 0); });
+      });
+    });
+    return out;
+  }
 
   function renderSync() {
     var conn = syncConn();
@@ -1413,10 +1482,12 @@
       remote = remote || {};
       var days = mergeDays(store.get(KEYS.days, {}), remote.days);
       var scores = mergeScores(store.get(KEYS.scores, []), remote.scores);
+      var exercises = mergeExercises(store.get(KEYS.exercises, {}), remote.exercises);
       store.set(KEYS.days, days);
       store.set(KEYS.scores, scores);
-      renderDays(); renderScores(); loadDayIntoForm();
-      return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores } });
+      store.set(KEYS.exercises, exercises);
+      renderDays(); renderScores(); loadDayIntoForm(); renderExercises();
+      return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores, exercises: exercises } });
     }).then(function () {
       flash("syncMsg", "Saved online " + new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) + ".");
     }).catch(function () {
@@ -1495,7 +1566,7 @@
   });
 
   function refreshAll() {
-    loadDayIntoForm(); renderDays(); renderScores(); renderLetters(); applyDog();
+    loadDayIntoForm(); renderDays(); renderScores(); renderLetters(); applyDog(); renderExercises();
   }
   refreshAll();
 })();
