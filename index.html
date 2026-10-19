@@ -337,6 +337,7 @@
   .scale-item .from-me { margin-top: 8px; }
   .scale-item .from-me p { font-size: 15px; }
   .ks-letter { white-space: pre-line; font-family: var(--font-quote); font-size: 18px; line-height: 1.7; }
+  .sources-list { margin: 8px 0 14px; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; color: var(--muted); }
   .owner-check { border-top: 1px solid var(--line); padding-top: 20px; }
   .segmented button[aria-pressed="true"] { background: var(--sage-bg); box-shadow: inset 0 0 0 2px var(--accent); }
   .field-label { display: block; font-size: 15px; color: var(--muted); margin-bottom: 6px; }
@@ -1443,6 +1444,20 @@ Ksenija, who loved Mosjka</p>
     <div id="sources">
       <h3>Sources and privacy</h3>
       <p>The quality-of-life scale is Dr Alice Villalobos's HHHHHMM scale.</p>
+      <p>The figures in the 30-day journey come from these studies. Pet grief is still little researched, so each describes one group of owners, not everyone:</p>
+      <ul class="small sources-list">
+        <li>Kimura, Kawabata &amp; Maezawa (2013), owners in the first days after their pet's death, Japan, <em>Journal of Veterinary Medical Science</em>.</li>
+        <li>Golbeck (2024), 544 bereaved dog owners' accounts of sensing their dog, <em>Anthrozo&ouml;s</em>.</li>
+        <li>Park &amp; Royal (2020), 340 US owners after euthanasia, <em>Veterinary Sciences</em>.</li>
+        <li>Direct Line survey of 1,100 UK dog owners, as reported in the UK press.</li>
+        <li>Hughes &amp; Harkin (2022), continuing bonds after a pet's death, <em>Omega</em>.</li>
+        <li>Adams, Bonnett &amp; Meek (2000), owners after euthanasia, Ontario, <em>Journal of the American Veterinary Medical Association</em>.</li>
+        <li>Euthanasia and prolonged grief, 123 owners (2025), <em>Journal of Veterinary Behavior</em>.</li>
+        <li>Dog owners' grief after euthanasia or natural death (2026), <em>Journal of the American Veterinary Medical Association</em>.</li>
+        <li>Predictors of grief after the loss of a pet (2020), <em>Human-Animal Interactions</em>.</li>
+        <li>Hyland (2026), 975 UK adults, prolonged grief after the death of a pet, <em>PLOS ONE</em>.</li>
+        <li>Wrobel &amp; Dye (2003), 174 adults after a pet's death, <em>Omega</em>.</li>
+      </ul>
       <p id="privacy">There are no accounts, no ads and no cookies. Visits are counted anonymously with GoatCounter (country, page and referring site only); no personal data is collected, and nothing you write is ever part of it. Photos stay in your browser. If you set up a PIN for your dog, the days, your notes about your dog and about yourself, scores, letters, checklist, 30-day check-ins, your “Try this” answers, the goodbye date and what you wrote in “Tell me about them” are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. If you light a star, only the name and dates you enter are shown publicly, in the field of stars. Fonts are loaded from Google Fonts.</p>
     </div>
   </div>
@@ -2732,36 +2747,36 @@ Ksenija, who loved Mosjka</p>
   ];
   function phaseOf(day) { return PHASES.filter(function (p) { return day >= p[0] && day <= p[1]; })[0]; }
   var EXPECT = [
-    "Many people feel numb or in shock. Some can't stop crying; some feel nothing at all. Both are normal.",
-    "Sleep may be broken. You might keep listening for them, or reach for the lead out of habit.",
-    "Many people feel ashamed of how much it hurts, and keep most of it to themselves.",
+    "In a study of owners in the first days after their pet died, more than half (56%) had marked distress: anxiety, broken sleep, low mood. Numbness and non-stop crying are both part of this.",
+    "Sensing them is common. In accounts from 544 grieving dog owners, hearing the dog was the most frequent experience, and three in four of these moments brought comfort, not fear.",
+    "In a US survey of owners after euthanasia, three in four mourned mostly in private, and only a little over half turned to family or friends.",
     "The house can feel unbearably quiet. The routines without them may hurt the most.",
-    "Exhaustion is common now. Grief is physical; your body is carrying it too.",
-    "Some people want every trace out of sight at once; others can't touch a thing. Many swing between the two.",
-    "Many people feel the first week as a blur, and then an emptiness settles in as it ends.",
-    "Questions like “was it too early?” can feel urgent. They are the mind trying to understand.",
-    "Looking back, almost everyone feels they got the timing wrong, one way or the other.",
+    "In a UK survey of 1,100 dog owners, one in four had been too upset to go to work after their dog died, and most didn't expect their boss to understand.",
+    "Research on grieving owners finds that keeping their things, talking to them and feeling them near are common, and for most people they comfort rather than harm.",
+    "In a study of owners after euthanasia, about one in three had severe grief. If the first week has felt this heavy, you are not unusual.",
+    "In research, doubting the timing is one of the things most linked to heavy grief afterwards. The doubt is common; it isn't proof that you chose wrongly.",
+    "A 2026 study found that owners feel the same grief and guilt whether their dog was euthanised or died naturally. The guilt comes with loving them, not with the choice.",
     "Harsh words about yourself often come now: bad owner, betrayal, no excuse. That is grief speaking, not the truth.",
     "Some people feel angry: at the illness, the vet, themselves, or people who don't understand. Some days can feel worse than the very first ones.",
-    "People may stop asking how you are. Your grief can feel lonelier now.",
+    "Over half of owners in one study felt that society doesn't treat losing a pet as a real reason to grieve. In a 2026 UK study, one in five said losing their pet was harder than losing a person.",
     "Images of the last moment may still return. For many, they begin to soften from here.",
-    "Two weeks. Many people notice a few steadier hours in a day, even if the nights are still hard.",
+    "In one study, 86% of owners had grief symptoms at first. The numbers fall over the months, but in waves, not in a straight line.",
     "You might start wanting to talk about their whole life, not only the end.",
     "Small joys can return: a memory that makes you smile. It's all right to smile.",
     "Almost everyone wishes the last days or weeks had been different.",
     "Remembering often grows warmer now, though regrets about the end can still surface.",
     "Relief and sadness can sit side by side. Both are allowed.",
-    "Many people begin to think about what to keep: the collar, a photo, a habit.",
+    "Keeping something of them, a collar, ashes or a photo, is one of the most common ways owners stay connected, and studies find it usually comforts.",
     "Three weeks. The waves may come less often, but still knock you over when they do.",
-    "You may notice the bond hasn't ended, only changed. Talking to them is still normal.",
+    "Talking to a pet who has died is very common, and research finds these continuing bonds mostly bring comfort.",
     "Anger or guilt may come back for a while. It usually passes faster than before.",
     "Times of day can still hurt: the walk, the evening, the weekend.",
     "The pain is often softer now. Not gone, but easier to carry.",
     "You might worry that feeling better means forgetting. It doesn't.",
     "Saying their name can begin to feel warm as well as sad.",
-    "Four weeks. Many people can think of the good years now without falling apart.",
+    "About 7 in 100 owners have grief that stays as intense for many months. If that sounds like you, it's a reason to ask for help, not a failure.",
     "You are still their person. Love doesn't end when the walks do.",
-    "A month. Grief may still return on dates and in seasons, but for most people it keeps softening."
+    "For most people it keeps softening. In one study, 86% had grief symptoms at first, 35% at six months and 22% after a year."
   ];
   // Where you are today: from the journey's start date if there is one.
   function addDays(iso, n) { var d = new Date(iso + "T00:00:00"); d.setDate(d.getDate() + n); return iso2(d); }
