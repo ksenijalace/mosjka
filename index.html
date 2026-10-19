@@ -443,6 +443,10 @@
   .j-step.next .foot { stroke: rgba(233,225,211,.7); }
   .j-step.next .dogpaw { stroke: rgba(169,184,160,.7); }
   .j-step .glow { fill: url(#stepGlow); opacity: 0; }
+  .trail-mark { font: italic 12px var(--font-quote); fill: rgba(196,206,234,.5); }
+  .trail-mark.on { fill: rgba(217,224,242,.9); }
+  .trail-here { font: italic 13px var(--font-quote); fill: var(--text); }
+  .here-dot { fill: #e9d6aa; filter: drop-shadow(0 0 5px rgba(233,214,170,.8)); }
   .trail-halo { transform-box: fill-box; transform-origin: center; animation: starBreath 5s ease-in-out infinite; }
   @media (prefers-reduced-motion: reduce) { .trail-halo { animation: none; } }
   .j-step.current .glow { opacity: 1; }
@@ -454,13 +458,13 @@
   .j-portrait { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; filter: grayscale(1) sepia(.3) hue-rotate(185deg) saturate(1.3) brightness(.85); opacity: .9; box-shadow: 0 0 0 1px var(--line-strong), 0 0 28px rgba(180,192,221,.22); }
   .dog-sil { display: block; height: auto; overflow: visible; }
   /* Sleeping: only the chest and belly rise and fall, slow and deep. */
-  .dog-sil .sil-breath { transform-box: fill-box; transform-origin: 50% 100%; animation: dogBreath 4.4s ease-in-out infinite; }
+  .sil-breath { transform-box: fill-box; transform-origin: 50% 100%; animation: dogBreath 4.4s ease-in-out infinite; }
   @keyframes dogBreath { 0%, 100% { transform: scale(1, 1); } 40% { transform: scale(1.012, 1.12); } 55% { transform: scale(1.012, 1.12); } }
   /* Sitting: a small wag now and then, from the base of the tail. */
-  .dog-sil .sil-wag { transform-box: fill-box; transform-origin: 100% 85%; animation: dogWag 5s ease-in-out infinite; }
+  .sil-wag { transform-box: fill-box; transform-origin: 100% 85%; animation: dogWag 5s ease-in-out infinite; }
   @keyframes dogWag { 0%, 62%, 100% { transform: rotate(0); } 68% { transform: rotate(-18deg); } 74% { transform: rotate(9deg); } 80% { transform: rotate(-15deg); } 86% { transform: rotate(6deg); } 92% { transform: rotate(-4deg); } }
   .j-near { display: flex; align-items: flex-end; gap: 12px; font-family: var(--font-quote); font-style: italic; color: var(--muted); }
-  @media (prefers-reduced-motion: reduce) { .dog-sil .sil-breath, .dog-sil .sil-wag { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .sil-breath, .sil-wag { animation: none; } }
   .moods { display: flex; flex-wrap: wrap; gap: 8px; }
   .moods button { font: inherit; font-size: 15px; font-weight: 600; min-height: 44px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--text); cursor: pointer; }
   .moods button[aria-pressed="true"] { background: var(--sage-bg); border-color: var(--accent); }
@@ -2447,40 +2451,73 @@
     return { x: x, y: y, s: sc, svg: '<g class="dogpaw" stroke-width="' + (1.1 / q).toFixed(2) + '" transform="translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + P.ang.toFixed(1) + ') scale(' + q.toFixed(3) + ') translate(-12 -12)"><use href="#pawToes"/><use href="#pawPad"/></g>' };
   }
   var lastLit = null;
+  var TRAIL_MARKS = { 7: "1 week", 14: "2 weeks", 21: "3 weeks" };
+  // Only the days already walked leave prints; ahead, the path is a soft dotted line to the star.
   function renderTrail(st) {
-    var box = document.getElementById("jDots"), n = 30, parts = [];
+    var box = document.getElementById("jDots"), n = 30, parts = [], dog = store.get(KEYS.dog, {});
     var latest = Object.keys(st.days).map(Number).sort(function (a, b) { return b - a; })[0] || null;
+    var here = Math.min(st.reached || 1, 30), hereT = (here - 0.5) / n;
+    function at(t) { var u = 1 - Math.pow(1 - t, 1.3); var P = trailAt(u); P.s = 1 - 0.66 * u; return P; }
+    // The way ahead.
+    var pts = [];
+    for (var k = 0; k <= 40; k++) { var tt = hereT + (1 - hereT) * k / 40; var P = at(tt); pts.push(P.x.toFixed(1) + " " + P.y.toFixed(1)); }
+    var ahead = '<path d="M' + pts.join(" L") + '" fill="none" stroke="rgba(196,206,234,.42)" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="0.1 7"/>';
+    // Week markers along the way.
+    var marks = "";
+    Object.keys(TRAIL_MARKS).forEach(function (d) {
+      d = +d; var P = at((d - 0.5) / n), reached = !!st.days[d];
+      var nx = -P.ty, ny = P.tx, off = 44 * P.s + 10;
+      var mx = P.x + nx * off, my = P.y + ny * off;
+      var anchor = mx > 232 ? "end" : "start";
+      if (anchor === "end") { mx = P.x - nx * (40 * P.s + 30); my = P.y - ny * (40 * P.s + 30); }
+      var dot = reached
+        ? '<g transform="translate(' + (P.x + nx * 20 * P.s).toFixed(1) + ' ' + (P.y + ny * 20 * P.s).toFixed(1) + ') scale(.42) translate(-12 -12)"><use href="#starShape" fill="#c4cee8" stroke="#c4cee8" stroke-width="2.2" stroke-linejoin="round"/></g>'
+        : '<circle cx="' + (P.x + nx * 20 * P.s).toFixed(1) + '" cy="' + (P.y + ny * 20 * P.s).toFixed(1) + '" r="2" fill="rgba(196,206,234,.45)"/>';
+      marks += dot + '<text class="trail-mark' + (reached ? " on" : "") + '" x="' + mx.toFixed(1) + '" y="' + (my + 4).toFixed(1) + '" text-anchor="' + anchor + '">' + TRAIL_MARKS[d] + '</text>';
+    });
+    // The walked days: your step, and two of theirs.
     for (var i = 1; i <= n; i++) {
-      var t = (i - 0.5) / n, half = 0.5 / n;
-      var left = i % 2 === 1;
+      if (!st.days[i]) continue;
+      var t = (i - 0.5) / n, half = 0.5 / n, left = i % 2 === 1;
       var foot = trailPrint(t, left ? 12 : 30, 0, "foot", left);
-      // Two of their steps to one of yours, a little to the left and slightly out of step.
       var p1 = trailPrint(t - half * 0.55, i % 2 ? -30 : -21, 0, "paw");
       var p2 = trailPrint(t + half * 0.25, i % 2 ? -19 : -32, 0, "paw");
-      var done = !!st.days[i], locked = i > st.reached + 1;
-      var cls = "j-step" + (done ? " done" : "") + (locked ? " locked" : "") + (!done && !locked ? " next" : "") + (i === jView ? " current" : "") + (done && i === latest && lastLit !== latest ? " lit" : "");
-      // Tap area: as wide as the pair of tracks, as tall as the space to the neighbouring steps.
+      var cls = "j-step done" + (i === jView ? " current" : "") + (i === latest && lastLit !== latest ? " lit" : "");
       var prevF = trailPrint((i - 1.5) / n, 20, 0, "foot"), nextF = trailPrint((i + 0.5) / n, 20, 0, "foot");
       var gap = Math.min(Math.abs(prevF.y - foot.y), Math.abs(nextF.y - foot.y)) || 12;
-      var star = MILESTONES[i] && done ? '<g transform="translate(' + (foot.x + 16 * foot.s + 6).toFixed(1) + ' ' + (foot.y - 10 * foot.s).toFixed(1) + ') scale(' + (0.45 + 0.3 * foot.s).toFixed(2) + ') translate(-12 -12)"><use href="#starShape" fill="#b4c0dd" stroke="#b4c0dd" stroke-width="2.2" stroke-linejoin="round"/></g>' : "";
-      parts.push('<g class="' + cls + '" data-day="' + i + '" role="button" tabindex="' + (locked ? -1 : 0) + '" aria-label="Day ' + i + (done ? ", checked in" : locked ? ", not yet" : "") + '"' + (locked ? ' aria-disabled="true"' : '') + '>' +
+      parts.push('<g class="' + cls + '" data-day="' + i + '" role="button" tabindex="0" aria-label="Day ' + i + ', checked in">' +
         '<ellipse class="glow" cx="' + ((foot.x + p1.x) / 2).toFixed(1) + '" cy="' + foot.y.toFixed(1) + '" rx="' + (40 * foot.s + 8).toFixed(1) + '" ry="' + (26 * foot.s + 6).toFixed(1) + '"/>' +
-        '<ellipse class="hit" cx="' + ((foot.x + p1.x) / 2).toFixed(1) + '" cy="' + foot.y.toFixed(1) + '" rx="' + (34 * foot.s + 10).toFixed(1) + '" ry="' + Math.max(4, gap * 0.5).toFixed(1) + '"/>' +
-        p1.svg + p2.svg + foot.svg + star + '</g>');
+        '<ellipse class="hit" cx="' + ((foot.x + p1.x) / 2).toFixed(1) + '" cy="' + foot.y.toFixed(1) + '" rx="' + (34 * foot.s + 10).toFixed(1) + '" ry="' + Math.max(5, gap * 0.5).toFixed(1) + '"/>' +
+        p1.svg + p2.svg + foot.svg + '</g>');
     }
     lastLit = latest;
-    // The horizon, and a star glowing where the path ends.
+    // Where you are: the next day to walk, with them beside you.
+    var allDone = !!st.days[30], H = at(hereT), hx = H.x, hy = H.y;
+    var hereLabel = allDone ? "A month, together" : "Day " + here + ", here together";
+    var companion = (dog.breed || dog.size)
+      ? '<svg x="' + (hx - 40).toFixed(1) + '" y="' + (hy - 38).toFixed(1) + '" width="30" height="32" viewBox="0 0 100 106" overflow="visible">' + sitSilhouette(dog, 30).replace(/^<svg[^>]*>/, "").replace(/<\/svg>$/, "") + '</svg>'
+      : '<circle cx="' + (hx - 16).toFixed(1) + '" cy="' + (hy - 10).toFixed(1) + '" r="4" fill="#c4cee8" opacity=".8"/>';
+    var hereG = '<g class="j-step here' + (here === jView && !st.days[here] ? " current" : "") + '" data-day="' + here + '" role="button" tabindex="0" aria-label="' + hereLabel + '">' +
+      '<ellipse class="glow" cx="' + hx.toFixed(1) + '" cy="' + hy.toFixed(1) + '" rx="34" ry="22"/>' +
+      '<ellipse class="hit" cx="' + hx.toFixed(1) + '" cy="' + (hy - 10).toFixed(1) + '" rx="40" ry="22"/>' +
+      (allDone ? "" : '<circle class="here-dot" cx="' + hx.toFixed(1) + '" cy="' + hy.toFixed(1) + '" r="4.5"/>') +
+      companion + (allDone
+        ? '<text class="trail-here" x="24" y="104">' + hereLabel + '</text></g>'
+        : hx > 190
+        ? '<text class="trail-here" x="' + (hx - 14).toFixed(1) + '" y="' + (hy + 22).toFixed(1) + '" text-anchor="end">' + hereLabel + '</text></g>'
+        : '<text class="trail-here" x="' + (hx + 12).toFixed(1) + '" y="' + (hy - 8).toFixed(1) + '">' + hereLabel + '</text></g>');
+    // The horizon, and the star where the path ends.
     var end = trailAt(1), sx = end.x + 18, sy = end.y - 22;
     var sky = '<path d="M-20 70 Q150 44 320 62" fill="none" stroke="url(#horizon)" stroke-width="1.2"/>' +
-      '<g class="trail-star" transform="translate(' + sx.toFixed(1) + ' ' + sy.toFixed(1) + ')"><circle class="trail-halo" r="22" fill="url(#starHalo)"/>' +
-      '<g transform="scale(.75) translate(-12 -12)"><use href="#starShape" fill="#d9e0f2" stroke="#d9e0f2" stroke-width="2.2" stroke-linejoin="round"/></g></g>';
-    box.innerHTML = '<svg class="j-trail" viewBox="0 0 300 440" aria-label="Your 30 days, as steps">' +
+      '<g transform="translate(' + sx.toFixed(1) + ' ' + sy.toFixed(1) + ')"><circle class="trail-halo" r="22" fill="url(#starHalo)"/>' +
+      '<g transform="scale(.75) translate(-12 -12)"><use href="#starShape" fill="#d9e0f2" stroke="#d9e0f2" stroke-width="2.2" stroke-linejoin="round"/></g></g>' +
+      (allDone ? "" : '<text class="trail-mark" x="' + (sx - 26).toFixed(1) + '" y="' + (sy + 5).toFixed(1) + '" text-anchor="end">a month</text>');
+    box.innerHTML = '<svg class="j-trail" viewBox="0 0 300 440" aria-label="Your 30 days, as a path">' +
       '<defs><radialGradient id="stepGlow"><stop offset="0" stop-color="rgba(196,206,234,.28)"/><stop offset="1" stop-color="rgba(196,206,234,0)"/></radialGradient>' +
       '<radialGradient id="starHalo"><stop offset="0" stop-color="rgba(217,224,242,.65)"/><stop offset=".45" stop-color="rgba(180,192,221,.18)"/><stop offset="1" stop-color="rgba(180,192,221,0)"/></radialGradient>' +
       '<linearGradient id="horizon" x1="0" x2="1"><stop offset="0" stop-color="rgba(180,192,221,0)"/><stop offset=".7" stop-color="rgba(180,192,221,.35)"/><stop offset="1" stop-color="rgba(180,192,221,0)"/></linearGradient></defs>' +
-      sky + parts.reverse().join("") + '</svg>';
+      sky + ahead + marks + parts.reverse().join("") + hereG + '</svg>';
     box.querySelectorAll(".j-step").forEach(function (g) {
-      if (g.classList.contains("locked")) return;
       function go() { jView = +g.dataset.day; renderJourney(); }
       g.addEventListener("click", go);
       g.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
