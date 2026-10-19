@@ -222,6 +222,10 @@
   /* Tracker */
   .tracker { display: flex; flex-direction: column; gap: 22px; font-size: 16px; }
   .tracker-head { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+  .segmented.size-seg { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .size-seg button { flex-direction: column; gap: 0; line-height: 1.25; }
+  .size-seg small { font-size: 12px; font-weight: 400; color: var(--muted); }
+  .s-profile { border-top: 1px solid var(--line); padding-top: 16px; }
   .segmented { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; }
   .segmented button {
     font: inherit; font-weight: 600; min-height: 48px; border: 0; background: transparent; color: var(--text); cursor: pointer;
@@ -420,6 +424,7 @@
   </defs>
 </svg>
 
+<datalist id="breedList"></datalist>
 <div class="top" id="top">
   <div class="wrap">
     <header class="site-header">
@@ -535,6 +540,19 @@
         <div class="setup-on row" style="justify-content: space-between" hidden>
           <span class="small s-label"></span>
           <span class="row"><button type="button" class="btn s-sync-now">Sync now</button><button type="button" class="btn quiet s-disconnect">Use another dog or device</button></span>
+        </div>
+        <div class="s-profile stack" style="gap: 14px">
+          <div><label for="breed-tracker" class="field-label">Breed or mix, if you like</label><input type="text" id="breed-tracker" class="s-breed" list="breedList" maxlength="60" autocomplete="off" placeholder="Start typing, or write &ldquo;mixed&rdquo;" style="width: 100%; min-height: 46px"></div>
+          <div>
+            <span class="field-label">Size when grown</span>
+            <div class="segmented size-seg s-size" role="group" aria-label="Size when grown">
+              <button type="button" data-size="s" aria-pressed="false">Small<small>under 10 kg</small></button>
+              <button type="button" data-size="m" aria-pressed="false">Medium<small>10&ndash;25 kg</small></button>
+              <button type="button" data-size="l" aria-pressed="false">Large<small>25&ndash;45 kg</small></button>
+              <button type="button" data-size="g" aria-pressed="false">Giant<small>over 45 kg</small></button>
+            </div>
+            <p class="small muted s-size-hint" style="margin-top: 8px"></p>
+          </div>
         </div>
         <span class="status s-msg" id="setupMsg-tracker" aria-live="polite"></span>
       </div>
@@ -973,6 +991,19 @@
         <div class="setup-on row" style="justify-content: space-between" hidden>
           <span class="small s-label"></span>
           <span class="row"><button type="button" class="btn s-sync-now">Sync now</button><button type="button" class="btn quiet s-disconnect">Use another dog or device</button></span>
+        </div>
+        <div class="s-profile stack" style="gap: 14px">
+          <div><label for="breed-letter" class="field-label">Breed or mix, if you like</label><input type="text" id="breed-letter" class="s-breed" list="breedList" maxlength="60" autocomplete="off" placeholder="Start typing, or write &ldquo;mixed&rdquo;" style="width: 100%; min-height: 46px"></div>
+          <div>
+            <span class="field-label">Size when grown</span>
+            <div class="segmented size-seg s-size" role="group" aria-label="Size when grown">
+              <button type="button" data-size="s" aria-pressed="false">Small<small>under 10 kg</small></button>
+              <button type="button" data-size="m" aria-pressed="false">Medium<small>10&ndash;25 kg</small></button>
+              <button type="button" data-size="l" aria-pressed="false">Large<small>25&ndash;45 kg</small></button>
+              <button type="button" data-size="g" aria-pressed="false">Giant<small>over 45 kg</small></button>
+            </div>
+            <p class="small muted s-size-hint" style="margin-top: 8px"></p>
+          </div>
         </div>
         <span class="status s-msg" id="setupMsg-letter" aria-live="polite"></span>
       </div>
@@ -1740,6 +1771,8 @@
         var dog = store.get(KEYS.dog, {});
         if (!dog.name && data.dog.name) dog.name = data.dog.name;
         if (!dog.photo && data.dog.photo) dog.photo = data.dog.photo;
+        if (!dog.breed && data.dog.breed) dog.breed = data.dog.breed;
+        if (!dog.size && data.dog.size) { dog.size = data.dog.size; dog.sizeFromBreed = !!data.dog.sizeFromBreed; dog.profileT = data.dog.profileT || Date.now(); }
         ok = store.set(KEYS.dog, dog);
       }
       flash("backupMsg", ok ? "Your records have been restored." : unsaved);
@@ -2239,6 +2272,60 @@
   var SYNC_CONFIG = { url: "https://fqezebcjordsedotvesn.supabase.co", key: "sb_publishable_d4GwV_HElw0vJ6i35sdqTQ_fXtfKEQJ" };
   var syncEnabled = !!(SYNC_CONFIG.url && SYNC_CONFIG.key && window.crypto && crypto.subtle);
   var setups = Array.prototype.slice.call(document.querySelectorAll("[data-setup]"));
+
+  // ---- Breed and size ----
+  // Size matters more than breed for how long dogs usually live; a breed suggests a size, the owner can change it.
+  var BREED_SIZES = {"s": "Affenpinscher, Bichon Frise, Bolognese, Border Terrier, Boston Terrier, Brussels Griffon, Cairn Terrier, Cavalier King Charles Spaniel, Chihuahua, Chinese Crested, Cockapoo, Coton de Tulear, Dachshund, Miniature Dachshund, French Bulldog, Havanese, Italian Greyhound, Jack Russell Terrier, Japanese Chin, Lhasa Apso, Löwchen, Maltese, Miniature Pinscher, Miniature Poodle, Toy Poodle, Miniature Schnauzer, Norfolk Terrier, Norwich Terrier, Papillon, Parson Russell Terrier, Pekingese, Pomeranian, Prague Ratter, Pug, Russian Toy, Scottish Terrier, Shetland Sheepdog, Shiba Inu, Shih Tzu, Tibetan Spaniel, Pembroke Welsh Corgi, West Highland White Terrier, Yorkshire Terrier", "m": "American Staffordshire Terrier, Australian Cattle Dog, Australian Shepherd, Basenji, Basset Hound, Beagle, Bearded Collie, Border Collie, Brittany, Bull Terrier, Bulldog, Cardigan Welsh Corgi, Chow Chow, Cocker Spaniel, English Cocker Spaniel, English Springer Spaniel, Eurasier, Finnish Lapphund, Goldendoodle, Icelandic Sheepdog, Keeshond, Kooikerhondje, Labradoodle, Lagotto Romagnolo, Mudi, Nova Scotia Duck Tolling Retriever, Pit Bull Terrier, Portuguese Water Dog, Puli, Pumi, Samoyed, Shar Pei, Siberian Husky, Soft-coated Wheaten Terrier, Spanish Water Dog, Staffordshire Bull Terrier, Standard Poodle, Standard Schnauzer, Whippet, Airedale Terrier", "l": "Afghan Hound, Akita, Alaskan Malamute, American Bulldog, Belgian Shepherd (Malinois), Borzoi, Boxer, Chesapeake Bay Retriever, Czechoslovakian Wolfdog, Dalmatian, Dobermann, Dogo Argentino, Dutch Shepherd, East European Shepherd, English Setter, Flat-coated Retriever, German Shepherd, German Shorthaired Pointer, German Wirehaired Pointer, Giant Schnauzer, Golden Retriever, Gordon Setter, Greyhound, Hovawart, Irish Setter, Labrador Retriever, Maremma Sheepdog, Old English Sheepdog, Pointer, Rhodesian Ridgeback, Rottweiler, Rough Collie, Saluki, Vizsla, Weimaraner, White Swiss Shepherd", "g": "Anatolian Shepherd (Kangal), Bernese Mountain Dog, Black Russian Terrier, Boerboel, Bullmastiff, Cane Corso, Caucasian Shepherd, Central Asian Shepherd (Alabai), Dogue de Bordeaux, Great Dane, Great Pyrenees (Pyrenean Mountain Dog), Greater Swiss Mountain Dog, Irish Wolfhound, Komondor, Kuvasz, Landseer, Leonberger, Mastiff, Moscow Watchdog, Neapolitan Mastiff, Newfoundland, Saint Bernard, Scottish Deerhound, Tibetan Mastiff"};
+  var SIZE_WORD = { s: "small", m: "medium", l: "large", g: "giant" };
+  var breedSize = {};
+  var breedList = document.getElementById("breedList");
+  Object.keys(BREED_SIZES).forEach(function (sz) {
+    BREED_SIZES[sz].split(", ").forEach(function (b) { breedSize[b.toLowerCase()] = sz; });
+  });
+  var names = [];
+  Object.keys(BREED_SIZES).forEach(function (sz) { names = names.concat(BREED_SIZES[sz].split(", ")); });
+  names.sort().concat(["Mixed breed", "Not sure"]).forEach(function (v) { var o = document.createElement("option"); o.value = v; breedList.appendChild(o); });
+
+  function saveProfile(changes) {
+    var dog = store.get(KEYS.dog, {});
+    for (var k in changes) dog[k] = changes[k];
+    dog.profileT = Date.now();
+    store.set(KEYS.dog, dog);
+    renderProfile();
+    scheduleSync();
+  }
+  function renderProfile() {
+    var dog = store.get(KEYS.dog, {});
+    setups.forEach(function (card) {
+      var name = (dog.name || card.querySelector(".s-nick").value || "").trim() || "your dog";
+      var breedIn = card.querySelector(".s-breed");
+      if (document.activeElement !== breedIn) breedIn.value = dog.breed || "";
+      card.querySelectorAll(".s-size button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.size === dog.size)); });
+      var hint = card.querySelector(".s-size-hint");
+      hint.textContent = dog.size && dog.sizeFromBreed
+        ? "The usual size for a " + dog.breed + ". Change it if " + name + " is bigger or smaller."
+        : dog.size ? "" : "Choose the size closest to " + name + " when fully grown. It helps the site understand what their age means.";
+    });
+  }
+  setups.forEach(function (card) {
+    var breedIn = card.querySelector(".s-breed");
+    breedIn.addEventListener("change", function () {
+      var v = breedIn.value.trim(), sz = breedSize[v.toLowerCase()];
+      var changes = { breed: v };
+      if (sz) { changes.size = sz; changes.sizeFromBreed = true; }
+      else changes.sizeFromBreed = false;
+      saveProfile(changes);
+    });
+    card.querySelectorAll(".s-size button").forEach(function (b) {
+      b.addEventListener("click", function () { saveProfile({ size: b.dataset.size, sizeFromBreed: false }); });
+    });
+  });
+  // The newer of the two profiles wins.
+  function mergeProfile(local, remote) {
+    if (!remote) return null;
+    if ((remote.t || 0) <= (local.profileT || 0)) return null;
+    return remote;
+  }
   var syncTimer = null;
 
   function syncConn() { return store.get(KEYS.sync, null); }
@@ -2337,14 +2424,20 @@
       if (!card.querySelector(".s-pin-show").hidden) return; // a new PIN is still on screen
       card.querySelector(".setup-off").hidden = ready;
       card.querySelector(".setup-on").hidden = !ready;
+      // Before setup the breed sits with the name and birthday; afterwards, under the summary.
+      var prof = card.querySelector(".s-profile");
+      if (ready) card.querySelector(".setup-on").insertAdjacentElement("afterend", prof);
+      else card.querySelector(".setup-off > .row").insertAdjacentElement("beforebegin", prof);
+      prof.classList.toggle("s-profile-on", ready);
       card.querySelector(".s-sync-now").hidden = !syncEnabled;
       card.querySelector(".s-have-pin").hidden = !syncEnabled;
-      card.querySelector(".s-label").textContent = name + (dob ? " \u00b7 born " + niceDate(dob) : "") +
+      card.querySelector(".s-label").textContent = name + (dog.breed ? " \u00b7 " + dog.breed : "") + (dob ? " \u00b7 born " + niceDate(dob) : "") +
         (syncEnabled ? " \u00b7 saved online" : " \u00b7 saved on this device");
       var nick = card.querySelector(".s-nick"), dobIn = card.querySelector(".s-dob");
       if (!nick.value && dog.name) nick.value = dog.name;
       if (!dobIn.value && dog.dob) dobIn.value = dog.dob;
     });
+    renderProfile();
   }
 
   function syncNow(quiet, card) {
@@ -2365,8 +2458,12 @@
       store.set(KEYS.scores, scores);
       store.set(KEYS.exercises, exercises);
       store.set(KEYS.letters, letters);
+      var dogNow = store.get(KEYS.dog, {}), prof = mergeProfile(dogNow, remote.profile);
+      if (prof) { dogNow.breed = prof.breed || ""; dogNow.size = prof.size || null; dogNow.sizeFromBreed = !!prof.sizeFromBreed; dogNow.profileT = prof.t; store.set(KEYS.dog, dogNow); }
+      var profile = dogNow.profileT ? { breed: dogNow.breed || "", size: dogNow.size || null, sizeFromBreed: !!dogNow.sizeFromBreed, t: dogNow.profileT } : null;
+      renderSync();
       renderDays(); renderScores(); if (!dayDirty) loadDayIntoForm(); renderExercises(); renderLetters(); renderChecklist(); renderJourney();
-      return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores, exercises: exercises, letters: letters, checklist: checklist, journey: journey } });
+      return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores, exercises: exercises, letters: letters, checklist: checklist, journey: journey, profile: profile } });
     }).then(function () {
       if (!quiet) setupMsg(card, "Saved online " + new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) + ".");
       return true;
