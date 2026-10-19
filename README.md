@@ -7,4 +7,4 @@ A single static page (`index.html`) with no build step and no server. Everything
 a visitor writes (daily log, quality-of-life scores, letters) stays in their own
 browser's `localStorage`, with a downloadable JSON backup.
 
-To publish: Settings → Pages → Deploy from a branch → `main` / root.
+Live at https://hardestkindness.org (GitHub Pages from `main`, custom domain in `CNAME`).
