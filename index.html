@@ -225,6 +225,8 @@
   .segmented.size-seg { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .size-seg button { flex-direction: column; gap: 0; line-height: 1.25; }
   .size-seg small { font-size: 12px; font-weight: 400; color: var(--muted); }
+  .age-card #ageText { font-family: var(--font-quote); font-size: 18px; line-height: 1.6; }
+  .age-signs { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
   .s-profile { border-top: 1px solid var(--line); padding-top: 16px; }
   .segmented { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; }
   .segmented button {
@@ -555,6 +557,23 @@
           </div>
         </div>
         <span class="status s-msg" id="setupMsg-tracker" aria-live="polite"></span>
+      </div>
+
+      <div class="card stack age-card" id="ageCard" hidden style="gap: 12px">
+        <span class="card-title" id="ageTitle"></span>
+        <p id="ageText"></p>
+        <div id="ageSigns" hidden>
+          <p class="small muted" style="margin-bottom: 6px">What old age often looks like at this point:</p>
+          <ul class="small age-signs">
+            <li>Sleeping most of the day, and restless or confused at night.</li>
+            <li>Losing muscle in the back legs; slipping, or needing help to get up.</li>
+            <li>Cloudy eyes, poorer hearing, a greyer face.</li>
+            <li>Accidents indoors, even in a dog who never had them.</li>
+            <li>Less interest in walks, toys or the people they used to rush to.</li>
+          </ul>
+          <p class="small" style="margin-top: 8px">If you're seeing this, you're not imagining it.</p>
+        </div>
+        <p class="small muted">Typical ranges for dogs of this size. Every dog is their own, and your vet knows yours.</p>
       </div>
 
       <div class="card tracker" id="tracker">
@@ -2306,6 +2325,7 @@
         ? "The usual size for a " + dog.breed + ". Change it if " + name + " is bigger or smaller."
         : dog.size ? "" : "Choose the size closest to " + name + " when fully grown. It helps the site understand what their age means.";
     });
+    renderAge();
   }
   setups.forEach(function (card) {
     var breedIn = card.querySelector(".s-breed");
@@ -2320,6 +2340,38 @@
       b.addEventListener("click", function () { saveProfile({ size: b.dataset.size, sizeFromBreed: false }); });
     });
   });
+  // What their age means for their size. [senior from, usual lifespan from, to]
+  var LIFE = { s: [10, 12, 16], m: [8, 11, 14], l: [7, 10, 12], g: [6, 8, 10] };
+  function ageYears(dob) {
+    var b = new Date(dob + "T00:00:00"), n = new Date();
+    var y = n.getFullYear() - b.getFullYear();
+    if (n.getMonth() < b.getMonth() || (n.getMonth() === b.getMonth() && n.getDate() < b.getDate())) y--;
+    return y;
+  }
+  function renderAge() {
+    var dog = store.get(KEYS.dog, {}), conn = syncConn();
+    var dob = dog.dob || (conn && conn.dob), name = (dog.name || (conn && conn.label) || "").trim();
+    var box = document.getElementById("ageCard");
+    box.hidden = !dob || !name;
+    if (box.hidden) return;
+    var age = ageYears(dob), word = age === 1 ? "year" : "years";
+    document.getElementById("ageTitle").textContent = "What " + age + " means for " + name;
+    var t = document.getElementById("ageText"), signs = document.getElementById("ageSigns");
+    if (!dog.size) {
+      t.textContent = "Add " + possessive(name) + " size in \u201cYour dog\u201d above, and you'll see what " + age + " " + word + " means for a dog like them.";
+      signs.hidden = true;
+      return;
+    }
+    var L = LIFE[dog.size], sz = SIZE_WORD[dog.size], range = L[1] + "\u2013" + L[2] + " years";
+    var text;
+    if (age < L[0]) text = "At " + age + ", " + name + " is still young for a " + sz + " dog; most live to " + range + ". When a dog declines this early, it is usually illness rather than age. Losing them early is its own kind of unfair, and it's okay to be angry about that.";
+    else if (age < L[1]) text = "At " + age + ", " + name + " is a senior for a " + sz + " dog. Most " + sz + " dogs live to " + range + ". This is when the changes of age begin to show, often slowly, sometimes all at once.";
+    else if (age <= L[2]) text = "At " + age + ", " + name + " has reached the usual lifespan for a " + sz + " dog, " + range + ". Slowing down, sleeping most of the day and needing your help is what a long life looks like in its last chapter.";
+    else text = "At " + age + ", " + name + " has lived longer than most " + sz + " dogs, who usually reach " + range + ". Those extra years didn't happen by chance. They were years of your care.";
+    t.textContent = text;
+    signs.hidden = age < L[0];
+  }
+
   // The newer of the two profiles wins.
   function mergeProfile(local, remote) {
     if (!remote) return null;
