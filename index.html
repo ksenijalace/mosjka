@@ -442,34 +442,34 @@
     <div class="side">
       <h2>Keep track of the days</h2>
       <p>There is rarely one obvious moment. One entry a day makes the pattern visible and gives you something clear to bring to your vet. It also leaves a record you may be grateful for later, when your mind starts asking "was it too soon?"</p>
-      <p class="small">Your entries are saved on this device, and online under your dog's nickname, date of birth and PIN, so you can open them anywhere. Letters and photos never leave this device.</p>
+      <p class="small">Your entries are saved on this device, and online under your dog's nickname, date of birth and PIN, so you can open them anywhere. Photos never leave this device.</p>
     </div>
     <div class="main stack">
-      <div class="card stack no-print" id="sync" style="gap: 16px" hidden>
+      <div class="card stack no-print dog-setup" id="setup-tracker" data-setup="tracker" style="gap: 16px">
         <div class="step-head"><span class="step-num">1</span><span class="card-title">Your dog</span></div>
-        <div id="syncOff" class="stack" style="gap: 14px">
-          <p class="small muted">Enter their nickname and date of birth. You'll get a 4-digit PIN, so you can open the same history on any phone or computer.</p>
+        <div class="setup-off stack" style="gap: 14px">
+          <p class="small muted">Start with your dog. New here? Enter their name and date of birth, and you'll get a 4-digit PIN. Already set up on another phone or computer? Enter the same name, date of birth and your PIN.</p>
           <div class="sync-fields">
-            <div><label for="syncNick" class="field-label">Nickname</label><input type="text" id="syncNick" maxlength="40" autocomplete="off"></div>
-            <div><label for="syncDob" class="field-label">Date of birth</label><input type="date" id="syncDob"></div>
-            <div id="pinField" hidden><label for="syncPin" class="field-label">Your PIN</label><input type="password" id="syncPin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off"></div>
+            <div><label for="nick-tracker" class="field-label">Their name</label><input type="text" id="nick-tracker" class="s-nick" maxlength="40" autocomplete="off"></div>
+            <div><label for="dob-tracker" class="field-label">Date of birth</label><input type="date" id="dob-tracker" class="s-dob"></div>
+            <div class="s-pin-field" hidden><label for="pin-tracker" class="field-label">Your PIN</label><input type="password" id="pin-tracker" class="s-pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off"></div>
           </div>
           <div class="row">
-            <button type="button" class="btn primary" id="syncConnect">Continue</button>
-            <button type="button" class="btn quiet" id="havePin">I already have a PIN</button>
+            <button type="button" class="btn primary s-connect">Continue</button>
+            <button type="button" class="btn quiet s-have-pin">I already have a PIN</button>
           </div>
         </div>
-        <div id="pinShow" class="pin-box" hidden>
+        <div class="pin-box s-pin-show" hidden>
           <span class="small muted">Your PIN</span>
-          <span class="big-number" id="pinValue"></span>
-          <p class="small">Write it down. Together with the nickname and date of birth, it opens this history on other devices. Nobody can recover it for you.</p>
-          <div class="row"><button type="button" class="btn" id="pinDone">I've written it down</button></div>
+          <span class="big-number s-pin-value"></span>
+          <p class="small">Write it down. Together with the name and date of birth, it opens everything you write here on other devices. Nobody can recover it for you.</p>
+          <div class="row"><button type="button" class="btn s-pin-done">I've written it down</button></div>
         </div>
-        <div id="syncOn" class="row" style="justify-content: space-between" hidden>
-          <span class="small">Saving online for <strong id="syncLabel"></strong></span>
-          <span class="row"><button type="button" class="btn" id="syncNow">Sync now</button><button type="button" class="btn quiet" id="syncDisconnect">Use another dog or device</button></span>
+        <div class="setup-on row" style="justify-content: space-between" hidden>
+          <span class="small s-label"></span>
+          <span class="row"><button type="button" class="btn s-sync-now">Sync now</button><button type="button" class="btn quiet s-disconnect">Use another dog or device</button></span>
         </div>
-        <span class="status" id="syncMsg" aria-live="polite"></span>
+        <span class="status s-msg" id="setupMsg-tracker" aria-live="polite"></span>
       </div>
 
       <div class="card tracker" id="tracker">
@@ -507,7 +507,7 @@
           <div class="card-title" style="font-size: 16px; margin-bottom: 10px" data-named="{possessive} last 14 days">Last 14 days</div>
           <div class="days" id="days"></div>
           <div class="legend" id="legend"></div>
-          <p class="small muted" id="daysEmpty" style="margin-top: 12px">Your days will appear here, one square for each. Start with today; it takes a minute. <a href="#yourdog" id="addNameLink">Add your dog's name</a></p>
+          <p class="small muted" id="daysEmpty" style="margin-top: 12px">Your days will appear here, one square for each. Start with today; it takes a minute. <a href="#setup-tracker" id="addNameLink">Start with your dog</a></p>
           <p class="nudge" id="nudge" hidden style="margin-top: 14px">Recently there have been more bad days than good ones. That doesn't decide anything on its own, but it may be a good time to talk honestly with your vet.</p>
         </div>
         <details id="historyBox">
@@ -739,6 +739,41 @@
       <p>Writing to the one you've lost is one of the most helpful things people do in grief. Tell them about your day, about how much you miss them, about what you wish you'd said. Come back whenever you need to.</p>
     </div>
     <div class="main stack">
+      <div class="card stack no-print dog-setup" id="setup-letter" data-setup="letter" style="gap: 16px">
+        <div class="step-head"><span class="step-num">1</span><span class="card-title">Your dog</span></div>
+        <div class="setup-off stack" style="gap: 14px">
+          <p class="small muted">Start with your dog. New here? Enter their name and date of birth, and you'll get a 4-digit PIN. Already set up on another phone or computer? Enter the same name, date of birth and your PIN.</p>
+          <div class="sync-fields">
+            <div><label for="nick-letter" class="field-label">Their name</label><input type="text" id="nick-letter" class="s-nick" maxlength="40" autocomplete="off"></div>
+            <div><label for="dob-letter" class="field-label">Date of birth</label><input type="date" id="dob-letter" class="s-dob"></div>
+            <div class="s-pin-field" hidden><label for="pin-letter" class="field-label">Your PIN</label><input type="password" id="pin-letter" class="s-pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off"></div>
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary s-connect">Continue</button>
+            <button type="button" class="btn quiet s-have-pin">I already have a PIN</button>
+          </div>
+        </div>
+        <div class="pin-box s-pin-show" hidden>
+          <span class="small muted">Your PIN</span>
+          <span class="big-number s-pin-value"></span>
+          <p class="small">Write it down. Together with the name and date of birth, it opens everything you write here on other devices. Nobody can recover it for you.</p>
+          <div class="row"><button type="button" class="btn s-pin-done">I've written it down</button></div>
+        </div>
+        <div class="setup-on row" style="justify-content: space-between" hidden>
+          <span class="small s-label"></span>
+          <span class="row"><button type="button" class="btn s-sync-now">Sync now</button><button type="button" class="btn quiet s-disconnect">Use another dog or device</button></span>
+        </div>
+        <span class="status s-msg" id="setupMsg-letter" aria-live="polite"></span>
+      </div>
+
+      <div class="card stack" style="gap: 14px">
+        <div class="step-head"><span class="step-num">2</span><span class="card-title" data-named="Write to {name}">Write a letter</span></div>
+        <label for="letterText" class="field-label" style="margin: 0">Your letters are kept with your dog's history, on this device and online if you set up a PIN. They aren't linked to your name.</label>
+        <textarea id="letterText" style="min-height: 180px; font-family: var(--font-quote); font-size: 19px; line-height: 1.5" placeholder="Dear…" data-named-placeholder="Dear {name},"></textarea>
+        <div class="row"><button type="button" class="btn primary" id="saveLetter">Keep this letter</button><span class="status" id="letterSaved" aria-live="polite"></span></div>
+        <ul class="log" id="letterHistory"></ul>
+      </div>
+
       <div class="card dog-card" id="yourdog">
         <div class="dog-photo" id="dogPhotoBox">
           <img id="dogPhoto" alt="" hidden>
@@ -748,15 +783,8 @@
           </span>
         </div>
         <div class="stack" style="gap: 12px; min-width: 0">
-          <span class="card-title">Your dog</span>
-          <p class="small muted">Add their name, and a photo if you like. The site will speak about them by name. Both stay only on this device.</p>
-          <div>
-            <label for="dogName" class="field-label">Their name</label>
-            <div class="row">
-              <input type="text" id="dogName" maxlength="40" autocomplete="off" placeholder="For example, Mosjka" style="flex: 1 1 180px; min-width: 0">
-              <button type="button" class="btn primary" id="saveDog">Save</button>
-            </div>
-          </div>
+          <span class="card-title" data-named="A photo of {name}">A photo of your dog</span>
+          <p class="small muted">If you like, keep a photo here beside your letters. Photos stay only on this device.</p>
           <div class="row">
             <button type="button" class="btn" id="dogPhotoBtn">Choose a photo</button>
             <button type="button" class="btn quiet" id="dogPhotoRemove" hidden>Remove photo</button>
@@ -764,13 +792,6 @@
           </div>
           <span class="status" id="dogMsg" aria-live="polite"></span>
         </div>
-      </div>
-
-      <div class="card stack" style="gap: 14px">
-        <label for="letterText" class="field-label" style="margin: 0">Your letters stay only on this device. Nobody else can read them.</label>
-        <textarea id="letterText" style="min-height: 180px; font-family: var(--font-quote); font-size: 19px; line-height: 1.5" placeholder="Dear…" data-named-placeholder="Dear {name},"></textarea>
-        <div class="row"><button type="button" class="btn primary" id="saveLetter">Keep this letter</button><span class="status" id="letterSaved" aria-live="polite"></span></div>
-        <ul class="log" id="letterHistory"></ul>
       </div>
     </div>
   </div>
@@ -853,7 +874,7 @@
     <div id="sources">
       <h3>Sources and privacy</h3>
       <p>The quality-of-life scale is Dr Alice Villalobos's HHHHHMM scale. Helpline numbers were checked in October 2026 against the services' own websites, national health authorities and helpline directories; numbers can change, so please confirm one before relying on it.</p>
-      <p id="privacy">There are no accounts, no ads and no tracking. Letters, photos and your dog's name stay in your browser. If you use step 1 of the tracker, the days, notes, scores and your “Try this” answers are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
+      <p id="privacy">There are no accounts, no ads and no tracking. Photos stay in your browser. If you set up a PIN for your dog, the days, notes, scores, letters and your “Try this” answers are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
     </div>
   </div>
 </section>
@@ -1130,14 +1151,14 @@
     var text = ta.value.trim();
     if (!text) return;
     var letters = store.get(KEYS.letters, []);
-    letters.push({ date: today(), text: text });
+    letters.push({ date: today(), text: text, t: Date.now() });
     flash("letterSaved", store.set(KEYS.letters, letters) ? "Kept." : unsaved);
     ta.value = "";
     renderLetters();
+    scheduleSync();
   });
 
   // ---- Your dog: name and photo ----
-  var dogNameInput = document.getElementById("dogName");
   var dogPhoto = document.getElementById("dogPhoto");
   var dogPhotoBox = document.getElementById("dogPhotoBox");
   var dogPhotoFile = document.getElementById("dogPhotoFile");
@@ -1156,7 +1177,6 @@
     var letter = document.getElementById("letterText");
     letter.placeholder = name ? letter.dataset.namedPlaceholder.replace("{name}", name) : "Dear…";
     document.getElementById("addNameLink").hidden = !!name;
-    dogNameInput.value = name;
 
     var hasPhoto = !!dog.photo;
     dogPhoto.hidden = !hasPhoto;
@@ -1179,14 +1199,6 @@
     flash("dogMsg", ok ? okText : "This browser couldn't save it. If it was a photo, try a smaller one.");
     applyDog();
   }
-
-  document.getElementById("saveDog").addEventListener("click", function () {
-    var name = dogNameInput.value.trim();
-    saveDog({ name: name }, name ? "Saved. The site will now speak about " + name + " by name." : "Name removed.");
-  });
-  dogNameInput.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") { e.preventDefault(); document.getElementById("saveDog").click(); }
-  });
 
   document.getElementById("dogPhotoBtn").addEventListener("click", function () { dogPhotoFile.click(); });
   dogPhotoBox.addEventListener("click", function () { if (dogPhoto.hidden) dogPhotoFile.click(); });
@@ -1285,7 +1297,7 @@
     store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters); store.remove(KEYS.dog); store.remove(KEYS.exercises);
     store.remove(KEYS.sync); // disconnect too, so the empty device doesn't overwrite anything online
     clearConfirm.hidden = true;
-    if (!syncCard.hidden) renderSync();
+    renderSync();
     refreshAll();
   });
 
@@ -1413,7 +1425,8 @@
   // ---- Online history (nickname + date of birth + PIN) ----
   // Public project address and publishable key; both are safe to ship in the page.
   var SYNC_CONFIG = { url: "https://fqezebcjordsedotvesn.supabase.co", key: "sb_publishable_d4GwV_HElw0vJ6i35sdqTQ_fXtfKEQJ" };
-  var syncCard = document.getElementById("sync");
+  var syncEnabled = !!(SYNC_CONFIG.url && SYNC_CONFIG.key && window.crypto && crypto.subtle);
+  var setups = Array.prototype.slice.call(document.querySelectorAll("[data-setup]"));
   var syncTimer = null;
 
   function syncConn() { return store.get(KEYS.sync, null); }
@@ -1451,6 +1464,14 @@
     });
     return Object.keys(byDate).sort().map(function (d) { return byDate[d]; });
   }
+  function mergeLetters(a, b) {
+    var seen = {}, out = [];
+    (a || []).concat(b || []).forEach(function (l) {
+      var id = (l.t || l.date) + "|" + l.text;
+      if (!seen[id]) { seen[id] = true; out.push(l); }
+    });
+    return out.sort(function (x, y) { return String(x.t || x.date) < String(y.t || y.date) ? -1 : 1; });
+  }
   function mergeExercises(a, b) {
     var out = {};
     [a || {}, b || {}].forEach(function (src) {
@@ -1464,34 +1485,53 @@
     return out;
   }
 
-  function renderSync() {
-    var conn = syncConn();
-    document.getElementById("syncOff").hidden = !!conn;
-    document.getElementById("syncOn").hidden = !conn;
-    if (conn) document.getElementById("syncLabel").textContent = conn.label;
-    var dog = store.get(KEYS.dog, {});
-    var nick = document.getElementById("syncNick");
-    if (!nick.value && dog.name) nick.value = dog.name;
+  function setupMsg(card, text) {
+    (card ? [card] : setups).forEach(function (c) { flash(c.querySelector(".s-msg").id, text); });
   }
 
-  function syncNow(quiet) {
+  // Both setup cards (tracker and letters) show the same dog.
+  function renderSync() {
     var conn = syncConn();
-    if (!conn) return Promise.resolve();
-    if (!quiet) flash("syncMsg", "Syncing…");
+    var dog = store.get(KEYS.dog, {});
+    var ready = syncEnabled ? !!conn : !!dog.name;
+    var name = (conn && conn.label) || dog.name || "";
+    var dob = (conn && conn.dob) || dog.dob || "";
+    setups.forEach(function (card) {
+      if (!card.querySelector(".s-pin-show").hidden) return; // a new PIN is still on screen
+      card.querySelector(".setup-off").hidden = ready;
+      card.querySelector(".setup-on").hidden = !ready;
+      card.querySelector(".s-sync-now").hidden = !syncEnabled;
+      card.querySelector(".s-have-pin").hidden = !syncEnabled;
+      card.querySelector(".s-label").textContent = name + (dob ? " \u00b7 born " + niceDate(dob) : "") +
+        (syncEnabled ? " \u00b7 saved online" : " \u00b7 saved on this device");
+      var nick = card.querySelector(".s-nick"), dobIn = card.querySelector(".s-dob");
+      if (!nick.value && dog.name) nick.value = dog.name;
+      if (!dobIn.value && dog.dob) dobIn.value = dog.dob;
+    });
+  }
+
+  function syncNow(quiet, card) {
+    var conn = syncConn();
+    if (!conn) return Promise.resolve(true);
+    if (!quiet) setupMsg(card, "Syncing\u2026");
     return rpc("get_history", { p_key: conn.key }).then(function (remote) {
       remote = remote || {};
       var days = mergeDays(store.get(KEYS.days, {}), remote.days);
       var scores = mergeScores(store.get(KEYS.scores, []), remote.scores);
       var exercises = mergeExercises(store.get(KEYS.exercises, {}), remote.exercises);
+      var letters = mergeLetters(store.get(KEYS.letters, []), remote.letters);
       store.set(KEYS.days, days);
       store.set(KEYS.scores, scores);
       store.set(KEYS.exercises, exercises);
-      renderDays(); renderScores(); loadDayIntoForm(); renderExercises();
-      return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores, exercises: exercises } });
+      store.set(KEYS.letters, letters);
+      renderDays(); renderScores(); loadDayIntoForm(); renderExercises(); renderLetters();
+      return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores, exercises: exercises, letters: letters } });
     }).then(function () {
-      flash("syncMsg", "Saved online " + new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) + ".");
+      if (!quiet) setupMsg(card, "Saved online " + new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) + ".");
+      return true;
     }).catch(function () {
-      flash("syncMsg", "Couldn't reach the online history. Everything is still saved on this device and will sync next time.");
+      setupMsg(card, "Couldn't reach the online history. Everything is still saved on this device and will sync next time.");
+      return false;
     });
   }
 
@@ -1501,57 +1541,67 @@
     syncTimer = setTimeout(function () { syncNow(true); }, 1500);
   }
 
-  if (SYNC_CONFIG.url && SYNC_CONFIG.key && window.crypto && crypto.subtle) {
-    syncCard.hidden = false;
-    var pinField = document.getElementById("pinField");
-    document.getElementById("havePin").addEventListener("click", function () {
+  setups.forEach(function (card) {
+    var pinField = card.querySelector(".s-pin-field");
+    var pinInput = card.querySelector(".s-pin");
+    card.querySelector(".s-have-pin").addEventListener("click", function () {
       pinField.hidden = !pinField.hidden;
       this.textContent = pinField.hidden ? "I already have a PIN" : "I don't have a PIN yet";
-      if (!pinField.hidden) document.getElementById("syncPin").focus();
+      if (!pinField.hidden) pinInput.focus();
     });
-    document.getElementById("syncConnect").addEventListener("click", function () {
-      var nick = document.getElementById("syncNick").value.trim();
-      var dob = document.getElementById("syncDob").value;
-      var pin = pinField.hidden ? "" : document.getElementById("syncPin").value.trim();
-      if (!nick || !dob) { flash("syncMsg", "Please fill in the nickname and the date of birth."); return; }
-      if (!pinField.hidden && !/^\d{4}$/.test(pin)) { flash("syncMsg", "The PIN has exactly 4 digits."); return; }
+    card.querySelector(".s-connect").addEventListener("click", function () {
+      var nick = card.querySelector(".s-nick").value.trim();
+      var dob = card.querySelector(".s-dob").value;
+      var pin = pinField.hidden ? "" : pinInput.value.trim();
+      if (!nick || !dob) { setupMsg(card, "Please fill in their name and date of birth."); return; }
+      if (!pinField.hidden && !/^\d{4}$/.test(pin)) { setupMsg(card, "The PIN has exactly 4 digits."); return; }
+      // Remember the dog on this device, so every section speaks about them by name.
+      var dog = store.get(KEYS.dog, {});
+      dog.name = nick; dog.dob = dob;
+      store.set(KEYS.dog, dog);
+      applyDog();
+      if (!syncEnabled) { renderSync(); setupMsg(card, "Saved on this device."); return; }
       var isNew = !pin;
       if (isNew) {
         var n = new Uint16Array(1);
         crypto.getRandomValues(n);
         pin = String(n[0] % 10000).padStart(4, "0");
       }
-      var secret = "hk1|" + nick.toLowerCase().replace(/\s+/g, " ") + "|" + dob + "|" + pin;
-      sha256hex(secret).then(function (key) {
-        store.set(KEYS.sync, { key: key, label: nick });
-        document.getElementById("syncPin").value = "";
-        renderSync();
+      sha256hex("hk1|" + nick.toLowerCase().replace(/\s+/g, " ") + "|" + dob + "|" + pin).then(function (key) {
+        store.set(KEYS.sync, { key: key, label: nick, dob: dob });
+        pinInput.value = "";
         if (isNew) {
-          document.getElementById("pinValue").textContent = pin;
-          document.getElementById("pinShow").hidden = false;
-          document.getElementById("syncOn").hidden = true;
+          card.querySelector(".s-pin-value").textContent = pin;
+          card.querySelector(".s-pin-show").hidden = false;
+          card.querySelector(".setup-off").hidden = true;
+          card.querySelector(".setup-on").hidden = true;
         }
-        return syncNow();
+        renderSync();
+        return syncNow(false, card);
       });
     });
-    document.getElementById("pinDone").addEventListener("click", function () {
-      document.getElementById("pinShow").hidden = true;
-      document.getElementById("pinValue").textContent = "";
+    card.querySelector(".s-pin-done").addEventListener("click", function () {
+      card.querySelector(".s-pin-show").hidden = true;
+      card.querySelector(".s-pin-value").textContent = "";
       renderSync();
-      document.getElementById("tracker").scrollIntoView({ block: "start" });
+      if (card.nextElementSibling) card.nextElementSibling.scrollIntoView({ block: "start" });
     });
-    document.getElementById("syncNow").addEventListener("click", function () { syncNow(); });
-    document.getElementById("syncDisconnect").addEventListener("click", function () {
-      store.remove(KEYS.sync);
-      renderSync();
-      flash("syncMsg", "This device is disconnected. The history stays online; open it again with the same nickname, date of birth and PIN.");
+    card.querySelector(".s-sync-now").addEventListener("click", function () { syncNow(false, card); });
+    card.querySelector(".s-disconnect").addEventListener("click", function () {
+      // Save everything online first, then clear this device so the next dog starts fresh.
+      syncNow(true, card).then(function (ok) {
+        if (!ok) return;
+        [KEYS.days, KEYS.scores, KEYS.letters, KEYS.exercises, KEYS.dog, KEYS.sync].forEach(store.remove);
+        setups.forEach(function (c) { c.querySelector(".s-nick").value = ""; c.querySelector(".s-dob").value = ""; });
+        refreshAll();
+        setupMsg(card, syncEnabled
+          ? "Done. Everything stays saved online; open it again with the same name, date of birth and PIN."
+          : "Done. You can start with another dog.");
+      });
     });
-    renderSync();
-    syncNow(true);
-  } else {
-    // Without the online history there is only one step, so drop the numbers.
-    document.querySelectorAll(".step-num").forEach(function (n) { n.hidden = true; });
-  }
+  });
+  renderSync();
+  if (syncEnabled) syncNow(true);
 
   // ---- Copy a link to the family section ----
   document.getElementById("copyFamily").addEventListener("click", function () {
@@ -1566,7 +1616,7 @@
   });
 
   function refreshAll() {
-    loadDayIntoForm(); renderDays(); renderScores(); renderLetters(); applyDog(); renderExercises();
+    loadDayIntoForm(); renderDays(); renderScores(); renderLetters(); applyDog(); renderExercises(); renderSync();
   }
   refreshAll();
 })();
