@@ -2493,7 +2493,7 @@
     lastLit = latest;
     // Where you are: the next day to walk, with them beside you.
     var allDone = !!st.days[30], H = at(hereT), hx = H.x, hy = H.y;
-    var hereLabel = allDone ? "A month, together" : "Day " + here + ", here together";
+    var hereLabel = allDone ? "You've walked a month" : "Day " + here + ", you are here";
     var companion = (dog.breed || dog.size)
       ? '<svg x="' + (hx - 40).toFixed(1) + '" y="' + (hy - 38).toFixed(1) + '" width="30" height="32" viewBox="0 0 100 106" overflow="visible">' + sitSilhouette(dog, 30).replace(/^<svg[^>]*>/, "").replace(/<\/svg>$/, "") + '</svg>'
       : '<circle cx="' + (hx - 16).toFixed(1) + '" cy="' + (hy - 10).toFixed(1) + '" r="4" fill="#c4cee8" opacity=".8"/>';
