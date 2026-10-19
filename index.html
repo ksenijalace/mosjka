@@ -257,6 +257,11 @@
     font: inherit; font-size: 16px; color: var(--text); background: var(--bg);
     border: 1px solid var(--line-strong); border-radius: 6px; padding: 10px 12px; letter-spacing: .3em;
   }
+  .step-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; }
+  .step-num { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--accent); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex: none; }
+  .detail { border-top: 1px solid var(--line); padding-top: 18px; }
+  .pin-box { display: flex; flex-direction: column; gap: 6px; background: var(--bg); border: 1px solid var(--accent); border-radius: 8px; padding: 18px 20px; }
+  .pin-box .big-number { letter-spacing: .2em; }
   .legend { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 14px; color: var(--muted); margin-top: 10px; }
   .nudge { background: var(--sage-bg); border-radius: 4px; padding: 12px 16px; font-size: 15px; }
   .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
@@ -433,30 +438,72 @@
     <div class="side">
       <h2>Keep track of the days</h2>
       <p>There is rarely one obvious moment. One entry a day makes the pattern visible and gives you something clear to bring to your vet. It also leaves a record you may be grateful for later, when your mind starts asking "was it too soon?"</p>
-      <p class="small">Everything you enter stays in this browser, on this device. Nothing is sent anywhere.</p>
+      <p class="small">Your entries are saved on this device, and online under your dog's nickname, date of birth and PIN, so you can open them anywhere. Letters and photos never leave this device.</p>
     </div>
     <div class="main stack">
-      <div class="card tracker" id="tracker">
-        <div class="tracker-head">
-          <span class="card-title" data-named="How was {possessive} day?">How was today?</span>
-          <input type="date" id="dayDate" aria-label="Date of the entry">
+      <div class="card stack no-print" id="sync" style="gap: 16px" hidden>
+        <div class="step-head"><span class="step-num">1</span><span class="card-title">Your dog</span></div>
+        <div id="syncOff" class="stack" style="gap: 14px">
+          <p class="small muted">Enter their nickname and date of birth. You'll get a 4-digit PIN, so you can open the same history on any phone or computer.</p>
+          <div class="sync-fields">
+            <div><label for="syncNick" class="field-label">Nickname</label><input type="text" id="syncNick" maxlength="40" autocomplete="off"></div>
+            <div><label for="syncDob" class="field-label">Date of birth</label><input type="date" id="syncDob"></div>
+            <div id="pinField" hidden><label for="syncPin" class="field-label">Your PIN</label><input type="password" id="syncPin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off"></div>
+          </div>
+          <div class="row">
+            <button type="button" class="btn primary" id="syncConnect">Continue</button>
+            <button type="button" class="btn quiet" id="havePin">I already have a PIN</button>
+          </div>
         </div>
-        <div class="segmented" role="group" aria-label="Kind of day">
-          <button type="button" class="choice" data-kind="good" aria-pressed="false">&#10003; Good day</button>
-          <button type="button" class="choice" data-kind="okay" aria-pressed="false">&#8211; In between</button>
-          <button type="button" class="choice" data-kind="bad" aria-pressed="false">&#215; Bad day</button>
+        <div id="pinShow" class="pin-box" hidden>
+          <span class="small muted">Your PIN</span>
+          <span class="big-number" id="pinValue"></span>
+          <p class="small">Write it down. Together with the nickname and date of birth, it opens this history on other devices. Nobody can recover it for you.</p>
+          <div class="row"><button type="button" class="btn" id="pinDone">I've written it down</button></div>
+        </div>
+        <div id="syncOn" class="row" style="justify-content: space-between" hidden>
+          <span class="small">Saving online for <strong id="syncLabel"></strong></span>
+          <span class="row"><button type="button" class="btn" id="syncNow">Sync now</button><button type="button" class="btn quiet" id="syncDisconnect">Use another dog or device</button></span>
+        </div>
+        <span class="status" id="syncMsg" aria-live="polite"></span>
+      </div>
+
+      <div class="card tracker" id="tracker">
+        <div class="step-head">
+          <span class="step-num">2</span>
+          <span class="card-title" data-named="How was {possessive} day?">How was today?</span>
+          <input type="date" id="dayDate" aria-label="Date of the entry" style="margin-left: auto">
+        </div>
+        <div>
+          <div class="field-label">Overall</div>
+          <div class="segmented" role="group" aria-label="Kind of day">
+            <button type="button" class="choice" data-kind="good" aria-pressed="false">&#10003; Good day</button>
+            <button type="button" class="choice" data-kind="okay" aria-pressed="false">&#8211; In between</button>
+            <button type="button" class="choice" data-kind="bad" aria-pressed="false">&#215; Bad day</button>
+          </div>
+        </div>
+        <div class="detail stack" style="gap: 14px">
+          <div>
+            <div class="field-label" style="margin-bottom: 2px">In more detail</div>
+            <p class="small muted">The quality-of-life scale many vets use, by veterinary oncologist Dr Alice Villalobos. Score each area from 0 (very poor) to 10 (excellent).</p>
+          </div>
+          <div class="stack" id="scaleItems" style="gap: 14px"></div>
+          <div class="row" style="justify-content: space-between; align-items: baseline">
+            <span>Total <span class="total"><span id="scaleTotal">35</span> / 70</span></span>
+            <span class="small muted">Above 35 generally means acceptable quality of life. The direction over weeks matters more than one score.</span>
+          </div>
         </div>
         <div>
           <label for="dayNote" class="field-label">Anything you noticed? Eating, walking, sleeping, pain, a wag.</label>
           <textarea id="dayNote"></textarea>
         </div>
-        <div class="row"><button type="button" class="btn" id="saveDay">Save note</button><span class="status" id="daySaved" aria-live="polite"></span></div>
+        <div class="row"><button type="button" class="btn primary" id="saveDay" style="min-width: 200px">Save this day</button><span class="status" id="daySaved" aria-live="polite"></span></div>
 
-        <div>
+        <div class="row-split">
           <div class="card-title" style="font-size: 16px; margin-bottom: 10px" data-named="{possessive} last 14 days">Last 14 days</div>
           <div class="days" id="days"></div>
           <div class="legend" id="legend"></div>
-          <p class="small muted" id="daysEmpty" style="margin-top: 12px">Your days will appear here, one square for each. Start with today; it takes a few seconds. <a href="#yourdog" id="addNameLink">Add your dog's name</a></p>
+          <p class="small muted" id="daysEmpty" style="margin-top: 12px">Your days will appear here, one square for each. Start with today; it takes a minute. <a href="#yourdog" id="addNameLink">Add your dog's name</a></p>
           <p class="nudge" id="nudge" hidden style="margin-top: 14px">Recently there have been more bad days than good ones. That doesn't decide anything on its own, but it may be a good time to talk honestly with your vet.</p>
         </div>
         <details id="historyBox">
@@ -473,40 +520,6 @@
             </div>
           </div>
         </details>
-      </div>
-
-      <div class="card stack no-print" id="sync" style="gap: 14px" hidden>
-        <span class="card-title">Keep the history on all your devices</span>
-        <div id="syncOff" class="stack" style="gap: 14px">
-          <p class="small muted">Enter your dog's nickname, their date of birth and a 4-digit PIN you choose. Use the same three on any phone or computer to see the same history. Only the days, notes and scores are stored online; letters and photos stay on this device.</p>
-          <div class="sync-fields">
-            <div><label for="syncNick" class="field-label">Nickname</label><input type="text" id="syncNick" maxlength="40" autocomplete="off"></div>
-            <div><label for="syncDob" class="field-label">Date of birth</label><input type="date" id="syncDob"></div>
-            <div><label for="syncPin" class="field-label">4-digit PIN</label><input type="password" id="syncPin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off"></div>
-          </div>
-          <div class="row"><button type="button" class="btn primary" id="syncConnect">Open or start the history</button></div>
-          <p class="small muted">Write the PIN down somewhere safe. Nobody, including the person who made this site, can recover it.</p>
-        </div>
-        <div id="syncOn" class="stack" style="gap: 10px" hidden>
-          <p class="small">History saved online for <strong id="syncLabel"></strong>. New entries on this device are saved there automatically.</p>
-          <div class="row"><button type="button" class="btn" id="syncNow">Sync now</button><button type="button" class="btn quiet" id="syncDisconnect">Disconnect this device</button></div>
-        </div>
-        <span class="status" id="syncMsg" aria-live="polite"></span>
-      </div>
-
-      <div class="card stack" id="scale">
-        <div class="stack" style="gap: 6px">
-          <span class="card-title">A closer look: the quality-of-life scale</span>
-          <p class="small muted">Many vets use a scale developed by veterinary oncologist Dr Alice Villalobos, sometimes called "HHHHHMM". Score each area from 0 (very poor) to 10 (excellent). It is a conversation starter for you and your vet, not a verdict.</p>
-        </div>
-        <div class="stack" id="scaleItems" style="gap: 14px"></div>
-        <div class="row" style="justify-content: space-between">
-          <span>Total <span class="total"><span id="scaleTotal">35</span> / 70</span></span>
-          <button type="button" class="btn primary" id="saveScale">Save this score</button>
-        </div>
-        <p class="small muted">Dr Villalobos suggests that a total above 35 generally reflects acceptable quality of life for a dog in end-of-life care. Below that, it is worth talking honestly with your vet. The direction over days and weeks matters more than any single score.</p>
-        <span class="status" id="scaleSaved" aria-live="polite"></span>
-        <ul class="log" id="scaleHistory"></ul>
       </div>
 
       <div class="card stack no-print" style="gap: 14px">
@@ -927,27 +940,26 @@
   dateInput.max = today();
   var kind = null;
   var choices = document.querySelectorAll("button.choice");
-  // One tap on a choice saves the day straight away; the note is optional.
-  function saveEntry(message) {
-    var days = store.get(KEYS.days, {});
-    days[dateInput.value || today()] = { kind: kind, note: document.getElementById("dayNote").value.trim(), t: Date.now() };
-    flash("daySaved", store.set(KEYS.days, days) ? message : unsaved);
-    renderDays();
-    scheduleSync();
-  }
   choices.forEach(function (b) {
     b.addEventListener("click", function () {
       kind = b.dataset.kind;
       choices.forEach(function (c) { c.setAttribute("aria-pressed", String(c === b)); });
-      saveEntry("Saved: " + WORD[kind].toLowerCase() + ".");
     });
   });
 
   function loadDayIntoForm() {
-    var entry = store.get(KEYS.days, {})[dateInput.value];
+    var date = dateInput.value;
+    var entry = store.get(KEYS.days, {})[date];
     kind = entry ? entry.kind : null;
     choices.forEach(function (c) { c.setAttribute("aria-pressed", String(c.dataset.kind === kind)); });
     document.getElementById("dayNote").value = entry ? entry.note : "";
+    var score = store.get(KEYS.scores, []).filter(function (s) { return s.date === date; }).pop();
+    items.forEach(function (it) {
+      var v = score && score.values && score.values[it[0]] != null ? score.values[it[0]] : 5;
+      var range = document.getElementById("s-" + it[0]);
+      range.value = v;
+      range.dispatchEvent(new Event("input"));
+    });
   }
   dateInput.addEventListener("change", loadDayIntoForm);
 
@@ -1024,9 +1036,20 @@
     });
   }
 
+  // One save stores the overall day, the detailed score and the note together.
   document.getElementById("saveDay").addEventListener("click", function () {
-    if (!kind) { flash("daySaved", "Choose what kind of day it was first."); return; }
-    saveEntry("Note saved.");
+    if (!kind) { flash("daySaved", "Choose Good day, In between or Bad day first."); return; }
+    var date = dateInput.value || today();
+    var t = Date.now();
+    var days = store.get(KEYS.days, {});
+    days[date] = { kind: kind, note: document.getElementById("dayNote").value.trim(), t: t };
+    var scores = store.get(KEYS.scores, []).filter(function (s) { return s.date !== date; });
+    scores.push({ date: date, total: updateTotal(), values: scaleValues(), t: t });
+    scores.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+    var ok = store.set(KEYS.days, days) && store.set(KEYS.scores, scores);
+    flash("daySaved", ok ? "Saved for " + niceDate(date) + "." : unsaved);
+    renderDays(); renderScores();
+    scheduleSync();
   });
 
   // ---- Quality-of-life scale ----
@@ -1068,11 +1091,6 @@
   }
   function renderScores() {
     var scores = store.get(KEYS.scores, []);
-    var list = document.getElementById("scaleHistory");
-    list.innerHTML = "";
-    scores.slice().reverse().forEach(function (s) {
-      list.appendChild(el("li", null, niceDate(s.date) + " · total " + s.total + " / 70"));
-    });
     var bars = document.getElementById("scoreBars");
     bars.innerHTML = "";
     if (!scores.length) bars.appendChild(el("p", "small muted", "No scores yet."));
@@ -1088,13 +1106,6 @@
       bars.appendChild(row);
     });
   }
-  document.getElementById("saveScale").addEventListener("click", function () {
-    var scores = store.get(KEYS.scores, []);
-    scores.push({ date: today(), total: updateTotal(), values: scaleValues(), t: Date.now() });
-    flash("scaleSaved", store.set(KEYS.scores, scores) ? "Saved." : unsaved);
-    renderScores();
-    scheduleSync();
-  });
 
   // ---- Letters ----
   function renderLetters() {
@@ -1374,13 +1385,13 @@
     });
     return out;
   }
+  // One score per day: the most recently saved one wins.
   function mergeScores(a, b) {
-    var seen = {}, out = [];
+    var byDate = {};
     (a || []).concat(b || []).forEach(function (s) {
-      var id = s.date + "|" + s.total + "|" + (s.t || "");
-      if (!seen[id]) { seen[id] = true; out.push(s); }
+      if (!byDate[s.date] || (s.t || 0) > (byDate[s.date].t || 0)) byDate[s.date] = s;
     });
-    return out.sort(function (x, y) { return x.date < y.date ? -1 : x.date > y.date ? 1 : 0; });
+    return Object.keys(byDate).sort().map(function (d) { return byDate[d]; });
   }
 
   function renderSync() {
@@ -1420,21 +1431,42 @@
 
   if (SYNC_CONFIG.url && SYNC_CONFIG.key && window.crypto && crypto.subtle) {
     syncCard.hidden = false;
+    var pinField = document.getElementById("pinField");
+    document.getElementById("havePin").addEventListener("click", function () {
+      pinField.hidden = !pinField.hidden;
+      this.textContent = pinField.hidden ? "I already have a PIN" : "I don't have a PIN yet";
+      if (!pinField.hidden) document.getElementById("syncPin").focus();
+    });
     document.getElementById("syncConnect").addEventListener("click", function () {
       var nick = document.getElementById("syncNick").value.trim();
       var dob = document.getElementById("syncDob").value;
-      var pin = document.getElementById("syncPin").value.trim();
-      if (!nick || !dob || !/^\d{4}$/.test(pin)) {
-        flash("syncMsg", "Please fill in the nickname, the date of birth and a PIN of exactly 4 digits.");
-        return;
+      var pin = pinField.hidden ? "" : document.getElementById("syncPin").value.trim();
+      if (!nick || !dob) { flash("syncMsg", "Please fill in the nickname and the date of birth."); return; }
+      if (!pinField.hidden && !/^\d{4}$/.test(pin)) { flash("syncMsg", "The PIN has exactly 4 digits."); return; }
+      var isNew = !pin;
+      if (isNew) {
+        var n = new Uint16Array(1);
+        crypto.getRandomValues(n);
+        pin = String(n[0] % 10000).padStart(4, "0");
       }
       var secret = "hk1|" + nick.toLowerCase().replace(/\s+/g, " ") + "|" + dob + "|" + pin;
       sha256hex(secret).then(function (key) {
         store.set(KEYS.sync, { key: key, label: nick });
         document.getElementById("syncPin").value = "";
         renderSync();
+        if (isNew) {
+          document.getElementById("pinValue").textContent = pin;
+          document.getElementById("pinShow").hidden = false;
+          document.getElementById("syncOn").hidden = true;
+        }
         return syncNow();
       });
+    });
+    document.getElementById("pinDone").addEventListener("click", function () {
+      document.getElementById("pinShow").hidden = true;
+      document.getElementById("pinValue").textContent = "";
+      renderSync();
+      document.getElementById("tracker").scrollIntoView({ block: "start" });
     });
     document.getElementById("syncNow").addEventListener("click", function () { syncNow(); });
     document.getElementById("syncDisconnect").addEventListener("click", function () {
@@ -1444,6 +1476,9 @@
     });
     renderSync();
     syncNow(true);
+  } else {
+    // Without the online history there is only one step, so drop the numbers.
+    document.querySelectorAll(".step-num").forEach(function (n) { n.hidden = true; });
   }
 
   // ---- Copy a link to the family section ----
