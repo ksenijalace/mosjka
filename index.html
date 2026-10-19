@@ -241,6 +241,7 @@
   .week .day .paw { width: 14px; height: 14px; }
   .legend .paw { width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px; }
   .kind-hint { margin-top: 8px; }
+  .owner-check { border-top: 1px solid var(--line); padding-top: 20px; }
   .segmented button[aria-pressed="true"] { background: var(--sage-bg); box-shadow: inset 0 0 0 2px var(--accent); }
   .field-label { display: block; font-size: 15px; color: var(--muted); margin-bottom: 6px; }
   input[type="date"], textarea, select {
@@ -528,6 +529,15 @@
         <div>
           <label for="dayNote" class="field-label">Anything you noticed? Eating, walking, sleeping, pain, a wag.</label>
           <textarea id="dayNote"></textarea>
+        </div>
+        <div class="owner-check stack" style="gap: 12px">
+          <div>
+            <span class="card-title" style="font-size: 17px">And you?</span>
+            <p class="small muted" style="margin-top: 4px">Caring for a dog at the end of their life is exhausting. How you are holding up is part of the picture too.</p>
+          </div>
+          <div class="moods" role="group" aria-label="How are you holding up today?" id="meMoods"></div>
+          <div><label for="meNote" class="field-label">A note about you, if you like: sleep, tiredness, worry, guilt, a good moment together.</label><textarea id="meNote" maxlength="2000" style="min-height: 70px"></textarea></div>
+          <p class="nudge" id="meNudge" hidden>You've had several very hard days yourself lately. That doesn't decide anything, but it matters. Please let someone help you with the walks and the nights, and be honest with your vet about how things are at home.</p>
         </div>
         <div class="row"><button type="button" class="btn primary" id="saveDay" style="min-width: 200px">Save this day</button><span class="status" id="daySaved" aria-live="polite"></span></div>
 
@@ -1019,7 +1029,7 @@
     <div id="sources">
       <h3>Sources and privacy</h3>
       <p>The quality-of-life scale is Dr Alice Villalobos's HHHHHMM scale.</p>
-      <p id="privacy">There are no accounts, no ads and no tracking. Photos stay in your browser. If you set up a PIN for your dog, the days, notes, scores, letters, checklist, 30-day check-ins and your “Try this” answers are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
+      <p id="privacy">There are no accounts, no ads and no tracking. Photos stay in your browser. If you set up a PIN for your dog, the days, your notes about your dog and about yourself, scores, letters, checklist, 30-day check-ins and your “Try this” answers are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
     </div>
   </div>
 </section>
@@ -1116,6 +1126,17 @@
       pressKind(); updateHint();
     });
   });
+  // The owner's own day, saved with the dog's.
+  var ME = [[1, "Very hard"], [2, "Hard"], [3, "Up and down"], [4, "Managing"], [5, "Okay"]];
+  var meMood = null, meBox = document.getElementById("meMoods");
+  ME.forEach(function (mo) {
+    var b = el("button", null, mo[1]);
+    b.type = "button"; b.dataset.mood = mo[0]; b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", function () { meMood = meMood === mo[0] ? null : mo[0]; pressMe(); });
+    meBox.appendChild(b);
+  });
+  function pressMe() { meBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.mood === meMood)); }); }
+
   // The scores propose an overall day; the owner has the last word.
   function suggestKind() {
     var v = scaleValues(), t = updateTotal();
@@ -1147,6 +1168,8 @@
     kindChosen = !!entry; scaleTouched = !!entry;
     pressKind();
     document.getElementById("dayNote").value = entry ? entry.note : "";
+    meMood = entry && entry.me ? entry.me.mood || null : null; pressMe();
+    document.getElementById("meNote").value = entry && entry.me ? entry.me.note || "" : "";
     var score = store.get(KEYS.scores, []).filter(function (s) { return s.date === date; }).pop();
     loadingForm = true;
     items.forEach(function (it) {
@@ -1229,11 +1252,16 @@
       }
       rows.reverse().forEach(function (r) { weeks.appendChild(r); });
     }
-    var withNotes = dates.filter(function (k) { return days[k].note; }).reverse();
+    var withNotes = dates.filter(function (k) { return days[k].note || days[k].me; }).reverse();
     if (!withNotes.length) log.appendChild(el("li", "muted", "No notes yet."));
     withNotes.forEach(function (k) {
-      log.appendChild(el("li", null, niceDate(k) + " · " + WORD[days[k].kind] + " · " + days[k].note));
+      var e = days[k], li = el("li", null, niceDate(k) + " · " + WORD[e.kind] + (e.note ? " · " + e.note : ""));
+      if (e.me) li.appendChild(el("div", "small muted", "You: " + [e.me.mood ? ME[e.me.mood - 1][1] : "", e.me.note].filter(Boolean).join(" · ")));
+      log.appendChild(li);
     });
+    // Three of the last five recorded days very hard for the owner: say so, gently.
+    var mine = dates.slice(-5).map(function (k) { return days[k].me && days[k].me.mood; });
+    document.getElementById("meNudge").hidden = mine.filter(function (m) { return m === 1; }).length < 3;
   }
 
   // One save stores the overall day, the detailed score and the note together.
@@ -1243,6 +1271,8 @@
     var t = Date.now();
     var days = store.get(KEYS.days, {});
     days[date] = { kind: kind, note: document.getElementById("dayNote").value.trim(), t: t };
+    var meNote = document.getElementById("meNote").value.trim();
+    if (meMood || meNote) days[date].me = { mood: meMood, note: meNote };
     var scores = store.get(KEYS.scores, []).filter(function (s) { return s.date !== date; });
     scores.push({ date: date, total: updateTotal(), values: scaleValues(), t: t });
     scores.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
