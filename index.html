@@ -89,7 +89,6 @@
   .site-nav { display: flex; flex-wrap: wrap; gap: 8px 30px; align-items: center; font-size: 16px; font-weight: 600; }
   .site-nav a { color: var(--text); text-decoration: none; }
   .site-nav a:hover { color: var(--accent-hover); }
-  .site-nav a.help-link { background: var(--accent); color: var(--bg); border-radius: 6px; padding: 9px 16px; }
   .menu-btn { display: none; }
   @media (max-width: 860px) {
     .brand-tag { display: none; }
@@ -101,7 +100,6 @@
     .site-nav { display: none; flex-basis: 100%; flex-direction: column; align-items: stretch; gap: 0; padding-bottom: 8px; }
     .site-nav.open { display: flex; }
     .site-nav a { padding: 12px 0; border-top: 1px solid var(--line); }
-    .site-nav a.help-link { margin-top: 10px; text-align: center; border-top: 0; }
   }
 
   /* Hero */
@@ -111,6 +109,8 @@
   .hero-side { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
   .hero-side p { font-size: 19px; line-height: 1.6; color: var(--muted); }
   .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero-side .actions { flex-direction: column; align-items: stretch; gap: 10px; max-width: 340px; }
+  .hero-side .actions .btn { justify-content: center; text-align: center; }
   .btn {
     display: inline-flex; align-items: center; justify-content: center; text-align: center;
     font: inherit; font-size: 17px; font-weight: 700; line-height: 1.3;
@@ -171,7 +171,6 @@
   /* Sections */
   section { padding-block: 96px; }
   .band { background: var(--surface); }
-  .band-help { background: radial-gradient(60% 80% at 10% 100%, rgba(169,184,160,.14), rgba(169,184,160,0) 70%), linear-gradient(180deg, var(--bg) 0%, var(--footer) 100%); }
   .split { display: flex; flex-wrap: wrap; gap: 40px 64px; align-items: start; }
   .split > .side { flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
   .split > .main { flex: 2 1 560px; min-width: 0; }
@@ -185,6 +184,7 @@
   .paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px 64px; }
   .path { display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: var(--text); }
   .path:hover { color: var(--text); }
+  .path-step { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
   .path-title { font-family: var(--font-display); font-size: clamp(22px, 3vw, 32px); line-height: 1.2; }
   .path-text { color: var(--muted); max-width: 30em; }
   .path-more { font-weight: 700; color: var(--accent); }
@@ -282,15 +282,6 @@
   .scale-item input[type="range"] { width: 100%; accent-color: var(--honey); min-height: 32px; }
   .total { font-family: var(--font-quote); font-size: 28px; font-variant-numeric: tabular-nums; }
 
-  /* Help */
-  .help-grid { display: flex; flex-wrap: wrap; gap: 16px; }
-  .help-card { flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
-  .help-card select { font-weight: 600; min-height: 44px; }
-  .big-number { font-family: var(--font-quote); font-size: 40px; line-height: 1.1; font-variant-numeric: tabular-nums; user-select: all; }
-  .danger-card { flex: 1 1 220px; min-width: 0; background: var(--accent-deep); color: #ffffff; border-radius: 8px; padding: 22px 24px; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
-  .all-lines { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .all-lines summary { cursor: pointer; padding: 16px 0; font-weight: 700; color: var(--accent); }
-  .lines { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0 40px; padding-bottom: 12px; }
   .line { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
   .line .num { font-family: var(--font-quote); font-size: 20px; text-align: right; font-variant-numeric: tabular-nums; }
   .line .who { grid-column: 1 / -1; font-size: 14px; color: var(--muted); }
@@ -356,23 +347,9 @@
   .foot nav a { color: var(--text); text-decoration: none; }
   .foot .disclaimer { flex-basis: 100%; max-width: 46em; }
 
-  /* Bottom help bar on phones */
-  .help-bar { display: none; }
-  @media (max-width: 640px) {
-    body { padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)); }
-    .help-bar {
-      display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
-      gap: 10px; align-items: center; justify-content: space-between;
-      background: rgba(29,33,48,.96); border-top: 1px solid var(--line);
-      padding: 10px max(20px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
-      font-size: 14px; color: var(--muted);
-    }
-    .help-bar a { text-decoration: none; background: var(--accent); color: var(--bg); font-weight: 700; border-radius: 6px; padding: 10px 16px; }
-  }
-
   @media print {
     body { background: #fff; color: #000; padding: 0; }
-    body > *:not(main), main > *:not(#before), #before .side, #before .no-print, .help-bar { display: none !important; }
+    body > *:not(main), main > *:not(#before), #before .side, #before .no-print { display: none !important; }
     .card { border-color: #999; background: #fff; }
   }
 </style>
@@ -397,10 +374,10 @@
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
       <nav class="site-nav" id="siteNav" aria-label="Main">
-        <a href="#before">Facing the decision</a>
+        <a href="#before">Deciding</a>
+        <a href="#prepare">The decision is made</a>
         <a href="#after">After the goodbye</a>
         <a href="#letter" data-named="Write to {name}">Write to them</a>
-        <a href="#help" class="help-link">Get help now</a>
       </nav>
     </header>
 
@@ -408,9 +385,10 @@
       <div class="hero-head">
         <h1>Help with the hardest decision, and with what comes after.</h1>
         <div class="hero-side">
-          <p>A calm guide for deciding whether it is time to say goodbye to your dog, and for the guilt and grief afterwards. <a href="#story">Written by someone who has been there.</a></p>
+          <p>A calm guide for deciding whether it is time to say goodbye to your dog, for the day itself, and for the guilt and grief afterwards. <a href="#story">Written by someone who has been there.</a></p>
           <div class="actions">
-            <a class="btn primary" href="#before">I'm facing the decision</a>
+            <a class="btn primary" href="#before">I'm still deciding</a>
+            <a class="btn" href="#prepare">The decision is made</a>
             <a class="btn" href="#after">I've already said goodbye</a>
           </div>
         </div>
@@ -436,14 +414,22 @@
 <section aria-label="Where are you right now?">
   <div class="wrap paths">
     <a class="path" href="#before">
-      <span class="path-title">Facing the decision</span>
-      <span class="path-text">A daily tracker and the quality-of-life scale vets use, what happens during the appointment, questions to ask your vet, and a checklist for the day itself.</span>
-      <span class="path-more">Read this first &#8594;</span>
+      <span class="path-step">1 &middot; Deciding</span>
+      <span class="path-title">I'm still deciding</span>
+      <span class="path-text">A daily tracker with notes and the quality-of-life scale vets use, so you can see the pattern over time and bring something clear to your vet.</span>
+      <span class="path-more">Start here &#8594;</span>
+    </a>
+    <a class="path" href="#prepare">
+      <span class="path-step">2 &middot; The decision is made</span>
+      <span class="path-title">The day is coming</span>
+      <span class="path-text">What happens during the appointment, what I wish I'd known, and a checklist for the day itself, so you can be with your dog instead of managing everything.</span>
+      <span class="path-more">Start here &#8594;</span>
     </a>
     <a class="path" href="#after">
-      <span class="path-title">After the goodbye</span>
-      <span class="path-text">The thoughts that come back most often and what is true about them, a gentle 30-day companion for the first month, and a private place to write to your dog.</span>
-      <span class="path-more">Read this first &#8594;</span>
+      <span class="path-step">3 &middot; After the goodbye</span>
+      <span class="path-title">I've already said goodbye</span>
+      <span class="path-text">The thoughts that come back most often and what is true about them, a gentle 30-day journey for the first month, and a private place to write to your dog.</span>
+      <span class="path-more">Start here &#8594;</span>
     </a>
   </div>
 </section>
@@ -569,7 +555,7 @@
   </div>
 </section>
 
-<section aria-labelledby="prepareTitle">
+<section id="prepare" aria-labelledby="prepareTitle">
   <div class="wrap split">
     <div class="side">
       <h2 id="prepareTitle">Preparing for the appointment</h2>
@@ -826,8 +812,7 @@
           <div class="row"><button type="button" class="btn primary" id="jSave">Save today's check-in</button><span class="status" id="jMsg" aria-live="polite"></span></div>
         </div>
         <div class="nudge" id="jSupport" hidden>
-          <p><strong>The last few days have been very hard.</strong> That happens in grief, and you don't have to carry it alone. Please consider talking to someone today: a friend, your doctor, or a helpline.</p>
-          <p style="margin-top: 8px"><a href="#help">Find someone to talk to</a></p>
+          <p><strong>The last few days have been very hard.</strong> That happens in grief, and you don't have to carry it alone. Please consider talking to someone today: a friend, your doctor, or a counsellor.</p>
         </div>
         <details id="jHistory">
           <summary class="small" style="cursor: pointer; color: var(--accent); font-weight: 600">Your check-ins</summary>
@@ -966,39 +951,6 @@
   </div>
 </section>
 
-<!-- ============ HELP ============ -->
-<section id="help" class="band-help">
-  <div class="wrap split">
-    <div class="side">
-      <h2>Talk to someone</h2>
-      <p>Grief for a dog is real grief. You don't have to carry it alone. These lines are free or low-cost and confidential.</p>
-      <p class="small">116 123 is Europe's emotional support number and works in many countries. Opening hours and numbers can change, so check the service's website if a call doesn't connect.</p>
-    </div>
-    <div class="main stack" style="gap: 16px">
-      <div class="help-grid">
-        <div class="card help-card">
-          <label for="country" class="field-label" style="margin: 0">Your country</label>
-          <select id="country"></select>
-          <div class="row" style="justify-content: space-between; align-items: baseline">
-            <span class="big-number" id="countryNumber">116 123</span>
-            <span class="small muted" id="countryWho">Emotional support</span>
-          </div>
-        </div>
-        <div class="danger-card">
-          <strong>In danger right now?</strong>
-          <span><span class="big-number">112</span> anywhere in Europe</span>
-          <span class="small" style="opacity: .85">911 in the US</span>
-        </div>
-      </div>
-      <details class="all-lines">
-        <summary>All countries</summary>
-        <div class="lines" id="allLines"></div>
-      </details>
-      <p class="small muted">Somewhere else? Find a free line in your country at <a href="https://findahelpline.com">findahelpline.com</a>. For pet-loss support: Blue Cross Pet Bereavement Support (UK), and the Cornell and Tufts pet loss hotlines (US).</p>
-    </div>
-  </div>
-</section>
-
 <!-- ============ STORY ============ -->
 <section id="story" class="band">
   <div class="wrap split">
@@ -1034,7 +986,7 @@
     <div class="side">
       <h2>Write to me</h2>
       <p>If you want to tell someone about your dog, or ask something, you can write to me. I read every message and reply when I can, usually within a week.</p>
-      <p class="small">I'm not a vet or a counsellor, just someone who has been through this. If you are struggling right now, please <a href="#help">call a helpline</a>.</p>
+      <p class="small">I'm not a vet or a counsellor, just someone who has been through this. If you are struggling, please also talk to someone close to you, or to your doctor.</p>
       <p class="small" id="contactEmailLine" hidden>Or email <a id="contactEmail" href="#"></a>.</p>
     </div>
     <div class="main card stack" style="gap: 14px">
@@ -1066,7 +1018,7 @@
     </div>
     <div id="sources">
       <h3>Sources and privacy</h3>
-      <p>The quality-of-life scale is Dr Alice Villalobos's HHHHHMM scale. Helpline numbers were checked in October 2026 against the services' own websites, national health authorities and helpline directories; numbers can change, so please confirm one before relying on it.</p>
+      <p>The quality-of-life scale is Dr Alice Villalobos's HHHHHMM scale.</p>
       <p id="privacy">There are no accounts, no ads and no tracking. Photos stay in your browser. If you set up a PIN for your dog, the days, notes, scores, letters, checklist, 30-day check-ins and your “Try this” answers are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
     </div>
   </div>
@@ -1090,16 +1042,10 @@
       <a href="#about">About</a>
       <a href="#privacy">Privacy</a>
       <a href="#sources">Sources</a>
-      <a href="#help">Get help</a>
     </nav>
     <span class="disclaimer">Information and comfort, not veterinary advice or therapy. Please talk to your vet about your dog, and to a doctor or counsellor if your grief feels unmanageable.</span>
   </div>
 </footer>
-
-<div class="help-bar" role="region" aria-label="Help">
-  <span>Struggling right now?</span>
-  <a href="#help">Get help now</a>
-</div>
 
 <script>
 (function () {
@@ -1120,7 +1066,7 @@
     },
     remove: function (key) { try { localStorage.removeItem(key); } catch (e) {} }
   };
-  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", country: "hk.country", dog: "hk.dog", sync: "hk.sync", exercises: "hk.exercises", checklist: "hk.checklist", journey: "hk.journey" };
+  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", dog: "hk.dog", sync: "hk.sync", exercises: "hk.exercises", checklist: "hk.checklist", journey: "hk.journey" };
   var unsaved = "Saved for now, but this browser isn't keeping data, so it may be lost when you close the page.";
 
   function iso(d) {
@@ -1502,75 +1448,6 @@
     refreshAll();
   });
 
-  // ---- Helplines ----
-  var LINES = [
-    ["lv", "Latvia", "116 123", "Skalbes, 24 hours"],
-    ["lt", "Lithuania", "116 123", "Vilties linija, 24 hours"],
-    ["ee", "Estonia", "116 123", "10:00 to 24:00, also in English and Russian"],
-    ["fi", "Finland", "09 2525 0111", "MIELI Crisis Helpline, 24 hours"],
-    ["se", "Sweden", "90101", "Mind Självmordslinjen"],
-    ["no", "Norway", "116 123", "Emotional support line"],
-    ["dk", "Denmark", "70 201 201", "Livslinien"],
-    ["pl", "Poland", "116 123", "Kryzysowy Telefon Zaufania"],
-    ["de", "Germany", "0800 111 0 111", "TelefonSeelsorge, free"],
-    ["at", "Austria", "142", "Telefonseelsorge"],
-    ["ch", "Switzerland", "143", "Die Dargebotene Hand"],
-    ["nl", "Netherlands", "113", "113 Zelfmoordpreventie"],
-    ["be", "Belgium", "1813", "Zelfmoordlijn (Dutch)"],
-    ["fr", "France", "3114", "National suicide prevention line"],
-    ["es", "Spain", "024", "Línea 024, 24 hours"],
-    ["it", "Italy", "02 2327 2327", "Telefono Amico"],
-    ["gb", "UK and Ireland", "116 123", "Samaritans, free, 24 hours"],
-    ["us", "United States", "988", "Call or text, 24 hours"]
-  ];
-  var BY_LANG = { lv: "lv", lt: "lt", et: "ee", fi: "fi", sv: "se", nb: "no", nn: "no", no: "no", da: "dk", pl: "pl",
-    de: "de", nl: "nl", fr: "fr", es: "es", it: "it", ga: "gb" };
-  var BY_REGION = { AT: "at", CH: "ch", BE: "be", GB: "gb", IE: "gb", US: "us", LV: "lv", LT: "lt", EE: "ee", FI: "fi",
-    SE: "se", NO: "no", DK: "dk", PL: "pl", DE: "de", NL: "nl", FR: "fr", ES: "es", IT: "it" };
-
-  function guessCountry() {
-    var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""];
-    for (var i = 0; i < langs.length; i++) {
-      var parts = String(langs[i]).split("-");
-      var region = (parts[1] || "").toUpperCase();
-      if (BY_REGION[region]) return BY_REGION[region];
-      if (BY_LANG[parts[0].toLowerCase()]) return BY_LANG[parts[0].toLowerCase()];
-    }
-    return "other";
-  }
-
-  var select = document.getElementById("country");
-  LINES.forEach(function (l) {
-    var o = el("option", null, l[1]);
-    o.value = l[0];
-    select.appendChild(o);
-  });
-  var other = el("option", null, "Another country");
-  other.value = "other";
-  select.appendChild(other);
-
-  function showCountry(code) {
-    var line = LINES.filter(function (l) { return l[0] === code; })[0];
-    document.getElementById("countryNumber").textContent = line ? line[2] : "116 123";
-    document.getElementById("countryWho").textContent = line ? line[3] : "Works in many European countries; elsewhere see findahelpline.com";
-  }
-  select.addEventListener("change", function () {
-    store.set(KEYS.country, select.value);
-    showCountry(select.value);
-  });
-  var start = store.get(KEYS.country, null) || guessCountry();
-  select.value = start;
-  showCountry(start);
-
-  var all = document.getElementById("allLines");
-  LINES.forEach(function (l) {
-    var row = el("div", "line");
-    row.appendChild(el("span", null, l[1]));
-    row.appendChild(el("span", "num", l[2]));
-    row.appendChild(el("span", "who", l[3]));
-    all.appendChild(row);
-  });
-
   // ---- "Try this" answers, kept under each thought ----
   function renderExercise(id) {
     var box = document.querySelector('[data-ex="' + id + '"] .try-saved');
@@ -1761,7 +1638,7 @@
       [
           "\"It was only a dog\"",
           "Some people won't understand how big this loss is. Their words can hurt more than they know. Your grief is real, and it is as big as your love was.",
-          "Find one place that understands: a pet-loss group, or one of [the helplines](#help)."
+          "Find one place that understands: a pet-loss group, a pet bereavement service, or a friend who has lost a dog too."
       ],
       [
           "\"I can't stop seeing the last moment.\"",
