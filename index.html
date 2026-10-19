@@ -312,6 +312,12 @@
   @keyframes twinkle { 0%, 100% { opacity: .65; } 50% { opacity: 1; } }
   @media (prefers-reduced-motion: reduce) { .sf-star svg { animation: none; } }
   .light-card { max-width: 640px; margin-top: 32px; }
+  /* Parts of the site that aren't for now fold into one quiet line */
+  .stage-hidden { display: none !important; }
+  .stage-fold { padding-block: 22px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .stage-fold .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; justify-content: space-between; }
+  .stage-fold strong { display: block; font-size: 17px; }
+  .stage-fold p { color: var(--muted); font-size: 15px; margin-top: 2px; max-width: 40em; }
   .owner-check { border-top: 1px solid var(--line); padding-top: 20px; }
   .segmented button[aria-pressed="true"] { background: var(--sage-bg); box-shadow: inset 0 0 0 2px var(--accent); }
   .field-label { display: block; font-size: 15px; color: var(--muted); margin-bottom: 6px; }
@@ -484,9 +490,9 @@
           <p>A calm guide for deciding whether it is time to say goodbye to your dog, for the day itself, and for the guilt and grief afterwards. <a href="#story">Written by someone who has been there.</a></p>
           <p class="moment" id="nightNote" hidden><svg class="moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 1 1 9.4 4a6.9 6.9 0 0 0 10.6 10.6z" fill="#b4c0dd"/></svg><span>Still up? Nights are the hardest. You're not the only one awake.</span></p>
           <div class="actions">
-            <a class="btn primary" href="#before">I'm still deciding</a>
-            <a class="btn" href="#prepare">The decision is made</a>
-            <a class="btn" href="#since">I've already said goodbye</a>
+            <a class="btn primary" href="#before" data-set-stage="deciding">I'm still deciding</a>
+            <a class="btn" href="#prepare" data-set-stage="decided">The decision is made</a>
+            <a class="btn" href="#since" data-set-stage="after">I've already said goodbye</a>
           </div>
         </div>
       </div>
@@ -510,19 +516,19 @@
 
 <section aria-label="Where are you right now?">
   <div class="wrap paths">
-    <a class="path" href="#before">
+    <a class="path" href="#before" data-set-stage="deciding">
       <span class="path-step">1 &middot; Deciding</span>
       <span class="path-title">I'm still deciding</span>
       <span class="path-text">A daily tracker with notes and the quality-of-life scale vets use, so you can see the pattern over time and bring something clear to your vet.</span>
       <span class="path-more">Start here &#8594;</span>
     </a>
-    <a class="path" href="#prepare">
+    <a class="path" href="#prepare" data-set-stage="decided">
       <span class="path-step">2 &middot; The decision is made</span>
       <span class="path-title">The day is coming</span>
       <span class="path-text">What happens during the appointment, what I wish I'd known, and a checklist for the day itself, so you can be with your dog instead of managing everything.</span>
       <span class="path-more">Start here &#8594;</span>
     </a>
-    <a class="path" href="#since">
+    <a class="path" href="#since" data-set-stage="after">
       <span class="path-step">3 &middot; After the goodbye</span>
       <span class="path-title">I've already said goodbye</span>
       <span class="path-text">The thoughts that come back most often and what is true about them, a gentle 30-day journey for the first month, and a private place to write to your dog.</span>
@@ -696,6 +702,12 @@
           <div class="row"><button type="button" class="btn danger" id="clearYes">Delete everything</button><button type="button" class="btn" id="clearNo">Keep my records</button></div>
         </div>
       </div>
+
+      <div class="card stack no-print stage-next" id="decidedCard" style="gap: 10px">
+        <span class="card-title">When you've decided</span>
+        <p class="small muted">There's no right moment to press this. When you have made the decision, the site will turn to what comes next: preparing for the appointment, and the day itself. Your days here stay safe.</p>
+        <div class="row"><button type="button" class="btn" id="decidedBtn">I've made the decision</button></div>
+      </div>
     </div>
   </div>
 </section>
@@ -791,6 +803,11 @@
         <p>The house will feel very quiet. Many people cry for hours, or feel numb, or both. Don't try to do anything with it. Eat a little, drink water, and have someone with you or within reach. If you want to, <a href="#letter">write to them</a>.</p>
         <h3>The next days</h3>
         <p>Expect waves rather than a straight line. The hardest moments are often the small routines: the time of the walk, the bowl, the door. <a href="#after">The thoughts that won't stop</a> are there for when the guilt comes.</p>
+      </div>
+      <div class="card stack no-print stage-next" id="saidCard" style="gap: 10px">
+        <span class="card-title">After the appointment</span>
+        <p class="small muted">When it has happened, come back here. The site will turn to what comes after, and stay with you through it.</p>
+        <div class="row"><a class="btn" href="#since" data-set-stage="after">We've said goodbye</a></div>
       </div>
     </div>
   </div>
@@ -1977,6 +1994,10 @@
     var id = d.dataset.ex;
     var tryBox = d.querySelector(".try");
     if (!tryBox) return;
+    // Keep the sentence on one line of flow (the box stacks its children).
+    var line = el("p"), label = tryBox.querySelector("strong");
+    Array.prototype.slice.call(tryBox.childNodes).forEach(function (n) { if (n !== label) line.appendChild(n); });
+    tryBox.appendChild(line);
     var copy = tryBox.cloneNode(true);
     copy.querySelectorAll(".dog-word").forEach(function (w) { w.textContent = "{dog}"; });
     d.dataset.tryText = copy.textContent.replace(/^\s*Try this\.\s*/, "").trim();
@@ -2460,7 +2481,7 @@
         ? "The usual size for a " + dog.breed + ". Change it if " + name + " is bigger or smaller."
         : dog.size ? "" : "Choose the size closest to " + name + " when fully grown. It helps the site understand what their age means.";
     });
-    renderAge(); renderSince(); renderRemember(); renderLight();
+    renderAge(); renderSince(); renderRemember(); renderLight(); renderStages();
   }
   setups.forEach(function (card) {
     var breedIn = card.querySelector(".s-breed");
@@ -2793,6 +2814,77 @@
     }).catch(function () { flash("starMsg", "The star couldn't be lit just now. Please try again in a little while."); });
   });
 
+
+  // ---- Where they are: deciding, decided, after ----
+  // What is not for now folds into one quiet line; it can always be opened.
+  var GROUPS = { deciding: ["before"], decided: ["prepare", "day"], after: ["since", "remember", "stars", "after", "journey", "keepsakes", "family", "letter"] };
+  var openNow = {}, folds = {};
+  function currentStage() { var d = store.get(KEYS.dog, {}); return d.goodbye ? "after" : d.stage || null; }
+  Object.keys(GROUPS).forEach(function (g) {
+    var first = document.getElementById(GROUPS[g][0]);
+    var f = el("div", "stage-fold no-print"); f.hidden = true;
+    var w = el("div", "wrap"), txt = el("div");
+    txt.appendChild(el("strong")); txt.appendChild(el("p"));
+    var b = el("button", "btn quiet"); b.type = "button";
+    b.addEventListener("click", function () { openNow[g] = true; renderStages(); first.scrollIntoView({ block: "start" }); });
+    w.appendChild(txt); w.appendChild(b); f.appendChild(w);
+    first.parentNode.insertBefore(f, first);
+    folds[g] = f;
+  });
+  function foldText(g, st) {
+    var dog = store.get(KEYS.dog, {}), name = (dog.name || "").trim() || "your dog";
+    if (g === "deciding") {
+      var n = Object.keys(store.get(KEYS.days, {})).length;
+      return ["Your days from before", n ? "The " + n + (n === 1 ? " day" : " days") + " you watched over " + name + " are kept here, whenever you want to look back." : "The daily tracker is still here, if you need it.", "Look back"];
+    }
+    if (g === "decided") return st === "after"
+      ? ["The day itself", "The preparation and the checklist for the day are still here.", "Open"]
+      : ["When you've made the decision", "How to prepare for the appointment, what I wish I'd known, and a checklist for the day itself.", "Open"];
+    return ["After the goodbye", "For when it's needed: the thoughts that come back, 30 days of gentle company, a keepsake page and a place to write to them.", "Open"];
+  }
+  function renderStages() {
+    var st = currentStage();
+    Object.keys(GROUPS).forEach(function (g) {
+      var show = !st || g === st || openNow[g];
+      GROUPS[g].forEach(function (id) { document.getElementById(id).classList.toggle("stage-hidden", !show); });
+      folds[g].hidden = show;
+      if (!show) {
+        var t = foldText(g, st), f = folds[g];
+        f.querySelector("strong").textContent = t[0];
+        f.querySelector("p").textContent = t[1];
+        f.querySelector("button").textContent = t[2];
+      }
+    });
+    document.getElementById("decidedCard").hidden = st === "decided" || st === "after";
+    document.getElementById("saidCard").hidden = st === "after";
+  }
+  function setStage(v) {
+    var d = store.get(KEYS.dog, {});
+    if (d.goodbye || d.stage === v) return;
+    openNow = {};
+    saveProfile({ stage: v });
+  }
+  document.getElementById("decidedBtn").addEventListener("click", function () {
+    setStage("decided"); renderStages();
+    document.getElementById("prepare").scrollIntoView({ block: "start" });
+  });
+  // Choosing where you are sets the stage; any link into a folded part opens it.
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a || a.getAttribute("href").length < 2) return;
+    if (a.dataset.setStage) setStage(a.dataset.setStage);
+    var target = document.getElementById(a.getAttribute("href").slice(1));
+    if (!target) return;
+    var sec = target.closest("section");
+    if (sec && sec.classList.contains("stage-hidden")) {
+      Object.keys(GROUPS).forEach(function (g) { if (GROUPS[g].indexOf(sec.id) >= 0) openNow[g] = true; });
+      renderStages();
+      e.preventDefault();
+      target.scrollIntoView({ block: "start" });
+      history.replaceState(null, "", a.getAttribute("href"));
+    } else renderStages();
+  });
+
   // The newer of the two profiles wins.
   function mergeProfile(local, remote) {
     if (!remote) return null;
@@ -2934,11 +3026,11 @@
       var dogNow = store.get(KEYS.dog, {}), prof = mergeProfile(dogNow, remote.profile);
       if (prof) {
         dogNow.breed = prof.breed || ""; dogNow.size = prof.size || null; dogNow.sizeFromBreed = !!prof.sizeFromBreed;
-        dogNow.goodbye = prof.goodbye || null; dogNow.starId = prof.starId || null; dogNow.starName = prof.starName || null; dogNow.profileT = prof.t;
+        dogNow.goodbye = prof.goodbye || null; dogNow.stage = prof.stage || null; dogNow.starId = prof.starId || null; dogNow.starName = prof.starName || null; dogNow.profileT = prof.t;
         store.set(KEYS.dog, dogNow);
       }
       var profile = dogNow.profileT ? { breed: dogNow.breed || "", size: dogNow.size || null, sizeFromBreed: !!dogNow.sizeFromBreed,
-        goodbye: dogNow.goodbye || null, starId: dogNow.starId || null, starName: dogNow.starName || null, t: dogNow.profileT } : null;
+        goodbye: dogNow.goodbye || null, stage: dogNow.stage || null, starId: dogNow.starId || null, starName: dogNow.starName || null, t: dogNow.profileT } : null;
       var localPt = store.get(KEYS.portrait, null), remotePt = remote.portrait || null;
       var portraitNow = remotePt && (!localPt || (remotePt.t || 0) > (localPt.t || 0)) ? remotePt : localPt;
       if (portraitNow) store.set(KEYS.portrait, portraitNow);
@@ -3039,6 +3131,15 @@
   }
   refreshAll();
   loadStars();
+  // Arriving with a link to a folded part: open it.
+  (function () {
+    var t = location.hash && document.getElementById(location.hash.slice(1));
+    var sec = t && t.closest("section");
+    if (sec && sec.classList.contains("stage-hidden")) {
+      Object.keys(GROUPS).forEach(function (g) { if (GROUPS[g].indexOf(sec.id) >= 0) openNow[g] = true; });
+      renderStages(); t.scrollIntoView({ block: "start" });
+    }
+  })();
 })();
 </script>
 <!-- Anonymous visit count (GoatCounter: no cookies, no personal data). Only on the real site, not on copies or test runs. -->
