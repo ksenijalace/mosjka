@@ -2483,6 +2483,33 @@
     var q = 0.55 * sc;
     return { x: x, y: y, s: sc, svg: '<g class="dogpaw" stroke-width="' + (1.1 / q).toFixed(2) + '" transform="translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + P.ang.toFixed(1) + ') scale(' + q.toFixed(3) + ') translate(-12 -12)"><use href="#pawToes"/><use href="#pawPad"/></g>' };
   }
+  // Put "Day N" where it covers nothing: try beside the dot on each side, keep the first free spot.
+  function placeHereLabel(box, hx, hy, allDone) {
+    var label = box.querySelector(".trail-here");
+    if (!label || allDone) return;
+    var others = Array.prototype.slice.call(box.querySelectorAll(".trail-phase, .trail-mark, .here svg, .j-step:not(.here) .foot, .j-step:not(.here) .dogpaw"));
+    // Prints are drawn with transforms; use their screen boxes mapped back into the drawing.
+    var svg = box.querySelector("svg.j-trail"), ctm = svg.getScreenCTM && svg.getScreenCTM();
+    // Only measurable when the journey is on screen; otherwise try again when it's opened.
+    box.dataset.placed = svg.getBoundingClientRect().width ? "1" : "";
+    var boxes = others.map(function (o) {
+      var r = o.getBoundingClientRect();
+      if (!ctm || !r.width) return null;
+      var inv = ctm.inverse(), p1 = svg.createSVGPoint(), p2 = svg.createSVGPoint();
+      p1.x = r.left; p1.y = r.top; p2.x = r.right; p2.y = r.bottom;
+      p1 = p1.matrixTransform(inv); p2 = p2.matrixTransform(inv);
+      return { x: p1.x, y: p1.y, w: p2.x - p1.x, h: p2.y - p1.y };
+    }).filter(Boolean);
+    var spots = [[hx + 12, hy + 4, "start"], [hx + 12, hy - 10, "start"], [hx + 10, hy + 20, "start"], [hx - 12, hy + 22, "end"], [hx + 14, hy - 24, "start"], [hx - 14, hy - 30, "end"]];
+    for (var k = 0; k < spots.length; k++) {
+      label.setAttribute("x", spots[k][0].toFixed(1)); label.setAttribute("y", spots[k][1].toFixed(1)); label.setAttribute("text-anchor", spots[k][2]);
+      var b = label.getBBox(), pad = 3;
+      if (b.x < 2 || b.x + b.width > 298) continue;
+      var hit = boxes.some(function (o) { return b.x - pad < o.x + o.w && b.x + b.width + pad > o.x && b.y - pad < o.y + o.h && b.y + b.height + pad > o.y; });
+      if (!hit) return;
+    }
+    label.setAttribute("x", spots[0][0].toFixed(1)); label.setAttribute("y", spots[0][1].toFixed(1)); label.setAttribute("text-anchor", "start");
+  }
   var lastLit = null;
   // Only the days already walked leave prints; ahead, the path is a soft dotted line to the star.
   function renderTrail(st) {
@@ -2500,9 +2527,9 @@
       var P = at((ph[0] - 0.5) / n), nx = -P.ty, ny = P.tx;
       var state = here > ph[1] ? " past" : here >= ph[0] ? " now" : "";
       var mx = P.x + nx * (46 * P.s + 14), my = P.y + ny * (46 * P.s + 14) + 4, anchor = "start";
-      if (mx > 200) { mx = P.x - nx * (44 * P.s + 30); my = P.y - ny * (44 * P.s + 30) + 16; anchor = "end"; }
+      if (mx > 200) { mx = P.x - nx * (44 * P.s + 30) - 22; my = P.y - ny * (44 * P.s + 30) + 46; anchor = "end"; }
       marks += '<circle cx="' + (P.x + nx * 22 * P.s).toFixed(1) + '" cy="' + (P.y + ny * 22 * P.s).toFixed(1) + '" r="2.2" fill="' + (state ? "#e9d6aa" : "rgba(196,206,234,.45)") + '"/>' +
-        '<text class="trail-phase' + state + '" data-go="' + ph[0] + '" x="' + mx.toFixed(1) + '" y="' + my.toFixed(1) + '" text-anchor="' + anchor + '">' + ph[2] + '</text>';
+        '<text class="trail-phase' + state + '" data-go="' + ph[0] + '" x="' + mx.toFixed(1) + '" y="' + my.toFixed(1) + '" text-anchor="' + anchor + '">' + (ph[3] || ph[2]) + '</text>';
     });
     // The walked days: your step, and two of theirs.
     for (var i = 1; i <= n; i++) {
@@ -2523,7 +2550,7 @@
     lastLit = latest;
     // Where you are: the next day to walk, with them beside you.
     var allDone = !!st.days[30], H = at(hereT), hx = H.x, hy = H.y;
-    var hereLabel = allDone ? "You've walked a month" : "Day " + here + ", you are here";
+    var hereLabel = allDone ? "You've walked a month" : "Day " + here;
     var W = (dog.breed || dog.size) ? backSilhouette(dog) : null;
     var companion = W
       ? '<svg x="' + (hx - W.w - 8).toFixed(1) + '" y="' + (hy - W.h - 6).toFixed(1) + '" width="' + W.w + '" height="' + W.h + '" viewBox="' + W.vb + '" overflow="visible">' + W.svg + '</svg>'
@@ -2542,13 +2569,14 @@
     var sky = '<path d="M-20 70 Q150 44 320 62" fill="none" stroke="url(#horizon)" stroke-width="1.2"/>' +
       '<g transform="translate(' + sx.toFixed(1) + ' ' + sy.toFixed(1) + ')"><circle class="trail-halo" r="22" fill="url(#starHalo)"/>' +
       '<g transform="scale(.75) translate(-12 -12)"><use href="#starShape" fill="#d9e0f2" stroke="#d9e0f2" stroke-width="2.2" stroke-linejoin="round"/></g></g>' +
-      (allDone ? "" : '<text class="trail-mark" x="' + (sx - 26).toFixed(1) + '" y="' + (sy + 5).toFixed(1) + '" text-anchor="end">a month</text>');
+      (allDone || here >= 25 ? "" : '<text class="trail-mark" x="' + (sx - 26).toFixed(1) + '" y="' + (sy + 5).toFixed(1) + '" text-anchor="end">a month</text>');
     box.innerHTML = '<svg class="j-trail" viewBox="0 0 300 440" aria-label="Your 30 days, as a path">' +
       '<defs><radialGradient id="stepGlow"><stop offset="0" stop-color="rgba(196,206,234,.28)"/><stop offset="1" stop-color="rgba(196,206,234,0)"/></radialGradient>' +
       '<radialGradient id="starHalo"><stop offset="0" stop-color="rgba(240,226,190,.7)"/><stop offset=".45" stop-color="rgba(233,214,170,.2)"/><stop offset="1" stop-color="rgba(180,192,221,0)"/></radialGradient>' +
       '<linearGradient id="aheadWarm" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="rgba(196,206,234,.45)"/><stop offset="1" stop-color="rgba(233,214,170,.85)"/></linearGradient>' +
       '<linearGradient id="horizon" x1="0" x2="1"><stop offset="0" stop-color="rgba(180,192,221,0)"/><stop offset=".7" stop-color="rgba(180,192,221,.35)"/><stop offset="1" stop-color="rgba(180,192,221,0)"/></linearGradient></defs>' +
       sky + ahead + marks + parts.reverse().join("") + hereG + '</svg>';
+    placeHereLabel(box, hx, hy, allDone);
     box.querySelectorAll(".trail-phase").forEach(function (t) { t.addEventListener("click", function () { jView = +t.dataset.go; renderJourney(); }); });
     box.querySelectorAll(".j-step").forEach(function (g) {
       function go() { jView = +g.dataset.day; renderJourney(); }
@@ -2559,7 +2587,7 @@
 
   // The month in five phases. Not a timetable: what many people go through, roughly when.
   var PHASES = [
-    [1, 3, "First days"], [4, 10, "The rawest days"], [11, 17, "Waves"], [18, 24, "Remembering"], [25, 30, "Carrying them with you"]
+    [1, 3, "First days"], [4, 10, "The rawest days"], [11, 17, "Waves"], [18, 24, "Remembering"], [25, 30, "Carrying them with you", "Carrying them"]
   ];
   function phaseOf(day) { return PHASES.filter(function (p) { return day >= p[0] && day <= p[1]; })[0]; }
   var EXPECT = [
@@ -3265,6 +3293,7 @@
         f.querySelector("button").textContent = t[2];
       }
     });
+    if (!document.getElementById("journey").classList.contains("stage-hidden") && !document.getElementById("jDots").dataset.placed && typeof renderJourney === "function" && journeyState().reached) setTimeout(renderJourney, 0);
     document.getElementById("decidedCard").hidden = st === "decided" || st === "after";
     document.getElementById("saidCard").hidden = st === "after";
   }
