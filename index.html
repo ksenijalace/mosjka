@@ -696,7 +696,7 @@
     </div>
     <div class="main">
       <div class="thoughts">
-        <details class="thought" data-ex="early" open>
+        <details class="thought" id="thought-early" data-ex="early" open>
           <summary>"It was too early. They could have had more good days."</summary>
           <div class="body">
             <p>This thought often grows louder after the death, when your memory starts replaying the better moments of the last weeks: the time they wagged, the time they ate. Grief edits the story. It keeps the bright moments and quietly drops the nights of panting, the pain medication that wasn't quite enough, the look in their eyes that made you start thinking about this in the first place.</p>
@@ -705,7 +705,7 @@
             <div class="try"><strong>Try this. </strong>Write down, as honestly as you can, what an ordinary day in the last two weeks was really like for your dog. What could they no longer do? What worried you? Keep the list, and read it when the thought comes back.</div>
           </div>
         </details>
-        <details class="thought" data-ex="late">
+        <details class="thought" id="thought-late" data-ex="late">
           <summary>"I waited too long. They suffered because I couldn't let go."</summary>
           <div class="body">
             <p>Almost everyone who has made this decision feels, in hindsight, that it should have been sooner. Vets hear this constantly. Decline in dogs is often gradual, and dogs are very good at hiding pain. What looks obvious looking back was blurry while you were living it day by day.</p>
@@ -714,7 +714,7 @@
             <div class="try"><strong>Try this. </strong>Think of a friend telling you this exact story about their own dog. What would you say to them? Write it down, then read it back slowly, as if it were addressed to you. It is.</div>
           </div>
         </details>
-        <details class="thought" data-ex="trust">
+        <details class="thought" id="thought-trust" data-ex="trust">
           <summary>"They trusted me, and I ended their life."</summary>
           <div class="body">
             <p>This is often the deepest guilt, and the hardest to say out loud.</p>
@@ -723,7 +723,7 @@
             <div class="try"><strong>Try this. </strong>Finish this sentence as many times as you need: "Because I loved you, I…" Let the list run from the first day you met to the last.</div>
           </div>
         </details>
-        <details class="thought" data-ex="moment">
+        <details class="thought" id="thought-moment" data-ex="moment">
           <summary>"I can't stop seeing the last moment."</summary>
           <div class="body">
             <p>The final minutes are often the sharpest memory for weeks or months. It is common to replay them: the needle, the stillness, their eyes staying open, a breath after the vet said they were gone. Many of those things are normal reflexes of the body after death, and they do not mean your dog was aware or in pain.</p>
@@ -732,7 +732,7 @@
             <p class="small muted">If the images keep coming for months, wake you at night or stop you functioning, please talk to a doctor or counsellor. This kind of grief responds well to help.</p>
           </div>
         </details>
-        <details class="thought" data-ex="notthere">
+        <details class="thought" id="thought-notthere" data-ex="notthere">
           <summary>"I wasn't there with them at the end."</summary>
           <div class="body">
             <p>Sometimes people can't be present: they couldn't bear it, the clinic didn't allow it, it happened suddenly, or someone else in the family went. Afterwards it can feel as if you abandoned them at the moment that mattered most.</p>
@@ -740,7 +740,7 @@
             <div class="try"><strong>Try this. </strong>Write them the goodbye you didn't get to say. Say it out loud if you can, somewhere that meant something to you both.</div>
           </div>
         </details>
-        <details class="thought" data-ex="relief">
+        <details class="thought" id="thought-relief" data-ex="relief">
           <summary>"Part of me feels relieved, and I hate myself for it."</summary>
           <div class="body">
             <p>If your dog was ill for a long time, you probably lived for weeks or months with medication schedules, sleepless nights, cleaning up, carrying them up the stairs and watching for signs. When that ends, relief is a completely natural response. It sits right next to grief, and it doesn't make the grief any less real.</p>
@@ -748,7 +748,7 @@
             <div class="try"><strong>Try this. </strong>Name both feelings: "I miss you so much, and I am relieved you are not hurting anymore." Both are true. Neither cancels the other.</div>
           </div>
         </details>
-        <details class="thought" data-ex="lastdays">
+        <details class="thought" id="thought-lastdays" data-ex="lastdays">
           <summary>"I didn't spend their last days with them."</summary>
           <div class="body">
             <p class="voice">"I didn't go to see her before the vet came, so that I wouldn't change my mind again. I regret it now."</p>
@@ -757,7 +757,7 @@
             <div class="try"><strong>Try this. </strong>Write down the last ordinary day you did spend together: a walk, a meal, the two of you on the sofa. That was a last day too.</div>
           </div>
         </details>
-        <details class="thought" data-ex="angry">
+        <details class="thought" id="thought-angry" data-ex="angry">
           <summary>"In the last months I was often angry with them."</summary>
           <div class="body">
             <p class="voice">"I'm ashamed that I hardly took photos in the last months, because I was so often angry at how hard everything had become."</p>
@@ -766,7 +766,7 @@
             <div class="try"><strong>Try this. </strong>For every moment you remember being angry, write down one thing you did for them that same week. The list of things you did will be longer.</div>
           </div>
         </details>
-        <details class="thought" data-ex="myself">
+        <details class="thought" id="thought-myself" data-ex="myself">
           <summary>"I did it partly for myself."</summary>
           <div class="body">
             <p class="voice">"I had been thinking about euthanasia not only for her, but for us too. Last winter I had pneumonia. Autumn was coming again, and I was afraid I wouldn't cope."</p>
@@ -811,11 +811,18 @@
           <h3 id="jTitle" style="margin: 0"></h3>
           <p id="jText"></p>
         </div>
-        <div class="try"><strong>Today, if you can. </strong><span id="jAction"></span></div>
+        <div class="try"><strong id="jActionLabel">Today, if you can. </strong><span id="jAction"></span>
+          <div class="stack" id="jEx" style="gap: 12px" hidden>
+            <textarea id="jExText" class="try-text" aria-label="Write your answer" placeholder="Write here. It's saved with your history, and also under this thought."></textarea>
+            <div class="row"><button type="button" class="btn" id="jExSave">Save</button><span class="status" id="jExMsg" aria-live="polite"></span></div>
+            <div id="jExSaved" class="try-saved"></div>
+            <a id="jExLink" href="#after" class="small">Read the full thought</a>
+          </div>
+        </div>
         <div class="stack j-check" style="gap: 12px">
           <span class="card-title" style="font-size: 17px">How are you today?</span>
           <div class="moods" role="group" aria-label="How are you today?" id="jMoods"></div>
-          <div><label for="jWord" class="field-label">One word or a sentence, if you like</label><input type="text" id="jWord" maxlength="200" autocomplete="off" style="width: 100%"></div>
+          <div><label for="jWord" class="field-label">A note about today, if you like</label><textarea id="jWord" maxlength="2000" style="min-height: 90px"></textarea></div>
           <div class="row"><button type="button" class="btn primary" id="jSave">Save today's check-in</button><span class="status" id="jMsg" aria-live="polite"></span></div>
         </div>
         <div class="nudge" id="jSupport" hidden>
@@ -1590,6 +1597,7 @@
     var id = d.dataset.ex;
     var tryBox = d.querySelector(".try");
     if (!tryBox) return;
+    d.dataset.tryText = tryBox.textContent.replace(/^\s*Try this\.\s*/, "").trim();
     var ta = el("textarea", "try-text");
     ta.id = "try-" + id;
     ta.setAttribute("aria-label", "Write your answer");
@@ -1611,6 +1619,7 @@
       flash(status.id, store.set(KEYS.exercises, all) ? "Saved." : unsaved);
       ta.value = "";
       renderExercise(id);
+      if (typeof renderJourney === "function") renderJourney();
       scheduleSync();
     });
   });
@@ -1686,37 +1695,167 @@
 
   // ---- 30 days after ----
   // {dog} becomes the dog's name (or "your dog"); [text](#anchor) becomes a link.
+  // A fourth item links the day to one of the thoughts: its "Try this" is answered here and there alike.
   var JOURNEY = [
-    ["Just today", "In the first days you don't have to do anything with your grief. Crying for hours, feeling numb, not eating, not sleeping: all of it is normal. You only have to get through today.", "Drink a glass of water and eat something small. Tell one person how you are."],
-    ["The silence", "The house is quiet in a way you can hear. Many people keep hearing paws on the floor, or turn to the door at the time {dog} used to wait there. This is love looking for where it used to go.", "If a place or a sound hurts, say it out loud: \"This is where you used to lie.\" It sounds strange, and it helps."],
-    ["Let people help", "People around you may not know what to say, so they say nothing, or the wrong thing. It helps to tell them what you need.", "Send someone the part [for family and friends](#family)."],
-    ["The routine", "Often the hardest moments are the small ones: the time of the morning walk, the food bowl, coming home to no greeting. Meeting them unprepared is the hardest.", "Pick the hardest time of your day and decide what you'll do then instead: a short walk alone, a cup of tea, lighting a candle."],
-    ["Your body", "Grief is physical. Tiredness, aches, a tight chest, poor sleep and forgetting things are all common in the first weeks.", "Go outside for ten minutes today, even without anywhere to go."],
-    ["Their things", "You don't have to decide anything about the bowl, the bed, the collar or the toys. Some people put everything away at once; others leave it all for months. Both are fine.", "Choose one thing of theirs to keep close for now, and let the rest wait."],
-    ["One week", "A week has passed. For many people this is when it gets heavier, because everyone else seems to have moved on.", "[Write {dog} a short letter](#letter) about this week."],
-    ["The questions", "Was it too early? Too late? Should I have been there, or done it differently? These questions come for almost everyone who chose euthanasia.", "Open [the thought](#after) that sounds most like yours, and do its \"Try this\"."],
-    ["What you saw", "Your memory will keep offering you the good moments of the last weeks. It's worth writing down the other side too, while you still remember it clearly.", "Write three things you saw that told you it was time. Keep the list; you may need it later."],
-    ["Forgiving yourself", "Everyone who has loved a dog can list things they would do differently. That list is not proof that you failed them. It's proof of how much you cared.", "Write one sentence that starts with \"I forgive myself for…\", even if you don't believe it yet."],
-    ["Anger", "Anger is part of grief: at the vet, at the illness, at people who don't understand, at yourself, even at {dog} for leaving. It doesn't make you a bad person.", "Write it all down without filtering, then close the page. You don't have to show it to anyone."],
-    ["\"It was only a dog\"", "Some people won't understand how big this loss is. Their words can hurt more than they know. Your grief is real, and it is as big as your love was.", "Find one place that understands: a pet-loss group, or one of [the helplines](#help)."],
-    ["Waves", "You may have a lighter hour, then suddenly a crash. That isn't going backwards. Grief comes in waves, and over time the waves come less often.", "Notice one moment today that was a little lighter, and write it in your check-in."],
-    ["Two weeks", "Two weeks. There is no right speed for this. Some days will still feel like the first one.", "Open \"Your check-ins\" below and look at how the days have been. Be gentle with what you see."],
-    ["Their whole story", "In the first weeks the end fills everything. Now you can start to remember the whole life, not only the last days.", "Write down how {dog} came into your life: the first day, the first impression."],
-    ["Small joys", "Every dog has habits that only they had: the way they asked for food, a funny thing they stole, where they liked to sleep.", "Write down five of {dog}'s funny or stubborn habits. You may find yourself smiling."],
-    ["Photos", "Some people can't look at photos yet; others can't stop. Both are normal.", "If you feel ready, choose one photo where {dog} was happy and put it somewhere you will see it. If not, leave it for another day."],
-    ["Places", "Your walking routes, the park, the beach: places you shared can hurt to go back to, and can also bring you close.", "Visit one place you went to together, or decide not to yet. Either is fine."],
-    ["The firsts", "The first weekend away, the first holiday, the first birthday without them. Firsts are hard because they arrive without warning.", "Write down the next \"first\" that is coming, and one small plan for that day."],
-    ["Keeping something", "Some people want something they can hold: a piece of jewellery, a paw print, the collar. Others don't. There is no hurry.", "Read [keeping something of them](#keepsakes). No decision needed today."],
-    ["Three weeks", "Three weeks. You have been carrying this every day, even on the days it didn't look like it from the outside.", "[Write to {dog}](#letter) about one ordinary thing that happened today."],
-    ["The bond goes on", "Losing them doesn't end the bond. Many people find that the relationship changes rather than ends: you carry them, talk to them, remember them.", "Write down one thing {dog} taught you."],
-    ["Kindness in their name", "Some people find comfort in doing something kind in memory of their dog. Only if it feels right for you.", "If you'd like to: give food or old blankets to a shelter, walk a neighbour's dog, or simply be kind to someone today in {dog}'s name."],
-    ["Evenings", "Evenings and nights are often the hardest: the house is quiet and the thoughts get loud.", "Make a small evening ritual: a cup of tea, a few lines in your check-in, a candle, a minute with a photo."],
-    ["When guilt comes back", "Guilt doesn't leave in a straight line. It can come back weeks later, as strong as at the start.", "Read what you wrote on day 9 about what you saw. It was true then, and it is true now."],
-    ["Looking after yourself", "Caring for an ill dog can take everything you have, for months. Now there is room to look after you.", "Do one thing you kept postponing while you were caring for {dog}: a doctor's visit, a friend, a rest."],
-    ["Saying their name", "People often stop mentioning a dog who has died, to avoid hurting you. Many owners say that hearing the name is exactly what they need.", "Tell someone a funny story about {dog}, and say their name out loud."],
-    ["Four weeks", "Four weeks. Look back at your first check-ins. Even if today is hard, something may have changed in how you carry it.", "Open \"Your check-ins\" and compare the first days with the last."],
-    ["Still their person", "Being someone's person doesn't end when they die. You can keep caring for {dog} in the ways that are left: remembering them truthfully, keeping their story, marking their days, and being gentle with your grief, because it is part of loving them.", "Choose one way you will keep caring for {dog}: a day in the year to remember them, a place you will visit, or a story you will keep telling."],
-    ["Living forward", "Grief doesn't end on day 30. It softens and changes shape, and it becomes part of you, like the love did. You can come back to any day of this journey whenever you need it.", "[Write {dog} a letter](#letter) about what you will carry with you from your life together."]
+      [
+          "Just today",
+          "In the first days you don't have to do anything with your grief. Crying for hours, feeling numb, not eating, not sleeping: all of it is normal. You only have to get through today.",
+          "Drink a glass of water and eat something small. Tell one person how you are."
+      ],
+      [
+          "The silence",
+          "The house is quiet in a way you can hear. Many people keep hearing paws on the floor, or turn to the door at the time {dog} used to wait there. This is love looking for where it used to go.",
+          "If a place or a sound hurts, say it out loud: \"This is where you used to lie.\" It sounds strange, and it helps."
+      ],
+      [
+          "Let people help",
+          "People around you may not know what to say, so they say nothing, or the wrong thing. It helps to tell them what you need.",
+          "Send someone the part [for family and friends](#family)."
+      ],
+      [
+          "The routine",
+          "Often the hardest moments are the small ones: the time of the morning walk, the food bowl, coming home to no greeting. Meeting them unprepared is the hardest.",
+          "Pick the hardest time of your day and decide what you'll do then instead: a short walk alone, a cup of tea, lighting a candle."
+      ],
+      [
+          "Your body",
+          "Grief is physical. Tiredness, aches, a tight chest, poor sleep and forgetting things are all common in the first weeks.",
+          "Go outside for ten minutes today, even without anywhere to go."
+      ],
+      [
+          "Their things",
+          "You don't have to decide anything about the bowl, the bed, the collar or the toys. Some people put everything away at once; others leave it all for months. Both are fine.",
+          "Choose one thing of theirs to keep close for now, and let the rest wait."
+      ],
+      [
+          "One week",
+          "A week has passed. For many people this is when it gets heavier, because everyone else seems to have moved on.",
+          "[Write {dog} a short letter](#letter) about this week."
+      ],
+      [
+          "\"It was too early.\"",
+          "Grief edits the story. It keeps the bright moments of the last weeks and quietly drops the hard ones. You decided because you saw something real, and the price of waiting would have been their suffering.",
+          "",
+          "early"
+      ],
+      [
+          "\"I waited too long.\"",
+          "Almost everyone feels, looking back, that it should have been sooner. Decline is gradual, and dogs hide pain well. Not letting go sooner was love that hadn't yet found its way to goodbye.",
+          "",
+          "late"
+      ],
+      [
+          "\"They trusted me.\"",
+          "Their trust was that you would look after them. At the end, looking after them meant protecting them from what was coming. You carried that weight so they didn't have to.",
+          "",
+          "trust"
+      ],
+      [
+          "Anger",
+          "Anger is part of grief: at the vet, at the illness, at people who don't understand, at yourself, even at {dog} for leaving. It doesn't make you a bad person.",
+          "Write it all down without filtering, then close the page. You don't have to show it to anyone."
+      ],
+      [
+          "\"It was only a dog\"",
+          "Some people won't understand how big this loss is. Their words can hurt more than they know. Your grief is real, and it is as big as your love was.",
+          "Find one place that understands: a pet-loss group, or one of [the helplines](#help)."
+      ],
+      [
+          "\"I can't stop seeing the last moment.\"",
+          "The last minutes are often the sharpest memory for weeks. Much of what you saw were reflexes of the body, not awareness or pain. It was a few minutes at the end of thousands of days together.",
+          "",
+          "moment"
+      ],
+      [
+          "Two weeks",
+          "Two weeks. There is no right speed for this. Grief comes in waves: a lighter hour, then suddenly a crash. That isn't going backwards; over time the waves come less often.",
+          "Open \"Your check-ins\" below and look at how the days have been. Notice one moment that was a little lighter."
+      ],
+      [
+          "Their whole story",
+          "In the first weeks the end fills everything. Now you can start to remember the whole life, not only the last days.",
+          "Write down how {dog} came into your life: the first day, the first impression."
+      ],
+      [
+          "Small joys",
+          "Every dog has habits that only they had: the way they asked for food, a funny thing they stole, where they liked to sleep.",
+          "Write down five of {dog}'s funny or stubborn habits. You may find yourself smiling."
+      ],
+      [
+          "\"I didn't spend their last days with them.\"",
+          "Sometimes the last days happen somewhere else, while life is falling apart around you. Staying away so that you could follow through was protecting a decision you made for their sake.",
+          "",
+          "lastdays"
+      ],
+      [
+          "\"I wasn't there with them at the end.\"",
+          "If you couldn't be in the room, it can feel as if you abandoned them. What {dog} knew of you was years of your voice, your smell and your hands, not those last minutes.",
+          "",
+          "notthere"
+      ],
+      [
+          "\"Part of me feels relieved.\"",
+          "After a long illness, relief is a natural response. It sits right next to grief and doesn't make it smaller. Often it is relief that their suffering is over, too.",
+          "",
+          "relief"
+      ],
+      [
+          "Keeping something",
+          "Some people want something they can hold: a piece of jewellery, a paw print, the collar. Others don't. There is no hurry.",
+          "Read [keeping something of them](#keepsakes). No decision needed today."
+      ],
+      [
+          "Three weeks",
+          "Three weeks. You have been carrying this every day, even on the days it didn't look like it from the outside.",
+          "[Write to {dog}](#letter) about one ordinary thing that happened today."
+      ],
+      [
+          "The bond goes on",
+          "Losing them doesn't end the bond. Many people find that the relationship changes rather than ends: you carry them, talk to them, remember them.",
+          "Write down one thing {dog} taught you."
+      ],
+      [
+          "\"In the last months I was often angry with them.\"",
+          "Caring for an old, ill dog is relentless, and almost everyone feels anger and frustration at times. The anger was never at who they were. It was the exhaustion of someone who kept going, day after day.",
+          "",
+          "angry"
+      ],
+      [
+          "Evenings",
+          "Evenings and nights are often the hardest: the house is quiet and the thoughts get loud.",
+          "Make a small evening ritual: a cup of tea, a few lines in your check-in, a candle, a minute with a photo."
+      ],
+      [
+          "\"I did it partly for myself.\"",
+          "A dog depends completely on the person who cares for them, and that person's strength and health are part of the dog's life too. Considering your own limits doesn't cancel the real reasons.",
+          "",
+          "myself"
+      ],
+      [
+          "Looking after yourself",
+          "Caring for an ill dog can take everything you have, for months. Now there is room to look after you.",
+          "Do one thing you kept postponing while you were caring for {dog}: a doctor's visit, a friend, a rest."
+      ],
+      [
+          "Saying their name",
+          "People often stop mentioning a dog who has died, to avoid hurting you. Many owners say that hearing the name is exactly what they need.",
+          "Tell someone a funny story about {dog}, and say their name out loud."
+      ],
+      [
+          "Four weeks",
+          "Four weeks. Look back at your first check-ins. Even if today is hard, something may have changed in how you carry it.",
+          "Open \"Your check-ins\" and compare the first days with the last."
+      ],
+      [
+          "Still their person",
+          "Being someone's person doesn't end when they die. You can keep caring for {dog} in the ways that are left: remembering them truthfully, keeping their story, marking their days, and being gentle with your grief, because it is part of loving them.",
+          "Choose one way you will keep caring for {dog}: a day in the year to remember them, a place you will visit, or a story you will keep telling."
+      ],
+      [
+          "Living forward",
+          "Grief doesn't end on day 30. It softens and changes shape, and it becomes part of you, like the love did. You can come back to any day of this journey whenever you need it.",
+          "[Write {dog} a letter](#letter) about what you will carry with you from your life together."
+      ]
   ];
   var MOODS = [[1, "Very hard"], [2, "Hard"], [3, "Up and down"], [4, "A little lighter"], [5, "Steady"]];
   var jView = null, jMood = null;
@@ -1758,7 +1897,17 @@
     document.getElementById("jCounter").textContent = "Day " + jView + " of 30";
     document.getElementById("jTitle").textContent = d[0];
     fillText(document.getElementById("jText"), d[1]);
-    fillText(document.getElementById("jAction"), d[2]);
+    var exId = d[3], exBox = document.getElementById("jEx");
+    exBox.hidden = !exId;
+    document.getElementById("jActionLabel").textContent = exId ? "Try this. " : "Today, if you can. ";
+    if (exId) {
+      var thought = document.getElementById("thought-" + exId);
+      fillText(document.getElementById("jAction"), thought ? thought.dataset.tryText : "");
+      document.getElementById("jExLink").href = "#thought-" + exId;
+      renderJourneyExercise(exId);
+    } else {
+      fillText(document.getElementById("jAction"), d[2]);
+    }
     jMood = entry ? entry.mood : null;
     moodBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.mood === jMood)); });
     document.getElementById("jWord").value = entry ? entry.word || "" : "";
@@ -1788,6 +1937,45 @@
     var last = keys.slice(-3).map(function (n) { return st.days[n].mood; });
     document.getElementById("jSupport").hidden = !(last.length === 3 && last.every(function (m) { return m === 1; }));
   }
+
+  function renderJourneyExercise(id) {
+    var box = document.getElementById("jExSaved");
+    var list = (store.get(KEYS.exercises, {})[id] || []).slice().reverse();
+    box.innerHTML = "";
+    if (!list.length) return;
+    var det = el("details");
+    det.appendChild(el("summary", null, "What you wrote before (" + list.length + ")"));
+    var ul = el("ul", "log");
+    list.forEach(function (e) {
+      var li = el("li");
+      li.appendChild(el("div", "small muted", niceDate(e.date)));
+      li.appendChild(el("p", "letter-text", e.text));
+      ul.appendChild(li);
+    });
+    det.appendChild(ul);
+    box.appendChild(det);
+  }
+  document.getElementById("jExSave").addEventListener("click", function () {
+    var id = JOURNEY[jView - 1][3];
+    var ta = document.getElementById("jExText");
+    var text = ta.value.trim();
+    if (!id) return;
+    if (!text) { flash("jExMsg", "Write something first."); return; }
+    var all = store.get(KEYS.exercises, {});
+    (all[id] = all[id] || []).push({ date: today(), text: text, t: Date.now() });
+    flash("jExMsg", store.set(KEYS.exercises, all) ? "Saved." : unsaved);
+    ta.value = "";
+    renderJourneyExercise(id);
+    renderExercise(id);
+    scheduleSync();
+  });
+  // Links to a thought open it.
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#thought-"]');
+    if (!a) return;
+    var d = document.getElementById(a.getAttribute("href").slice(1));
+    if (d) d.open = true;
+  });
 
   document.getElementById("jBegin").addEventListener("click", function () {
     var st = journeyState();
