@@ -267,9 +267,6 @@
   @keyframes settle { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: none; } }
   .check .whisper { grid-column: 2; display: none; font-family: var(--font-quote); font-style: italic; color: var(--muted); font-size: 16px; margin-top: -6px; }
   .check input:checked ~ .whisper { display: block; animation: fadeIn .7s ease both; }
-  .j-dot.milestone { display: flex; align-items: center; justify-content: center; }
-  .j-dot.milestone.done { background: transparent; border: 0; }
-  .j-dot.milestone svg { width: 14px; height: 14px; }
   .thought .not-alone { margin-bottom: 14px; }
   #letterText.sending { transition: opacity 1.2s ease, transform 1.2s ease; opacity: 0; transform: translateY(-18px); }
   .breathe { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
@@ -430,21 +427,30 @@
     border: 1px solid var(--line-strong); border-radius: 6px; padding: 10px 12px; min-height: 46px; width: 100%;
   }
 
-  .j-dots { display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 5px; }
+  /* The 30 days as a trail: your steps, and theirs beside them */
+  .j-dots { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 8px 0; padding-top: 8px; }
+  @media (min-width: 640px) { .j-dots { grid-template-columns: repeat(15, minmax(0, 1fr)); } }
+  .j-dot { position: relative; height: 58px; padding: 0; border: 0; background: transparent; cursor: pointer; min-height: 0; border-radius: 12px; }
+  .j-dot svg.trail { width: 100%; height: 100%; display: block; overflow: visible; }
+  .j-dot .foot { fill: #e9e1d3; }
+  .j-dot .dogpaw { fill: #a9b8a0; }
+  .j-dot:not(.done) .foot, .j-dot:not(.done) .dogpaw { fill: none; stroke-width: 1.1; }
+  .j-dot:not(.done) .foot { stroke: rgba(233,225,211,.35); }
+  .j-dot:not(.done) .dogpaw { stroke: rgba(169,184,160,.35); }
+  .j-dot:disabled { cursor: default; opacity: .4; }
+  .j-dot.current { background: radial-gradient(circle, rgba(180,192,221,.16), rgba(180,192,221,0) 72%); }
+  .j-dot.current:not(.done) .foot { stroke: rgba(233,225,211,.75); }
+  .j-dot.current:not(.done) .dogpaw { stroke: rgba(169,184,160,.75); }
+  .j-dot .ms { position: absolute; top: -6px; left: 50%; margin-left: -6px; }
+  .j-dot .ms svg { width: 11px; height: 11px; }
+  .j-dot.done .trail { animation: fadeIn .8s ease both; }
   .j-presence { display: flex; align-items: flex-end; gap: 16px; }
   .j-portrait { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; filter: grayscale(1) sepia(.3) hue-rotate(185deg) saturate(1.3) brightness(.85); opacity: .9; box-shadow: 0 0 0 1px var(--line-strong), 0 0 28px rgba(180,192,221,.22); }
   .dog-sil { display: block; height: auto; overflow: visible; }
   .dog-sil .sil-body { transform-box: fill-box; transform-origin: 50% 100%; animation: dogBreath 5.5s ease-in-out infinite; }
   @keyframes dogBreath { 0%, 100% { transform: scaleY(1); } 45% { transform: scaleY(1.04); } }
   .j-near { display: flex; align-items: flex-end; gap: 12px; font-family: var(--font-quote); font-style: italic; color: var(--muted); }
-  .j-dot.paw { background: transparent !important; border: 0 !important; display: flex; align-items: center; justify-content: center; color: var(--good); }
-  .j-dot.paw .paw { width: 13px; height: 13px; }
   @media (prefers-reduced-motion: reduce) { .dog-sil .sil-body { animation: none; } }
-  .j-dot { height: 14px; border-radius: 6px; border: 1px solid var(--line-strong); background: transparent; padding: 0; cursor: pointer; min-height: 0; }
-  .j-dot.done { background: var(--sage-ink); border-color: var(--sage-ink); }
-  .j-dot.reached { border-color: var(--accent); }
-  .j-dot.current { box-shadow: 0 0 0 2px var(--accent); }
-  .j-dot:disabled { cursor: default; opacity: .5; }
   .moods { display: flex; flex-wrap: wrap; gap: 8px; }
   .moods button { font: inherit; font-size: 15px; font-weight: 600; min-height: 44px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--text); cursor: pointer; }
   .moods button[aria-pressed="true"] { background: var(--sage-bg); border-color: var(--accent); }
@@ -490,6 +496,7 @@
     <path id="sitEarSoft" d="M58 21 C49 19 45 28 47 38 C49 46 55 46 56.5 40 C58 34 58.5 27 58 21 Z"/>
     <path id="sitEarPointy" d="M53 23 L56 6.5 C56.5 5 58 5 58.8 6.4 L64 19 Z M59 20 L64 5 C64.6 3.6 66 3.8 66.4 5.4 L69 21 Z"/>
     <g id="sitLines" fill="none" stroke-linecap="round"><path d="M70.5 27.5 L70.5 27.6" stroke-width="3.2"/><path d="M86.5 31 L86.5 31.1" stroke-width="4.5"/><path d="M27 72 Q37 61 50 67"/><path d="M66 66 L66 102"/></g>
+    <g id="footR"><path d="M6 26 C2.6 26 1.6 22.6 2.1 19.2 C2.6 15.4 1.1 12.4 1.3 9.3 C1.6 5.8 3.6 4.4 6.1 4.4 C8.9 4.4 10.9 6.3 10.7 9.7 C10.5 13.1 9.1 15.6 9.7 19.1 C10.3 23 9.2 26 6 26 Z"/><circle cx="3.7" cy="2.4" r="1.75"/><circle cx="6.5" cy="1.7" r="1.2"/><circle cx="8.4" cy="2.1" r="1.02"/><circle cx="9.9" cy="3.1" r=".88"/><circle cx="11.1" cy="4.5" r=".72"/></g>
     <path id="starShape" d="M11.26 2.02 L14.97 7.85 L21.46 8.78 L17.43 13.95 L18.36 20.18 L12.39 18.19 L6.59 21.25 L6.81 14.70 L2.10 10.13 L8.40 8.31Z"/>
   </defs>
 </svg>
@@ -2405,6 +2412,16 @@
     return "";
   }
 
+  // One day of the trail: your footprint (left and right in turn) and their paw print beside it, both walking to the right.
+  function trailStep(i) {
+    var left = i % 2 === 1;
+    // Feet turn out slightly; the dog trots a little ahead and to the side, paws alternating.
+    var fy = left ? 13 : 24, fa = left ? 82 : 98, py = left ? 42 : 51, px = left ? 15 : 27, pa = left ? 78 : 102;
+    var foot = '<g class="foot" transform="translate(20 ' + fy + ') rotate(' + fa + ') scale(.82) translate(-6 -13)' + (left ? " translate(12 0) scale(-1 1)" : "") + '"><use href="#footR"/></g>';
+    var dogp = '<g class="dogpaw" transform="translate(' + px + ' ' + py + ') rotate(' + pa + ') scale(.72) translate(-12 -12)"><use href="#pawToes"/><use href="#pawPad"/></g>';
+    return '<svg class="trail" viewBox="0 0 40 60" aria-hidden="true">' + foot + dogp + '</svg>';
+  }
+
   var MILESTONES = {
     7: "You're still here, and so is your love for {dog}.",
     14: "The waves may be coming less often, or not yet. Both are normal.",
@@ -2452,13 +2469,9 @@
     var dots = document.getElementById("jDots");
     dots.innerHTML = "";
     for (var i = 1; i <= 30; i++) {
-      var dot = el("button", "j-dot" + (st.days[i] ? " done" : i <= st.reached ? " reached" : "") + (i === jView ? " current" : "") + (MILESTONES[i] ? " milestone" : ""));
-      if (MILESTONES[i] && st.days[i]) dot.innerHTML = STAR_SVG;
-      else if (st.days[i]) {
-        // Paw prints, left and right, as if walking beside you.
-        dot.classList.add("paw"); dot.innerHTML = paw("good");
-        dot.firstChild.style.transform = "rotate(" + (i % 2 ? 14 : -14) + "deg) translateY(" + (i % 2 ? -2 : 2) + "px)";
-      }
+      var dot = el("button", "j-dot" + (st.days[i] ? " done" : i <= st.reached ? " reached" : "") + (i === jView ? " current" : ""));
+      dot.innerHTML = trailStep(i);
+      if (MILESTONES[i] && st.days[i]) { var ms = el("span", "ms"); ms.innerHTML = STAR_SVG; dot.appendChild(ms); }
       dot.type = "button";
       dot.disabled = i > st.reached + 1 || i > 30;
       dot.setAttribute("aria-label", "Day " + i + (st.days[i] ? ", checked in" : ""));
