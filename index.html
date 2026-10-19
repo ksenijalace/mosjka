@@ -303,14 +303,25 @@
   .keepsake .ks-foot { margin-top: 18px; font-size: 13px; color: var(--muted); }
   /* Field of stars */
   .sky { background: radial-gradient(80% 60% at 50% 0%, rgba(180,192,221,.10), rgba(180,192,221,0) 70%), radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.35), transparent), radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,.25), transparent), radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,.3), transparent), radial-gradient(1px 1px at 85% 20%, rgba(255,255,255,.3), transparent), #161a26; }
-  .star-field { position: relative; width: 100%; margin-top: 24px; }
-  .sf-star { position: absolute; display: flex; flex-direction: column; align-items: center; width: 120px; margin-left: -60px; text-align: center; gap: 4px; }
-  .sf-star svg { animation: twinkle 4s ease-in-out infinite; filter: drop-shadow(0 0 6px rgba(180,192,221,.45)); }
-  .sf-star.mine svg { filter: drop-shadow(0 0 10px rgba(233,214,170,.8)); }
-  .sf-name { font-family: var(--font-quote); font-size: 14px; color: var(--text); line-height: 1.2; max-width: 116px; overflow-wrap: anywhere; }
+  .star-field { position: relative; width: 100%; margin-top: 24px; overflow: hidden; }
+  .sf-ground { position: absolute; left: 0; bottom: 0; width: 100%; pointer-events: none; }
+  .sf-star { position: absolute; width: 120px; margin-left: -60px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .sf-star.rise { animation: rise var(--rise-time, 2.6s) cubic-bezier(.22,.7,.25,1) both; animation-delay: var(--rise-delay, 0s); }
+  @keyframes rise { from { transform: translateY(var(--rise)); opacity: 0; } 15% { opacity: 1; } to { transform: none; opacity: 1; } }
+  .sf-glow { position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+  .sf-glow::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, rgba(196,206,234,.55) 0%, rgba(180,192,221,.18) 38%, rgba(180,192,221,0) 70%); animation: starBreath 5s ease-in-out infinite; animation-delay: var(--breath-delay, 0s); }
+  .sf-star.mine .sf-glow::before { background: radial-gradient(circle, rgba(240,222,180,.7) 0%, rgba(233,214,170,.22) 40%, rgba(233,214,170,0) 70%); }
+  .sf-glow svg { position: relative; }
+  @keyframes starBreath { 0%, 100% { transform: scale(.75); opacity: .55; } 50% { transform: scale(1.35); opacity: 1; } }
+  .sf-name, .sf-dates { position: relative; z-index: 2; background: rgba(22,26,38,.9); border-radius: 4px; padding: 0 5px; }
+  .sf-name { font-family: var(--font-quote); font-size: 14px; color: var(--text); line-height: 1.3; max-width: 116px; overflow-wrap: anywhere; margin-top: 2px; }
   .sf-dates { font-size: 11px; color: var(--muted); }
-  @keyframes twinkle { 0%, 100% { opacity: .65; } 50% { opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) { .sf-star svg { animation: none; } }
+  .sf-glow { z-index: 2; }
+  .sf-line { position: relative; z-index: 1; width: 1px; margin-top: 6px; background: linear-gradient(180deg, rgba(180,192,221,.35), rgba(180,192,221,.06) 70%, rgba(180,192,221,.3)); transform-origin: bottom; }
+  .sf-star.rise .sf-line { animation: thread var(--rise-time, 2.6s) ease-out both; animation-delay: var(--rise-delay, 0s); }
+  @keyframes thread { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  .sf-foot { position: absolute; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: rgba(196,206,234,.6); box-shadow: 0 0 8px 2px rgba(180,192,221,.35); }
+  @media (prefers-reduced-motion: reduce) { .sf-glow::before, .sf-star.rise, .sf-star.rise .sf-line { animation: none; } }
   .light-card { max-width: 640px; margin-top: 32px; }
   /* Parts of the site that aren't for now fold into one quiet line */
   .stage-hidden { display: none !important; }
@@ -2752,33 +2763,89 @@
   // ---- Field of stars ----
   var starsAll = [], starsShown = 60;
   function hashOf(n) { var h = 2166136261; String(n).split("").forEach(function (ch) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }); return (h >>> 0) / 4294967296; }
+  // A curved horizon; each star stands above its own point on it, on a thread of light.
+  var starsRisen = false, risingId = null;
   function renderStars() {
     var field = document.getElementById("starField"), mine = store.get(KEYS.dog, {}).starId;
     field.innerHTML = "";
     var list = starsAll.slice(0, starsShown);
-    var w = field.clientWidth || 360, cols = Math.max(3, Math.floor(w / 130)), cellW = w / cols, cellH = 104;
+    if (!list.length) { field.style.height = "0"; return; }
+    var w = field.clientWidth || 360, cols = Math.max(3, Math.floor(w / 118)), cellW = w / cols;
+    // Rows alternate like bricks (cols, then cols - 1, shifted half a step) so threads fall between the stars below.
+    var slots = [], rr = 0;
+    while (slots.length < list.length) {
+      var cap = rr % 2 ? cols - 1 : cols;
+      for (var cc = 0; cc < cap && slots.length < list.length; cc++) slots.push([rr, cc + (rr % 2 ? 1 : 0.5)]);
+      rr++;
+    }
+    var rows = rr, groundH = 90, curve = Math.min(70, w * 0.08), rowH = 112;
+    var H = rows * rowH + 120 + groundH + curve;
+    field.style.height = H + "px";
+    // Ground: the top of a large sphere. groundY(x) is highest in the middle and falls away to the sides.
+    var base = H - groundH - curve;
+    function groundY(x) { var t = (x - w / 2) / (w / 2); return base + curve * t * t; }
+    var ns = "http://www.w3.org/2000/svg", svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("class", "sf-ground"); svg.setAttribute("viewBox", "0 0 " + w + " " + (groundH + curve + 4));
+    svg.setAttribute("height", groundH + curve + 4); svg.setAttribute("aria-hidden", "true");
+    var top = 2, d = "M0 " + (top + curve) + " Q " + (w / 2) + " " + (top - curve) + " " + w + " " + (top + curve) + " L " + w + " " + (groundH + curve + 4) + " L 0 " + (groundH + curve + 4) + " Z";
+    svg.innerHTML = '<defs><linearGradient id="gFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#232a3d"/><stop offset="1" stop-color="#151925"/></linearGradient>' +
+      '<linearGradient id="gRim" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="rgba(180,192,221,0)"/><stop offset=".5" stop-color="rgba(196,206,234,.7)"/><stop offset="1" stop-color="rgba(180,192,221,0)"/></linearGradient>' +
+      '<filter id="gBlur"><feGaussianBlur stdDeviation="6"/></filter></defs>' +
+      '<path d="' + d + '" fill="url(#gFill)"/>' +
+      '<path d="M0 ' + (top + curve) + ' Q ' + (w / 2) + ' ' + (top - curve) + ' ' + w + ' ' + (top + curve) + '" fill="none" stroke="url(#gRim)" stroke-width="6" filter="url(#gBlur)" opacity=".7"/>' +
+      '<path d="M0 ' + (top + curve) + ' Q ' + (w / 2) + ' ' + (top - curve) + ' ' + w + ' ' + (top + curve) + '" fill="none" stroke="url(#gRim)" stroke-width="1.2"/>';
+    field.appendChild(svg);
+    // The quadratic curve's real height at x, so the threads meet the rim exactly.
+    function rimY(x) { var t = x / w; return (H - groundH - curve - 4) + (1 - t) * (1 - t) * (top + curve) + 2 * (1 - t) * t * (top - curve) + t * t * (top + curve); }
     list.forEach(function (st, i) {
-      var r = Math.floor(i / cols), cIdx = i % cols, h1 = hashOf(st.id + "x"), h2 = hashOf(st.id + "y"), h3 = hashOf(st.id + "s");
+      var r = slots[i][0], hx = hashOf(st.id + "x"), hy = hashOf(st.id + "y"), hs = hashOf(st.id + "s");
+      var x = slots[i][1] * cellW + cellW * (hx - 0.5) * 0.24;
+      x = Math.max(60, Math.min(w - 60, x));
+      var y = 20 + r * rowH + hy * 26; // top of the star
       var item = el("div", "sf-star" + (st.id === mine ? " mine" : ""));
       item.setAttribute("role", "listitem");
-      item.style.left = (cIdx * cellW + cellW * (0.3 + h1 * 0.4)) + "px";
-      item.style.top = (r * cellH + h2 * 18) + "px";
-      var size = Math.round(14 + h3 * 10);
-      item.innerHTML = STAR_SVG.replace('width="14" height="14"', 'width="' + size + '" height="' + size + '"');
-      item.firstChild.style.animationDelay = (-h1 * 4).toFixed(2) + "s";
+      item.style.left = x + "px"; item.style.top = y + "px";
+      item.style.setProperty("--breath-delay", (-hs * 5).toFixed(2) + "s");
+      var size = Math.round(14 + hs * 9);
+      var glow = el("span", "sf-glow");
+      glow.innerHTML = STAR_SVG.replace('width="14" height="14"', 'width="' + size + '" height="' + size + '"');
+      item.appendChild(glow);
       item.appendChild(el("span", "sf-name", st.name));
       var yrs = [st.born ? st.born.slice(0, 4) : "", st.died ? st.died.slice(0, 4) : ""].filter(Boolean).join(" – ");
       if (yrs) item.appendChild(el("span", "sf-dates", yrs));
+      var line = el("span", "sf-line");
+      item.appendChild(line);
       item.title = st.name + (st.born ? ", born " + longDate(st.born) : "") + (st.died ? ", said goodbye " + longDate(st.died) : "");
       field.appendChild(item);
+      // Thread from under the label down to the ground at this x.
+      var labelBottom = y + item.offsetHeight - 6;
+      var gy = rimY(x), len = Math.max(12, gy - labelBottom);
+      line.style.height = len + "px";
+      var foot = el("span", "sf-foot"); foot.style.left = x + "px"; foot.style.top = (gy - 2.5) + "px";
+      field.appendChild(foot);
+      var dist = gy - y;
+      if (!starsRisen || st.id === risingId) {
+        item.style.setProperty("--rise", dist + "px");
+        item.style.setProperty("--rise-delay", (st.id === risingId ? 0.2 : Math.min(i * 0.08, 2.4)).toFixed(2) + "s");
+        if (st.id === risingId) item.style.setProperty("--rise-time", "3.6s");
+        item.classList.add("rise");
+      }
     });
-    field.style.height = (Math.ceil(list.length / cols) * cellH + 20) + "px";
+    risingId = null;
     document.getElementById("starCount").textContent = starsAll.length ? starsAll.length + (starsAll.length === 1 ? " star has" : " stars have") + " been lit." : "";
     document.getElementById("starMoreRow").hidden = starsAll.length <= starsShown;
   }
+  // Stars rise the first time the field comes into view.
+  var starWatch = "IntersectionObserver" in window ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting && !starsRisen && starsAll.length) { starWatch.disconnect(); renderStars(); starsRisen = true; } });
+  }, { threshold: 0.2 }) : null;
   function loadStars() {
     if (!syncEnabled) { document.getElementById("stars").hidden = true; return; }
-    rpc("list_stars", {}).then(function (rows) { starsAll = rows || []; renderStars(); })
+    rpc("list_stars", {}).then(function (rows) {
+      starsAll = rows || [];
+      if (starWatch && !starsRisen) starWatch.observe(document.getElementById("starField"));
+      else { starsRisen = true; renderStars(); }
+    })
       .catch(function () {
         // Not set up yet, or offline: rest quietly rather than show an empty sky.
         document.getElementById("stars").hidden = true;
@@ -2786,7 +2853,11 @@
       });
   }
   document.getElementById("starMore").addEventListener("click", function () { starsShown += 60; renderStars(); });
-  window.addEventListener("resize", function () { clearTimeout(renderStars.t); renderStars.t = setTimeout(renderStars, 200); });
+  var lastStarW = 0;
+  window.addEventListener("resize", function () {
+    clearTimeout(renderStars.t);
+    renderStars.t = setTimeout(function () { var w = document.getElementById("starField").clientWidth; if (starsRisen && w !== lastStarW) { lastStarW = w; renderStars(); } }, 200);
+  });
   function renderLight() {
     var dog = store.get(KEYS.dog, {}), c = syncConn();
     var nameIn = document.getElementById("starName"), born = document.getElementById("starBorn"), died = document.getElementById("starDied");
@@ -2808,6 +2879,7 @@
     flash("starMsg", "Lighting…");
     rpc("light_star", { p_name: name, p_born: born, p_died: died }).then(function (id) {
       saveProfile({ starId: id, starName: name });
+      risingId = id; starsRisen = true;
       renderLight();
       loadStars();
       setTimeout(function () { var m = document.querySelector(".sf-star.mine"); if (m) m.scrollIntoView({ block: "center", behavior: "smooth" }); }, 600);
