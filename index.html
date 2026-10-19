@@ -2527,7 +2527,8 @@
       var P = at((ph[0] - 0.5) / n), nx = -P.ty, ny = P.tx;
       var state = here > ph[1] ? " past" : here >= ph[0] ? " now" : "";
       var mx = P.x + nx * (46 * P.s + 14), my = P.y + ny * (46 * P.s + 14) + 4, anchor = "start";
-      if (mx > 200) { mx = P.x - nx * (44 * P.s + 30) - 22; my = P.y - ny * (44 * P.s + 30) + 46; anchor = "end"; }
+      // Near the top right there's no room beside the path: stay on the right, against the edge, a little lower.
+      if (mx > 200) { mx = 296; my = P.y + 40; anchor = "end"; }
       marks += '<circle cx="' + (P.x + nx * 22 * P.s).toFixed(1) + '" cy="' + (P.y + ny * 22 * P.s).toFixed(1) + '" r="2.2" fill="' + (state ? "#e9d6aa" : "rgba(196,206,234,.45)") + '"/>' +
         '<text class="trail-phase' + state + '" data-go="' + ph[0] + '" x="' + mx.toFixed(1) + '" y="' + my.toFixed(1) + '" text-anchor="' + anchor + '">' + (ph[3] || ph[2]) + '</text>';
     });
