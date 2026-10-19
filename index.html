@@ -447,10 +447,14 @@
   .j-presence { display: flex; align-items: flex-end; gap: 16px; }
   .j-portrait { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; filter: grayscale(1) sepia(.3) hue-rotate(185deg) saturate(1.3) brightness(.85); opacity: .9; box-shadow: 0 0 0 1px var(--line-strong), 0 0 28px rgba(180,192,221,.22); }
   .dog-sil { display: block; height: auto; overflow: visible; }
-  .dog-sil .sil-body { transform-box: fill-box; transform-origin: 50% 100%; animation: dogBreath 5.5s ease-in-out infinite; }
-  @keyframes dogBreath { 0%, 100% { transform: scaleY(1); } 45% { transform: scaleY(1.04); } }
+  /* Sleeping: only the chest and belly rise and fall, slow and deep. */
+  .dog-sil .sil-breath { transform-box: fill-box; transform-origin: 50% 100%; animation: dogBreath 4.4s ease-in-out infinite; }
+  @keyframes dogBreath { 0%, 100% { transform: scale(1, 1); } 40% { transform: scale(1.012, 1.12); } 55% { transform: scale(1.012, 1.12); } }
+  /* Sitting: a small wag now and then, from the base of the tail. */
+  .dog-sil .sil-wag { transform-box: fill-box; transform-origin: 100% 85%; animation: dogWag 5s ease-in-out infinite; }
+  @keyframes dogWag { 0%, 62%, 100% { transform: rotate(0); } 68% { transform: rotate(-18deg); } 74% { transform: rotate(9deg); } 80% { transform: rotate(-15deg); } 86% { transform: rotate(6deg); } 92% { transform: rotate(-4deg); } }
   .j-near { display: flex; align-items: flex-end; gap: 12px; font-family: var(--font-quote); font-style: italic; color: var(--muted); }
-  @media (prefers-reduced-motion: reduce) { .dog-sil .sil-body { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .dog-sil .sil-breath, .dog-sil .sil-wag { animation: none; } }
   .moods { display: flex; flex-wrap: wrap; gap: 8px; }
   .moods button { font: inherit; font-size: 15px; font-weight: 600; min-height: 44px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--text); cursor: pointer; }
   .moods button[aria-pressed="true"] { background: var(--sage-bg); border-color: var(--accent); }
@@ -487,12 +491,15 @@
     <path id="pawPad" d="M12 12.4c-2.7 0-5.7 3.3-5.7 5.8 0 1.8 1.4 2.7 2.9 2.7 1.1 0 1.9-.5 2.8-.5s1.7.5 2.8.5c1.5 0 2.9-.9 2.9-2.7 0-2.5-3-5.8-5.7-5.8z"/>
     <g id="pawToes"><ellipse cx="5.1" cy="10.4" rx="1.9" ry="2.4" transform="rotate(-22 5.1 10.4)"/><ellipse cx="9.2" cy="6" rx="2" ry="2.6" transform="rotate(-8 9.2 6)"/><ellipse cx="14.8" cy="6" rx="2" ry="2.6" transform="rotate(8 14.8 6)"/><ellipse cx="18.9" cy="10.4" rx="1.9" ry="2.4" transform="rotate(22 18.9 10.4)"/></g>
     <clipPath id="silFloor"><rect x="0" y="0" width="230" height="100"/></clipPath>
-    <g id="dogBody"><ellipse cx="128" cy="78" rx="62" ry="27"/><ellipse cx="80" cy="80" rx="24" ry="22"/><circle cx="52" cy="72" r="17"/><rect x="14" y="74" width="44" height="16" rx="8"/><rect x="6" y="90" width="80" height="10" rx="5"/><ellipse cx="160" cy="82" rx="25" ry="21"/><rect x="128" y="92" width="44" height="8" rx="4"/><path d="M176 92 C198 92 212 85 217 74 C218 71 221 71 221 74 C221 88 204 99 176 99 Z"/></g>
+    <g id="dogTorso"><ellipse cx="128" cy="78" rx="62" ry="27"/><ellipse cx="80" cy="80" rx="24" ry="22"/><ellipse cx="160" cy="82" rx="25" ry="21"/></g>
+    <g id="dogRest"><circle cx="52" cy="72" r="17"/><rect x="14" y="74" width="44" height="16" rx="8"/><rect x="6" y="90" width="80" height="10" rx="5"/><rect x="128" y="92" width="44" height="8" rx="4"/><path d="M176 92 C198 92 212 85 217 74 C218 71 221 71 221 74 C221 88 204 99 176 99 Z"/></g>
     <path id="earSoft" d="M47 58 C58 52 70 59 68 72 C66 83 57 86 54 79 C51 72 49 65 47 58 Z"/>
     <path id="earPointy" d="M46 61 L51 42 C51.6 40.5 53 40.6 53.8 42 L60 57 Z M55 59 L62 41 C62.8 39.6 64.2 39.9 64.6 41.6 L68 62 Z"/>
-    <g id="dogLines" fill="none" stroke-linecap="round"><path d="M38 71 Q42.5 74 47 71"/><path d="M141 70 Q151 61 164 64"/><path d="M50 90 L84 90"/><path d="M16 78.5 L16 78.6" stroke-width="5"/></g>
+    <g id="dogLines" fill="none" stroke-linecap="round"><path d="M38 71 Q42.5 74 47 71"/><path d="M50 90 L84 90"/><path d="M16 78.5 L16 78.6" stroke-width="5"/></g>
+    <path id="dogHaunch" fill="none" stroke-linecap="round" d="M141 70 Q151 61 164 64"/>
     <clipPath id="sitFloor"><rect x="0" y="0" width="100" height="104"/></clipPath>
-    <g id="sitBody"><ellipse cx="40" cy="80" rx="25" ry="24"/><path d="M44 92 C40 70 44 48 56 40 C64 36 72 42 72 54 C72 70 70 86 66 104 L48 104 Z"/><circle cx="63" cy="30" r="13"/><rect x="64" y="27" width="24" height="12" rx="6"/><rect x="58" y="62" width="8" height="42" rx="4"/><rect x="25" y="96" width="30" height="8" rx="4"/><path d="M22 99 C9 99 3 92 5 83 C6 80 9.5 80 9.5 83.5 C9.5 90 15 94 24 94 Z"/></g>
+    <g id="sitBody"><ellipse cx="40" cy="80" rx="25" ry="24"/><path d="M44 92 C40 70 44 48 56 40 C64 36 72 42 72 54 C72 70 70 86 66 104 L48 104 Z"/><circle cx="63" cy="30" r="13"/><rect x="64" y="27" width="24" height="12" rx="6"/><rect x="58" y="62" width="8" height="42" rx="4"/><rect x="25" y="96" width="30" height="8" rx="4"/></g>
+    <path id="sitTail" d="M26 99 C9 99 3 92 5 83 C6 80 9.5 80 9.5 83.5 C9.5 90 15 94 28 94 Z"/>
     <path id="sitEarSoft" d="M58 21 C49 19 45 28 47 38 C49 46 55 46 56.5 40 C58 34 58.5 27 58 21 Z"/>
     <path id="sitEarPointy" d="M53 23 L56 6.5 C56.5 5 58 5 58.8 6.4 L64 19 Z M59 20 L64 5 C64.6 3.6 66 3.8 66.4 5.4 L69 21 Z"/>
     <g id="sitLines" fill="none" stroke-linecap="round"><path d="M70.5 27.5 L70.5 27.6" stroke-width="3.2"/><path d="M86.5 31 L86.5 31.1" stroke-width="4.5"/><path d="M27 72 Q37 61 50 67"/><path d="M66 66 L66 102"/></g>
@@ -2371,8 +2378,8 @@
     var ear = pointy ? '<use href="#earPointy"/>' : '<use href="#earSoft" stroke="#1f2433" stroke-opacity=".35" stroke-width="1.5"/>';
     return '<svg class="dog-sil" viewBox="0 0 230 104" width="' + w + '" aria-hidden="true">' +
       '<line x1="0" y1="100.5" x2="230" y2="100.5" stroke="rgba(180,192,221,.22)"/>' +
-      '<g class="sil-body" clip-path="url(#silFloor)" fill="#b4c0dd" opacity=".6"><use href="#dogBody"/>' + ear + '</g>' +
-      '<g class="sil-body"><use href="#dogLines" stroke="#1f2433" stroke-opacity=".45" stroke-width="1.6"/></g></svg>';
+      '<g clip-path="url(#silFloor)" fill="#b4c0dd" opacity=".6"><g class="sil-breath"><use href="#dogTorso"/><use href="#dogHaunch" fill="none" stroke="#1f2433" stroke-opacity=".7" stroke-width="1.6"/></g><use href="#dogRest"/>' + ear + '</g>' +
+      '<use href="#dogLines" stroke="#1f2433" stroke-opacity=".45" stroke-width="1.6"/></svg>';
   }
   // Sitting up beside you, looking toward the words: for the small picture on hard days.
   function sitSilhouette(dog, w) {
@@ -2380,8 +2387,8 @@
     var ear = pointy ? '<use href="#sitEarPointy"/>' : '<use href="#sitEarSoft" stroke="#1f2433" stroke-opacity=".35" stroke-width="1.4"/>';
     return '<svg class="dog-sil" viewBox="0 0 100 106" width="' + w + '" aria-hidden="true">' +
       '<line x1="0" y1="104.5" x2="100" y2="104.5" stroke="rgba(180,192,221,.22)"/>' +
-      '<g class="sil-body" clip-path="url(#sitFloor)" fill="#b4c0dd" opacity=".65"><use href="#sitBody"/>' + ear + '</g>' +
-      '<g class="sil-body"><use href="#sitLines" stroke="#1f2433" stroke-opacity=".5" stroke-width="1.5"/></g></svg>';
+      '<g clip-path="url(#sitFloor)" fill="#b4c0dd" opacity=".65"><g class="sil-wag"><use href="#sitTail"/></g><use href="#sitBody"/>' + ear + '</g>' +
+      '<use href="#sitLines" stroke="#1f2433" stroke-opacity=".5" stroke-width="1.5"/></svg>';
   }
   function renderPresence() {
     var dog = store.get(KEYS.dog, {}), box = document.getElementById("jPresence");
