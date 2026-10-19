@@ -431,7 +431,16 @@
   }
 
   .j-dots { display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 5px; }
-  .j-dot { height: 12px; border-radius: 6px; border: 1px solid var(--line-strong); background: transparent; padding: 0; cursor: pointer; min-height: 0; }
+  .j-presence { display: flex; align-items: flex-end; gap: 16px; }
+  .j-portrait { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; filter: grayscale(1) sepia(.3) hue-rotate(185deg) saturate(1.3) brightness(.85); opacity: .9; box-shadow: 0 0 0 1px var(--line-strong), 0 0 28px rgba(180,192,221,.22); }
+  .dog-sil { display: block; height: auto; overflow: visible; }
+  .dog-sil .sil-body { transform-box: fill-box; transform-origin: 50% 100%; animation: dogBreath 5.5s ease-in-out infinite; }
+  @keyframes dogBreath { 0%, 100% { transform: scaleY(1); } 45% { transform: scaleY(1.04); } }
+  .j-near { display: flex; align-items: flex-end; gap: 12px; font-family: var(--font-quote); font-style: italic; color: var(--muted); }
+  .j-dot.paw { background: transparent !important; border: 0 !important; display: flex; align-items: center; justify-content: center; color: var(--good); }
+  .j-dot.paw .paw { width: 13px; height: 13px; }
+  @media (prefers-reduced-motion: reduce) { .dog-sil .sil-body { animation: none; } }
+  .j-dot { height: 14px; border-radius: 6px; border: 1px solid var(--line-strong); background: transparent; padding: 0; cursor: pointer; min-height: 0; }
   .j-dot.done { background: var(--sage-ink); border-color: var(--sage-ink); }
   .j-dot.reached { border-color: var(--accent); }
   .j-dot.current { box-shadow: 0 0 0 2px var(--accent); }
@@ -471,6 +480,11 @@
     <linearGradient id="starGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c3cde6"/><stop offset="1" stop-color="#8b9abd"/></linearGradient>
     <path id="pawPad" d="M12 12.4c-2.7 0-5.7 3.3-5.7 5.8 0 1.8 1.4 2.7 2.9 2.7 1.1 0 1.9-.5 2.8-.5s1.7.5 2.8.5c1.5 0 2.9-.9 2.9-2.7 0-2.5-3-5.8-5.7-5.8z"/>
     <g id="pawToes"><ellipse cx="5.1" cy="10.4" rx="1.9" ry="2.4" transform="rotate(-22 5.1 10.4)"/><ellipse cx="9.2" cy="6" rx="2" ry="2.6" transform="rotate(-8 9.2 6)"/><ellipse cx="14.8" cy="6" rx="2" ry="2.6" transform="rotate(8 14.8 6)"/><ellipse cx="18.9" cy="10.4" rx="1.9" ry="2.4" transform="rotate(22 18.9 10.4)"/></g>
+    <clipPath id="silFloor"><rect x="0" y="0" width="230" height="100"/></clipPath>
+    <g id="dogBody"><ellipse cx="128" cy="78" rx="62" ry="27"/><ellipse cx="80" cy="80" rx="24" ry="22"/><circle cx="52" cy="72" r="17"/><rect x="14" y="74" width="44" height="16" rx="8"/><rect x="6" y="90" width="80" height="10" rx="5"/><ellipse cx="160" cy="82" rx="25" ry="21"/><rect x="128" y="92" width="44" height="8" rx="4"/><path d="M176 92 C198 92 212 85 217 74 C218 71 221 71 221 74 C221 88 204 99 176 99 Z"/></g>
+    <path id="earSoft" d="M47 58 C58 52 70 59 68 72 C66 83 57 86 54 79 C51 72 49 65 47 58 Z"/>
+    <path id="earPointy" d="M46 61 L51 42 C51.6 40.5 53 40.6 53.8 42 L60 57 Z M55 59 L62 41 C62.8 39.6 64.2 39.9 64.6 41.6 L68 62 Z"/>
+    <g id="dogLines" fill="none" stroke-linecap="round"><path d="M38 71 Q42.5 74 47 71"/><path d="M141 70 Q151 61 164 64"/><path d="M50 90 L84 90"/><path d="M16 78.5 L16 78.6" stroke-width="5"/></g>
     <path id="starShape" d="M11.26 2.02 L14.97 7.85 L21.46 8.78 L17.43 13.95 L18.36 20.18 L12.39 18.19 L6.59 21.25 L6.81 14.70 L2.10 10.13 L8.40 8.31Z"/>
   </defs>
 </svg>
@@ -1049,10 +1063,12 @@
           </span>
         </div>
         <div class="j-dots" id="jDots" role="group" aria-label="Days of the journey"></div>
+        <div class="j-presence" id="jPresence" hidden></div>
         <div class="stack" style="gap: 10px">
           <h3 id="jTitle" style="margin: 0"></h3>
           <p class="moment fade-in" id="jMilestone" hidden></p>
           <p id="jText"></p>
+          <p class="moment fade-in" id="jMemory" hidden></p>
         </div>
         <div class="try"><strong id="jActionLabel">Today, if you can. </strong><span id="jAction"></span>
           <div class="stack" id="jEx" style="gap: 12px" hidden>
@@ -1065,6 +1081,7 @@
         <div class="stack j-check" style="gap: 12px">
           <span class="card-title" style="font-size: 17px">How are you today?</span>
           <div class="moods" role="group" aria-label="How are you today?" id="jMoods"></div>
+          <div class="j-near fade-in" id="jNear" hidden></div>
           <div><label for="jWord" class="field-label">A note about today, if you like</label><textarea id="jWord" maxlength="2000" style="min-height: 90px"></textarea></div>
           <div class="breathe-slot" id="jBreathe" hidden></div>
           <div class="row"><button type="button" class="btn primary" id="jSave">Save today's check-in</button><span class="status" id="jMsg" aria-live="polite"></span></div>
@@ -2325,9 +2342,54 @@
       jMood = mo[0];
       moodBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
       document.getElementById("jBreathe").hidden = jMood !== 1;
+      renderNear();
     });
     moodBox.appendChild(b);
   });
+
+  // Their dog, quietly present: a soft photo if there is one, otherwise a sleeping silhouette shaped by breed and size.
+  var POINTY = ("German Shepherd, Belgian Shepherd (Malinois), Dutch Shepherd, White Swiss Shepherd, East European Shepherd, Czechoslovakian Wolfdog, " +
+    "Siberian Husky, Alaskan Malamute, Samoyed, Akita, Shiba Inu, Pembroke Welsh Corgi, Cardigan Welsh Corgi, Chihuahua, Pomeranian, Keeshond, " +
+    "Finnish Lapphund, Icelandic Sheepdog, Eurasier, Chow Chow, French Bulldog, Boston Terrier, West Highland White Terrier, Scottish Terrier, " +
+    "Cairn Terrier, Norwich Terrier, Yorkshire Terrier, Miniature Pinscher, Russian Toy, Prague Ratter, Papillon, Basenji, Dobermann, Australian Cattle Dog, " +
+    "Shetland Sheepdog, Bull Terrier, Pumi, Mudi, Caucasian Shepherd, Central Asian Shepherd (Alabai)").toLowerCase().split(", ");
+  var SIL_W = { s: 120, m: 150, l: 180, g: 205 };
+  function dogSilhouette(dog, w) {
+    var pointy = POINTY.indexOf((dog.breed || "").toLowerCase()) >= 0;
+    var ear = pointy ? '<use href="#earPointy"/>' : '<use href="#earSoft" stroke="#1f2433" stroke-opacity=".35" stroke-width="1.5"/>';
+    return '<svg class="dog-sil" viewBox="0 0 230 104" width="' + w + '" aria-hidden="true">' +
+      '<line x1="0" y1="100.5" x2="230" y2="100.5" stroke="rgba(180,192,221,.22)"/>' +
+      '<g class="sil-body" clip-path="url(#silFloor)" fill="#b4c0dd" opacity=".6"><use href="#dogBody"/>' + ear + '</g>' +
+      '<g class="sil-body"><use href="#dogLines" stroke="#1f2433" stroke-opacity=".45" stroke-width="1.6"/></g></svg>';
+  }
+  function renderPresence() {
+    var dog = store.get(KEYS.dog, {}), box = document.getElementById("jPresence");
+    if (dog.photo) {
+      box.innerHTML = "";
+      var img = el("img", "j-portrait"); img.src = dog.photo; img.alt = ""; box.appendChild(img);
+    } else if (dog.breed || dog.size) box.innerHTML = dogSilhouette(dog, SIL_W[dog.size] || 150);
+    else box.innerHTML = "";
+    box.hidden = !box.innerHTML;
+  }
+  function renderNear() {
+    var dog = store.get(KEYS.dog, {}), near = document.getElementById("jNear");
+    near.hidden = jMood !== 1;
+    if (near.hidden) return;
+    near.innerHTML = dog.breed || dog.size ? dogSilhouette(dog, 84) : dog.photo ? "" : STAR_SVG;
+    if (!near.innerHTML && dog.photo) { var im = el("img", "j-portrait"); im.src = dog.photo; im.alt = ""; im.style.width = im.style.height = "44px"; near.appendChild(im); }
+    near.appendChild(el("span", null, (dog.name ? dog.name.trim() : "They") + (dog.name ? " is" : " are") + " here with you, the way they always were."));
+  }
+  // Their own words, back on the days they belong to.
+  function clip(t) { t = String(t).replace(/\s+/g, " ").trim(); return t.length > 160 ? t.slice(0, 157).replace(/\s+\S*$/, "") + "\u2026" : t; }
+  function memoryFor(day) {
+    var a = (store.get(KEYS.portrait, { answers: {} }).answers) || {}, n = dogWord();
+    if (day === 15) return Object.keys(a).length ? "You've already begun telling " + n + "\u2019s story. You could add to it today: [Tell me about them](#remember)." : "If you'd like, nine gentle questions can help you write it down: [Tell me about them](#remember).";
+    if (day === 16 && a.favourite) return "You told me what " + n + " loved: \u201c" + clip(a.favourite) + "\u201d Maybe one small piece of it today.";
+    if (day === 20 && a.keep) return "You wrote that you'd like to keep this: \u201c" + clip(a.keep) + "\u201d";
+    if (day === 24 && a.miss) return "You said you miss " + n + " most: \u201c" + clip(a.miss) + "\u201d If that time comes tonight, let it be gentle.";
+    if (day === 27 && a.names) return "All the names you called them: \u201c" + clip(a.names) + "\u201d Say one of them out loud today.";
+    return "";
+  }
 
   var MILESTONES = {
     7: "You're still here, and so is your love for {dog}.",
@@ -2347,6 +2409,10 @@
     document.getElementById("jCounter").textContent = "Day " + jView + " of 30";
     document.getElementById("jTitle").textContent = d[0];
     fillText(document.getElementById("jText"), d[1]);
+    renderPresence();
+    var mem = memoryFor(jView), memBox = document.getElementById("jMemory");
+    memBox.hidden = !mem;
+    if (mem) { memBox.innerHTML = STAR_SVG; var memText = el("span"); fillText(memText, mem); memBox.appendChild(memText); }
     var exId = d[3], exBox = document.getElementById("jEx");
     exBox.hidden = !exId;
     document.getElementById("jActionLabel").textContent = exId ? "Try this. " : "Today, if you can. ";
@@ -2361,6 +2427,7 @@
     jMood = entry ? entry.mood : null;
     moodBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.mood === jMood)); });
     document.getElementById("jBreathe").hidden = jMood !== 1;
+    renderNear();
     var ms = MILESTONES[jView], msBox = document.getElementById("jMilestone");
     msBox.hidden = !(ms && entry);
     if (ms && entry) moment("jMilestone", ms.replace(/\{dog\}/g, dogWord()));
@@ -2373,6 +2440,11 @@
     for (var i = 1; i <= 30; i++) {
       var dot = el("button", "j-dot" + (st.days[i] ? " done" : i <= st.reached ? " reached" : "") + (i === jView ? " current" : "") + (MILESTONES[i] ? " milestone" : ""));
       if (MILESTONES[i] && st.days[i]) dot.innerHTML = STAR_SVG;
+      else if (st.days[i]) {
+        // Paw prints, left and right, as if walking beside you.
+        dot.classList.add("paw"); dot.innerHTML = paw("good");
+        dot.firstChild.style.transform = "rotate(" + (i % 2 ? 14 : -14) + "deg) translateY(" + (i % 2 ? -2 : 2) + "px)";
+      }
       dot.type = "button";
       dot.disabled = i > st.reached + 1 || i > 30;
       dot.setAttribute("aria-label", "Day " + i + (st.days[i] ? ", checked in" : ""));
