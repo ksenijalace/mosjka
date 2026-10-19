@@ -2,122 +2,198 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
 <title>The Hardest Kindness</title>
 <meta name="description" content="Support before and after saying goodbye to your dog through euthanasia: deciding when it is time, and living with the guilt afterwards.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Young+Serif&display=swap">
 <style>
+  /* Layout: one quiet reading column; Mosjka's photos sit beside the text like
+     snapshots on a fridge, each with a handwritten note. The red leash from the
+     photos runs through the page as the divider line. */
   :root {
-    --bg: #faf6f0;
-    --surface: #ffffff;
-    --surface-soft: #f3ece2;
-    --text: #2e2a26;
-    --muted: #6b625a;
-    --accent: #9a5b3f;
-    --accent-soft: #f1e1d6;
-    --line: #e4d9cc;
-    --good: #5f8a63;
-    --okay: #c49a3c;
-    --bad: #a2554e;
-    --focus: #2f6db5;
+    --bg: #fbf7ef;          /* Mosjka's cream fur */
+    --surface: #fffdf8;
+    --surface-soft: #f3ecdf;
+    --text: #1f2a3a;        /* navy of the camo collar */
+    --muted: #5a6472;
+    --accent: #b8322f;      /* the red leash */
+    --accent-soft: #f6e2dd;
+    --sea: #2f6290;         /* Baltic sea and sky */
+    --line: #e5dccb;
+    --photo-edge: #ffffff;
+    --shadow: rgba(31, 42, 58, .12);
+    --good: #4f8a5a;
+    --okay: #c0942f;
+    --bad: #a8473f;
+    --focus: #2f6290;
+    --font-display: "Young Serif", Georgia, "Times New Roman", serif;
+    --font-body: "Literata", Georgia, "Iowan Old Style", serif;
+    --font-hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
+    --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #1c1a19;
-      --surface: #252220;
-      --surface-soft: #2d2926;
-      --text: #ece6df;
-      --muted: #b0a69c;
-      --accent: #e0a283;
-      --accent-soft: #3a2c25;
-      --line: #3b3531;
-      --good: #8fbf92;
-      --okay: #e0bd6b;
-      --bad: #e08f87;
-      --focus: #8db8ef;
+      --bg: #131a24;        /* the evening walk */
+      --surface: #1b2430;
+      --surface-soft: #232e3c;
+      --text: #f1ebe0;
+      --muted: #a8b1bd;
+      --accent: #e9695f;
+      --accent-soft: #3b2427;
+      --sea: #8fb8de;
+      --line: #2e3a4a;
+      --photo-edge: #232e3c;
+      --shadow: rgba(0, 0, 0, .35);
+      --good: #8cc196;
+      --okay: #e2bf6a;
+      --bad: #ec8f86;
+      --focus: #8fb8de;
+      color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #1c1a19;
-    --surface: #252220;
-    --surface-soft: #2d2926;
-    --text: #ece6df;
-    --muted: #b0a69c;
-    --accent: #e0a283;
-    --accent-soft: #3a2c25;
-    --line: #3b3531;
-    --good: #8fbf92;
-    --okay: #e0bd6b;
-    --bad: #e08f87;
-    --focus: #8db8ef;
+    --bg: #131a24;
+    --surface: #1b2430;
+    --surface-soft: #232e3c;
+    --text: #f1ebe0;
+    --muted: #a8b1bd;
+    --accent: #e9695f;
+    --accent-soft: #3b2427;
+    --sea: #8fb8de;
+    --line: #2e3a4a;
+    --photo-edge: #232e3c;
+    --shadow: rgba(0, 0, 0, .35);
+    --good: #8cc196;
+    --okay: #e2bf6a;
+    --bad: #ec8f86;
+    --focus: #8fb8de;
+    color-scheme: dark;
   }
 
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font: 18px/1.65 Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    font: 18px/1.7 var(--font-body);
   }
-  .ui, nav, button, input, textarea, label, .help-bar, footer, summary .hint {
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  .ui, nav, button, input, textarea, label, .help-bar, footer, summary .hint, .note, .legend {
+    font-family: var(--font-ui);
   }
-  a { color: var(--accent); }
+  a { color: var(--sea); text-underline-offset: 3px; }
   :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  img { max-width: 100%; height: auto; display: block; }
 
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
   .help-bar {
     background: var(--accent-soft);
-    color: var(--text);
     font-size: 15px;
     text-align: center;
-    padding: 8px 16px;
+    padding-block: 8px;
   }
-  .help-bar a { font-weight: 600; }
+  .help-bar a { color: var(--text); font-weight: 600; }
 
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 400; text-wrap: balance; letter-spacing: -.005em; }
+  h2 { font-size: clamp(30px, 4.5vw, 38px); line-height: 1.15; margin: 0 0 12px; }
+  h3 { font-size: 23px; line-height: 1.25; margin: 40px 0 8px; }
+  p, li { max-width: 64ch; }
+  .lead { color: var(--muted); font-size: 19px; margin-top: 0; }
+
+  /* Snapshot: a photo with a handwritten note under it */
+  figure.snap {
+    margin: 0;
+    background: var(--photo-edge);
+    padding: 10px 10px 6px;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px var(--shadow), 0 12px 28px -12px var(--shadow);
+    transform: rotate(var(--tilt, -1.5deg));
+  }
+  figure.snap img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 2px; }
+  figure.snap figcaption {
+    font-family: var(--font-hand);
+    font-size: 24px;
+    line-height: 1.2;
+    text-align: center;
+    padding-top: 6px;
+    color: var(--text);
+  }
+
+  /* Leash divider */
+  .leash { display: block; width: 100%; max-width: 420px; height: 40px; margin: 8px 0 0; color: var(--accent); }
+  .leash path { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; }
+
+  /* Hero */
   header.hero {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 56px 16px 24px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: center;
+    padding-block: 56px 32px;
   }
-  .hero h1 {
-    font-size: clamp(32px, 6vw, 46px);
-    line-height: 1.15;
-    margin: 0 0 16px;
-    font-weight: normal;
-  }
+  .hero h1 { font-size: clamp(40px, 7vw, 64px); line-height: 1.05; margin: 0 0 18px; }
   .hero p { color: var(--muted); font-size: 20px; margin: 0; }
+  .hero figure.snap { --tilt: 2deg; max-width: 380px; justify-self: end; }
+  @media (max-width: 720px) {
+    header.hero { grid-template-columns: 1fr; gap: 28px; padding-block: 36px 16px; }
+    .hero figure.snap { justify-self: center; max-width: 300px; }
+  }
 
   nav.paths {
-    max-width: 760px;
-    margin: 24px auto 0;
-    padding: 0 16px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 14px;
+    padding-block: 8px 0;
   }
   nav.paths a {
     display: block;
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 18px;
+    border-radius: 10px;
+    padding: 18px 20px;
     text-decoration: none;
     color: var(--text);
+    transition: border-color .2s, transform .2s;
   }
-  nav.paths a strong { display: block; font-size: 18px; color: var(--accent); }
+  nav.paths a:hover { border-color: var(--accent); transform: translateY(-2px); }
+  @media (prefers-reduced-motion: reduce) { nav.paths a, nav.paths a:hover { transition: none; transform: none; } }
+  nav.paths a strong { display: block; font-family: var(--font-display); font-weight: 400; font-size: 21px; color: var(--accent); }
   nav.paths a span { font-size: 15px; color: var(--muted); }
   @media (max-width: 560px) { nav.paths { grid-template-columns: 1fr; } }
 
-  main { max-width: 760px; margin: 0 auto; padding: 0 16px 48px; }
-  section { padding-top: 48px; }
-  h2 { font-size: 30px; font-weight: normal; margin: 0 0 8px; }
-  h3 { font-size: 22px; font-weight: normal; margin: 32px 0 8px; }
-  .lead { color: var(--muted); margin-top: 0; }
+  main { padding-bottom: 48px; }
+  section { padding-top: 64px; }
+
+  /* Section opener: heading and intro beside a snapshot */
+  .opener {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .opener > div { min-width: 0; }
+  @media (max-width: 720px) {
+    .opener { grid-template-columns: 1fr; gap: 20px; }
+    .opener figure.snap { max-width: 220px; order: -1; }
+  }
+
+  .content { max-width: 720px; }
 
   .card {
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 14px;
+    border-radius: 10px;
     padding: 20px;
     margin: 16px 0;
   }
@@ -125,34 +201,53 @@
   details.piece {
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 14px;
+    border-radius: 10px;
     margin: 12px 0;
   }
+  details.piece[open] { border-color: var(--accent); }
   details.piece summary {
     cursor: pointer;
     list-style: none;
     padding: 18px 20px;
+    font-family: var(--font-display);
     font-size: 21px;
+    line-height: 1.3;
   }
   details.piece summary::-webkit-details-marker { display: none; }
-  details.piece summary::after { content: "+"; float: right; color: var(--muted); }
-  details.piece[open] summary::after { content: "−"; }
-  details.piece summary .hint { display: block; font-size: 14px; color: var(--muted); }
+  details.piece summary::after { content: "+"; float: right; margin-left: 12px; color: var(--accent); font-family: var(--font-ui); }
+  details.piece[open] summary::after { content: "\2212"; }
+  details.piece summary .hint { display: block; font-size: 14px; color: var(--muted); margin-top: 4px; }
   details.piece .body { padding: 0 20px 20px; }
   .exercise {
     background: var(--surface-soft);
-    border-radius: 10px;
+    border-radius: 8px;
     padding: 14px 16px;
     margin-top: 16px;
   }
-  .exercise b { font-family: system-ui, sans-serif; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); }
+  .exercise b { font-family: var(--font-hand); font-size: 26px; font-weight: 600; color: var(--accent); }
+  .exercise p { margin: 4px 0 0; }
+
+  .aside {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 32px;
+    align-items: center;
+    margin-top: 40px;
+  }
+  .aside figure.snap { --tilt: 1.5deg; }
+  .aside h3 { margin-top: 0; }
+  @media (max-width: 600px) {
+    .aside { grid-template-columns: 1fr; gap: 16px; }
+    .aside figure.snap { max-width: 200px; }
+  }
 
   /* Tracker */
   .ui { font-size: 16px; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
   button {
+    font: inherit;
     font-size: 16px;
-    border-radius: 10px;
+    border-radius: 8px;
     border: 1px solid var(--line);
     background: var(--surface-soft);
     color: var(--text);
@@ -163,15 +258,18 @@
   button.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
   button.choice[aria-pressed="true"] { border-width: 2px; border-color: var(--accent); background: var(--accent-soft); }
   button.link { background: none; border: none; color: var(--muted); text-decoration: underline; padding: 8px 4px; }
+  button.danger { background: var(--bad); border-color: var(--bad); color: var(--bg); }
   input[type="date"], textarea {
+    font: inherit;
     font-size: 16px;
     padding: 10px;
     border: 1px solid var(--line);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--bg);
     color: var(--text);
   }
   textarea { width: 100%; min-height: 90px; resize: vertical; }
+  #letterText { font-family: var(--font-hand); font-size: 24px; line-height: 1.35; }
   .dots { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 4px; }
   .dot { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); }
   .dot.good { background: var(--good); border-color: var(--good); }
@@ -182,25 +280,39 @@
   .scale-item label { display: flex; justify-content: space-between; gap: 12px; }
   .scale-item small { display: block; color: var(--muted); font-size: 14px; }
   .scale-item input[type="range"] { width: 100%; accent-color: var(--accent); }
-  .total { font-size: 20px; margin: 12px 0; }
+  .total { font-size: 20px; margin: 12px 0; font-variant-numeric: tabular-nums; }
   .note { font-size: 14px; color: var(--muted); }
   ul.log { list-style: none; padding: 0; margin: 8px 0 0; font-size: 15px; }
   ul.log li { padding: 6px 0; border-top: 1px solid var(--line); }
+  #letterHistory p { font-family: var(--font-hand); font-size: 22px; line-height: 1.35; }
+  .confirm-box { margin-top: 10px; }
 
   ol.steps li, ul.plain li { margin-bottom: 8px; }
 
   footer {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 24px 16px 48px;
+    border-top: 1px solid var(--line);
+    padding-block: 40px 56px;
     font-size: 14px;
     color: var(--muted);
-    border-top: 1px solid var(--line);
+  }
+  .farewell {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 28px;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  .farewell figure.snap { --tilt: -2deg; }
+  .farewell p.memory { font-family: var(--font-hand); font-size: 30px; line-height: 1.2; color: var(--text); margin: 0; }
+  @media (max-width: 520px) {
+    .farewell { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    .farewell figure.snap { max-width: 180px; }
   }
 
   @media print {
-    .help-bar, nav.paths, header.hero, footer, #after, #help, #letter, #before > :not(#tracker) { display: none !important; }
+    .help-bar, nav.paths, header.hero, footer, #after, #help, #letter, .opener, #before .content > :not(#tracker) { display: none !important; }
     .no-print { display: none !important; }
+    figure.snap { display: none !important; }
     body { background: #fff; color: #000; }
   }
 </style>
@@ -208,12 +320,20 @@
 <body>
 
 <div class="help-bar" role="note">
-  If you are struggling to cope or thinking of harming yourself, please <a href="#help">find someone to talk to right now</a>.
+  <div class="wrap">If you are struggling to cope or thinking of harming yourself, please <a href="#help">find someone to talk to right now</a>.</div>
 </div>
 
+<div class="wrap">
 <header class="hero">
-  <h1>The hardest kindness</h1>
-  <p>For people deciding whether it is time to say goodbye to their dog, and for those who already have, and can't stop asking whether they did the right thing.</p>
+  <div>
+    <h1>The hardest kindness</h1>
+    <p>For people deciding whether it is time to say goodbye to their dog, and for those who already have, and can't stop asking whether they did the right thing.</p>
+    <svg class="leash" viewBox="0 0 420 40" aria-hidden="true" focusable="false"><path d="M4 22 C 60 4, 110 36, 170 20 S 280 6, 330 22 S 400 30, 416 14"/></svg>
+  </div>
+  <figure class="snap">
+    <img src="images/sea.jpg" width="1100" height="1100" alt="Mosjka, a cream golden retriever, at the seaside in the sun, with a hand resting on their neck">
+    <figcaption>Mosjka at the sea</figcaption>
+  </figure>
 </header>
 
 <nav class="paths" aria-label="Choose where you are">
@@ -225,8 +345,17 @@
 
 <!-- ============ BEFORE ============ -->
 <section id="before">
-  <h2>Facing the decision</h2>
-  <p class="lead">There is rarely one obvious moment. Most people are waiting for a sign that never comes clearly. These pages can't decide for you, but they can help you see more clearly and talk more openly with your vet.</p>
+  <div class="opener">
+    <div>
+      <h2>Facing the decision</h2>
+      <p class="lead">There is rarely one obvious moment. Most people are waiting for a sign that never comes clearly. These pages can't decide for you, but they can help you see more clearly and talk more openly with your vet.</p>
+    </div>
+    <figure class="snap" style="--tilt:1.5deg">
+      <img src="images/walk.jpg" width="1000" height="1000" alt="Mosjka from above on a pavement walk, wearing black boots and a harness, on a red leash" loading="lazy">
+      <figcaption>Slow walks, in boots</figcaption>
+    </figure>
+  </div>
+  <div class="content">
 
   <div id="tracker">
     <h3>Keep track of the days</h3>
@@ -276,6 +405,10 @@
       <button id="printBtn">Print or save for your vet</button>
       <button class="link" id="clearBtn">Delete everything I've entered</button>
     </div>
+    <div class="card ui confirm-box no-print" id="clearConfirm" hidden>
+      <p>Delete all your saved days, scores and letters from this device? This can't be undone. If you might want them later, download a backup first.</p>
+      <div class="row"><button class="danger" id="clearYes">Delete everything</button><button id="clearNo">Keep my records</button></div>
+    </div>
   </div>
 
   <h3>Questions to ask your vet</h3>
@@ -315,12 +448,22 @@
 
   <h3>Children and other pets</h3>
   <p>With children, use clear words like "died" rather than "went to sleep", which can make sleep frightening. Let them say goodbye in their own way, such as a drawing or a letter. Other dogs and cats in the home sometimes benefit from seeing or smelling their companion's body afterwards; it seems to help some of them understand the absence.</p>
+  </div>
 </section>
 
 <!-- ============ AFTER ============ -->
 <section id="after">
-  <h2>After the goodbye</h2>
-  <p class="lead">Choosing euthanasia brings a particular kind of grief. As well as losing them, many people feel that they caused the loss. Below are the thoughts that come back most often. Open the one that sounds like you.</p>
+  <div class="opener">
+    <div>
+      <h2>After the goodbye</h2>
+      <p class="lead">Choosing euthanasia brings a particular kind of grief. As well as losing them, many people feel that they caused the loss. Below are the thoughts that come back most often. Open the one that sounds like you.</p>
+    </div>
+    <figure class="snap" style="--tilt:-1.5deg">
+      <img src="images/sun.jpg" width="1100" height="1100" alt="Mosjka asleep on a wooden floor in a patch of sunlight" loading="lazy">
+      <figcaption>Asleep in the sun</figcaption>
+    </figure>
+  </div>
+  <div class="content">
 
   <details class="piece">
     <summary>"It was too early. They could have had more good days."<span class="hint">If you keep counting the days you might have had</span></summary>
@@ -380,15 +523,32 @@
     </div>
   </details>
 
-  <h3>The empty routine</h3>
-  <p>For many people the hardest moments are not the big ones but the small daily ones: the time you used to go for a walk, the food bowl, coming home to a silent door. If you can, decide gently what to do with those times instead of meeting them unprepared. Some people take the walk anyway. Some light a candle at dinner time. There is no right way, only your way.</p>
+  <div class="aside">
+    <figure class="snap">
+      <img src="images/evening.jpg" width="1100" height="1100" alt="A hand stroking Mosjka's head on an evening walk; the watch on the wrist shows 6.28 kilometres" loading="lazy">
+      <figcaption>6.28 km together</figcaption>
+    </figure>
+    <div>
+      <h3>The empty routine</h3>
+      <p>For many people the hardest moments are not the big ones but the small daily ones: the time you used to go for a walk, the food bowl, coming home to a silent door. If you can, decide gently what to do with those times instead of meeting them unprepared. Some people take the walk anyway. Some light a candle at dinner time. There is no right way, only your way.</p>
+    </div>
+  </div>
+  </div>
 </section>
 
 <!-- ============ LETTER ============ -->
 <section id="letter">
-  <h2>Write to them</h2>
-  <p class="lead">Writing to the one you've lost is one of the most helpful things people do in grief. Tell them about your day, about how much you miss them, about what you wish you'd said. Come back whenever you need to.</p>
-  <div class="card ui">
+  <div class="opener">
+    <div>
+      <h2>Write to them</h2>
+      <p class="lead">Writing to the one you've lost is one of the most helpful things people do in grief. Tell them about your day, about how much you miss them, about what you wish you'd said. Come back whenever you need to.</p>
+    </div>
+    <figure class="snap" style="--tilt:2deg">
+      <img src="images/home.jpg" width="1100" height="1100" alt="Mosjka at home on a leaf-patterned rug, looking straight into the camera" loading="lazy">
+      <figcaption>Listening</figcaption>
+    </figure>
+  </div>
+  <div class="card ui content">
     <label for="letterText" class="note">This stays only on this device. Nobody else can read it.</label>
     <textarea id="letterText" style="min-height:160px" placeholder="Dear…"></textarea>
     <div class="row" style="margin-top:10px"><button class="primary" id="saveLetter">Keep this letter</button><span id="letterSaved" class="note" aria-live="polite"></span></div>
@@ -397,7 +557,7 @@
 </section>
 
 <!-- ============ HELP ============ -->
-<section id="help">
+<section id="help" class="content">
   <h2>Talk to someone</h2>
   <p class="lead">Grief for a dog is real grief. You do not have to justify it, and you don't have to carry it alone.</p>
   <div class="card">
@@ -424,9 +584,16 @@
 </main>
 
 <footer>
+  <div class="farewell">
+    <figure class="snap">
+      <img src="images/christmas.jpg" width="1100" height="1100" alt="Mosjka lying in front of a lit Christmas tree, mouth open in a happy smile" loading="lazy">
+      <figcaption>Mosjka</figcaption>
+    </figure>
+    <p class="memory">Made in memory of Mosjka,<br>who was loved.</p>
+  </div>
   <p>This site offers information and comfort. It is not veterinary advice or therapy. Please talk to your vet about your dog, and to a doctor or counsellor if your grief feels unmanageable.</p>
-  <p>Made in memory of Mosjka, who was loved.</p>
 </footer>
+</div>
 
 <script>
 (function () {
@@ -679,9 +846,12 @@
 
   // ---- Print / clear ----
   document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
-  document.getElementById("clearBtn").addEventListener("click", function () {
-    if (!confirm("Delete all your saved days, scores and letters from this device? This can't be undone.")) return;
+  var clearConfirm = document.getElementById("clearConfirm");
+  document.getElementById("clearBtn").addEventListener("click", function () { clearConfirm.hidden = false; });
+  document.getElementById("clearNo").addEventListener("click", function () { clearConfirm.hidden = true; });
+  document.getElementById("clearYes").addEventListener("click", function () {
     store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters);
+    clearConfirm.hidden = true;
     loadDayIntoForm(); renderDays(); renderScores(); renderLetters();
   });
 
