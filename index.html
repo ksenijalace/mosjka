@@ -329,6 +329,14 @@
   .date-moment { border-color: rgba(233,214,170,.35); background: linear-gradient(180deg, rgba(233,214,170,.07), rgba(233,214,170,0)); }
   .date-moment .moment { font-size: 19px; color: var(--text); }
   .sf-star.mine.today .sf-glow::before { background: radial-gradient(circle, rgba(246,230,190,.9) 0%, rgba(233,214,170,.35) 42%, rgba(233,214,170,0) 72%); }
+  /* Notes from Ksenija, where they belong */
+  .from-me { margin: 14px 0 4px; padding: 4px 0 4px 14px; border-left: 2px solid rgba(233,214,170,.55); }
+  .from-me .from-label { display: block; font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #d9c79c; margin-bottom: 4px; }
+  .from-me p { font-family: var(--font-quote); font-style: italic; font-size: 17px; line-height: 1.6; color: var(--text); margin: 0; }
+  .check-group .from-me { margin: 0 0 4px 36px; }
+  .scale-item .from-me { margin-top: 8px; }
+  .scale-item .from-me p { font-size: 15px; }
+  .ks-letter { white-space: pre-line; font-family: var(--font-quote); font-size: 18px; line-height: 1.7; }
   .owner-check { border-top: 1px solid var(--line); padding-top: 20px; }
   .segmented button[aria-pressed="true"] { background: var(--sage-bg); box-shadow: inset 0 0 0 2px var(--accent); }
   .field-label { display: block; font-size: 15px; color: var(--muted); margin-bottom: 6px; }
@@ -636,6 +644,8 @@
     <div class="side">
       <h2>Keep track of the days</h2>
       <p>There is rarely one obvious moment. One entry a day makes the pattern visible and gives you something clear to bring to your vet. It also leaves a record you may be grateful for later, when your mind starts asking "was it too soon?"</p>
+      <aside class="from-me"><span class="from-label">From Ksenija</span><p>Her decline was slow, and then it wasn&#39;t. Writing the days down helps you see the turn when it comes.</p></aside>
+      <aside class="from-me"><span class="from-label">From Ksenija</span><p>I booked the appointment twice and cancelled it twice. If you keep going back and forth, you are not failing them. You are trying to be sure.</p></aside>
       <p>Many vets share a phrase that helps people: <em>"Better a week too early than a day too late."</em> It does not mean there is a perfect day. It means that when the choice is between some good time lost and some suffering endured, most vets would rather lose the good time.</p>
       <p class="moment" id="knowsLine"></p>
       <p class="small">Your entries are saved on this device, and online under your dog's nickname, date of birth and PIN, so you can open them anywhere. Photos never leave this device.</p>
@@ -681,6 +691,15 @@
         <span class="status s-msg" id="setupMsg-tracker" aria-live="polite"></span>
       </div>
 
+      <div class="card stack" style="gap: 10px">
+        <span class="card-title">Small things that helped Mosjka</span>
+        <ul class="small" style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px">
+          <li>Her paw pads wore away, so she walked in little boots.</li>
+          <li>A harness with a handle helped me lift her when she couldn't get up.</li>
+          <li>Rugs on smooth floors, so she wouldn't slip.</li>
+        </ul>
+        <p class="small muted" style="margin: 0">From Ksenija</p>
+      </div>
       <div class="card stack age-card" id="ageCard" hidden style="gap: 12px">
         <span class="card-title" id="ageTitle"></span>
         <p id="ageText"></p>
@@ -732,9 +751,11 @@
           <div>
             <span class="card-title" style="font-size: 17px">And you?</span>
             <p class="small muted" style="margin-top: 4px">Caring for a dog at the end of their life is exhausting. How you are holding up is part of the picture too.</p>
+            <aside class="from-me"><span class="from-label">From Ksenija</span><p>In the end we walked four times a day, the first at five in the morning. Being exhausted didn&#39;t mean I loved her less. It won&#39;t mean that for you either.</p></aside>
           </div>
           <div class="moods" role="group" aria-label="How are you holding up today?" id="meMoods"></div>
           <div><label for="meNote" class="field-label">A note about you, if you like: sleep, tiredness, worry, guilt, a good moment together.</label><textarea id="meNote" maxlength="2000" style="min-height: 70px"></textarea></div>
+          <aside class="from-me" id="meAside" hidden><span class="from-label">From Ksenija</span><p>Last winter I had pneumonia, and I was afraid of another autumn of walks in the dark. Your health counts too. It is part of the decision, not a betrayal of it.</p></aside>
           <div class="breathe-slot" id="meBreathe" hidden></div>
           <p class="nudge" id="meNudge" hidden>You've had several very hard days yourself lately. That doesn't decide anything, but it matters. Please let someone help you with the walks and the nights, and be honest with your vet about how things are at home.</p>
         </div>
@@ -813,6 +834,7 @@
           <li><strong>Spend time with them before, if you can,</strong> even if you're afraid you'll change your mind.</li>
           <li><strong>Have their favourite treat ready.</strong> I didn't think of it.</li>
         </ul>
+        <aside class="from-me"><span class="from-label">From Ksenija</span><p>I didn&#39;t go to see Mosjka that afternoon, because I was afraid I would cancel again. Of everything, that is what I regret most. If you can, go to them.</p></aside>
         <h3>One thing I'm glad I did</h3>
         <p><strong>The vet came to our home.</strong> I couldn't imagine taking my dog into a clinic and walking out of it alone. If you can, ask whether your vet, or a vet who works with a pet crematorium, can come to you.</p>
         <p class="small muted"><a href="#story">From the story behind this guide</a></p>
@@ -851,8 +873,10 @@
           <fieldset class="check-group"><legend>Before the day</legend>
             <label class="check"><input type="checkbox" data-check="where"><span>Decide where it will happen. Ask your vet, or a vet who works with a pet crematorium, whether they can come to your home.</span></label>
             <label class="check"><input type="checkbox" data-check="papers"><span>Ask the vet to prepare the paperwork in advance, and have your dog's passport ready, so the last hour is only for them.</span></label>
+            <aside class="from-me"><span class="from-label">From Ksenija</span><p>The papers came right after, while she was still beside me. I wish I had done them the day before, so those minutes were only hers.</p></aside>
             <label class="check"><input type="checkbox" data-check="aftercare"><span>Choose what happens afterwards: individual or communal cremation, or burial. You can decide later, but it helps to know.</span></label>
             <label class="check"><input type="checkbox" data-check="crematorium"><span>Tell the crematorium in advance that you won't help to move or wrap your dog.</span></label>
+            <aside class="from-me"><span class="from-label">From Ksenija</span><p>I had to help put her into the bag. Nobody told me I could say no. You can say no.</p></aside>
             <label class="check"><input type="checkbox" data-check="dayoff"><span>Take the next day off, or two. Cancel what you can.</span><em class="whisper">Grief needs room. Give it some.</em></label>
             <label class="check"><input type="checkbox" data-check="someone"><span>Ask someone to be with you: to open doors, talk to the vet and the crematorium, and stay with you afterwards.</span><em class="whisper">You don&#39;t have to hold everything yourself.</em></label>
             <label class="check"><input type="checkbox" data-check="family"><span>Talk with your family about who will be in the room. Children can say goodbye in their own way, before or after.</span></label>
@@ -867,6 +891,7 @@
           </fieldset>
           <fieldset class="check-group"><legend>Afterwards</legend>
             <label class="check"><input type="checkbox" data-check="noRush"><span>Leave the collar, the bowl and the bed for now. There is no hurry to decide what to keep.</span><em class="whisper">Their things can wait. So can you.</em></label>
+            <aside class="from-me"><span class="from-label">From Ksenija</span><p>Mosjka&#39;s collar is still in our car. I can&#39;t throw it away. The car still smells of her.</p></aside>
             <label class="check"><input type="checkbox" data-check="eat"><span>Eat something and drink some water, even if you don't want to.</span><em class="whisper">Even a little. Your body is grieving too.</em></label>
             <label class="check"><input type="checkbox" data-check="tonight"><span>Make sure you are not alone tonight, or that you can call someone.</span><em class="whisper">The first nights are the hardest.</em></label>
           </fieldset>
@@ -883,8 +908,10 @@
         <p>You can ask the vet to explain each step before doing it, or to do it without explaining. You can ask for a few more minutes at any point. Usually there is first a sedative, so your dog falls deeply asleep in your arms, and only then the final injection.</p>
         <h3>The moment</h3>
         <p>Hold them, and let your voice be the last thing they hear. Their eyes may stay open, and there may be a last breath or a twitch after the heart has stopped. These are reflexes; your dog is no longer aware. Take as long as you need afterwards. You don't have to leave the room or let them go straight away.</p>
+        <aside class="from-me"><span class="from-label">From Ksenija</span><p>When I came in, she trembled with joy to see me. I sat beside her and stroked her the whole time. I held her head when it grew heavy. She was still warm when the vet said it was over.</p></aside>
         <h3>The first evening</h3>
         <p>The house will feel very quiet. Many people cry for hours, or feel numb, or both. Don't try to do anything with it. Eat a little, drink water, and have someone with you or within reach. If you want to, <a href="#letter">write to them</a>.</p>
+        <aside class="from-me"><span class="from-label">From Ksenija</span><p>I cried for two days without stopping. I couldn&#39;t work. If that is you right now, it isn&#39;t weakness. It is how much they mattered.</p></aside>
         <h3>The next days</h3>
         <p>Expect waves rather than a straight line. The hardest moments are often the small routines: the time of the walk, the bowl, the door. <a href="#after">The thoughts that won't stop</a> are there for when the guilt comes.</p>
       </div>
@@ -1021,6 +1048,7 @@
             <p>This thought often grows louder after the death, when your memory starts replaying the better moments of the last weeks: the time they wagged, the time they ate. Grief edits the story. It keeps the bright moments and quietly drops the nights of panting, the pain medication that wasn't quite enough, the look in their eyes that made you start thinking about this in the first place.</p>
             <p>Nobody chooses euthanasia lightly. If you made the decision, it is because you saw something real, and your vet saw it too. The question "could they have had more good days?" rarely has a certain answer, but the cost of guessing wrong in the other direction was your dog's suffering, and you chose to protect them from that.</p>
             <p>A day you gave up so that they would not have to suffer is not a day you took from them. It is a gift you paid for with your own heart.</p>
+            <aside class="from-me"><span class="from-label">From Ksenija</span><p>I didn&#39;t choose a calm, perfect day. My mother called at half past six in the morning; her blood pressure was 170, and I called an ambulance. That same day I booked the appointment. Very few people get to choose the day calmly. It doesn&#39;t make the choice less loving.</p></aside>
             <div class="try"><strong>Try this. </strong>Write down, as honestly as you can, what an ordinary day in the last two weeks was really like for <span class="dog-word">your dog</span>. What could they no longer do? What worried you? Keep the list, and read it when the thought comes back.</div>
           </div>
         </details>
@@ -1064,6 +1092,7 @@
           <div class="body">
             <p>If your dog was ill for a long time, you probably lived for weeks or months with medication schedules, sleepless nights, cleaning up, carrying them up the stairs and watching for signs. When that ends, relief is a completely natural response. It sits right next to grief, and it doesn't make the grief any less real.</p>
             <p>Relief is often relief that their suffering is over, too. You no longer have to watch them struggle. That is not a betrayal of them; it is part of how much you cared.</p>
+            <aside class="from-me"><span class="from-label">From Ksenija</span><p>I feel relief, and I feel regret. Both, at the same time, every day. I&#39;ve stopped waiting for one of them to win.</p></aside>
             <div class="try"><strong>Try this. </strong>Name both feelings to <span class="dog-word">your dog</span>: "I miss you so much, and I am relieved you are not hurting anymore." Both are true. Neither cancels the other.</div>
           </div>
         </details>
@@ -1091,6 +1120,7 @@
             <p class="voice">"I had been thinking about euthanasia not only for her, but for us too. Last winter I had pneumonia. Autumn was coming again, and I was afraid I wouldn't cope."</p>
             <p>This is one of the hardest things to say out loud. But a dog depends completely on the person who cares for them, and that person's strength and health are part of the dog's life too. When the carer is breaking, the care is breaking.</p>
             <p>Considering your own limits doesn't cancel the real reasons: the pain, the lost joy, the body that no longer worked. Both can be true. You can be relieved for yourself and still have chosen for them.</p>
+            <aside class="from-me"><span class="from-label">From Ksenija</span><p>I wasn&#39;t thinking only of her. The early walks, my pneumonia, our new floor. I&#39;m still learning that this doesn&#39;t cancel fifteen years of love. I don&#39;t think it cancels yours.</p></aside>
             <div class="try"><strong>Try this. </strong>Write two lists side by side: "what was hard for <span class="dog-word">your dog</span>" and "what was hard for me". Look at both. Neither list makes you a bad person.</div>
           </div>
         </details>
@@ -1137,6 +1167,24 @@
         <div class="j-finale stack" id="jFinale" style="gap: 10px" hidden>
           <p class="moment" id="jFinaleText"></p>
           <div class="row"><a class="btn" href="#stars" id="jFinaleStar"></a></div>
+          <details class="ks-letter-box">
+            <summary class="small" style="cursor: pointer; color: var(--accent); font-weight: 600">A letter from Ksenija</summary>
+            <p class="ks-letter" style="margin-top: 12px">Dear you,
+
+If you are reading this, you have walked a whole month without them. I know that some of these days you only got through, and that's enough. Getting through was the work.
+
+I'm writing this a month after I said goodbye to Mosjka. She was fifteen. She ate a whole cake once, box and all, and collected stones by the sea, and on our walks she liked to stop at a café for water, even when her bowl at home was full. In the end she couldn't get up by herself anymore, and the medicine made her sick, and I made the appointment I had cancelled twice.
+
+I still don't know if I chose the right day. I don't think I will ever know. What I do know is that I chose it because I loved her, even on the days I was tired, even with everything else I was thinking about. I think that is true for you too.
+
+The grief hasn't gone. It has changed. It's less like falling now, and more like carrying something heavy that I've learned how to hold. Some days it still knocks me over. Some days I can remember her and smile.
+
+You don't have to be finished. There's nothing to finish. You are still their person, and you always will be.
+
+Thank you for walking this month with me.
+
+Ksenija, who loved Mosjka</p>
+          </details>
           <p class="small muted">The path stays here as it is. Come back whenever you need to.</p>
         </div>
         <div class="j-presence" id="jPresence" hidden></div>
@@ -1146,6 +1194,7 @@
           <p class="moment fade-in" id="jMilestone" hidden></p>
           <p id="jText"></p>
           <p class="moment fade-in" id="jMemory" hidden></p>
+          <aside class="from-me" id="jFrom" hidden><span class="from-label">From Ksenija</span><p id="jFromText"></p></aside>
           <div class="j-expect"><span class="field-label" style="margin: 0 0 2px">What many people feel around now</span><p id="jExpect"></p></div>
         </div>
         <div class="try"><strong id="jActionLabel">Today, if you can. </strong><span id="jAction"></span>
@@ -1221,6 +1270,7 @@
     <div class="side">
       <h2>For family and friends</h2>
       <p>If someone you love has just said goodbye to their dog, this is how you can help. Send this part to the people around you.</p>
+      <aside class="from-me"><span class="from-label">From Ksenija</span><p>In her last weeks Mosjka stayed with my mother in Riga. She is 76, and she was tired. The people who help us carry this are grieving too. Thank them.</p></aside>
       <div class="row">
         <button type="button" class="btn" id="copyFamily">Copy a link to this part</button>
       </div>
@@ -1552,6 +1602,7 @@
   function pressMe() {
     meBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.mood === meMood)); });
     document.getElementById("meBreathe").hidden = meMood !== 1;
+    document.getElementById("meAside").hidden = meMood !== 1;
   }
 
   // The scores propose an overall day; the owner has the last word.
@@ -1737,12 +1788,12 @@
 
   // ---- Quality-of-life scale ----
   var items = [
-    ["hurt", "Hurt", "Is pain well controlled? Is breathing comfortable? 10 means no pain at all."],
-    ["hunger", "Hunger", "Are they eating enough, with or without help?"],
+    ["hurt", "Hurt", "Is pain well controlled? Is breathing comfortable? 10 means no pain at all.", "In the last weeks the pain medicine and sedatives made her sick. She wasn't herself anymore. Sometimes the treatment starts to take more than it gives."],
+    ["hunger", "Hunger", "Are they eating enough, with or without help?", "Mosjka ate and drank well to the very end. A good appetite on its own doesn't mean everything is all right."],
     ["hydration", "Hydration", "Are they drinking enough?"],
-    ["hygiene", "Hygiene", "Can they keep clean? Are there sores or accidents?"],
-    ["happiness", "Happiness", "Do they show interest, joy, response to family and toys?"],
-    ["mobility", "Mobility", "Can they get up, walk and move around as they need to?"],
+    ["hygiene", "Hygiene", "Can they keep clean? Are there sores or accidents?", "Near the end she began to wet herself on the stairs. It wasn't her fault, and it wasn't mine. It was her body getting tired."],
+    ["happiness", "Happiness", "Do they show interest, joy, response to family and toys?", "One day I realised she had stopped wagging her tail. I don't know when it stopped. Watch for the small things that go quietly."],
+    ["mobility", "Mobility", "Can they get up, walk and move around as they need to?", "For her last six months she couldn't get up by herself, but once I lifted her, she could still walk. Both were true. That's why the in-between numbers exist."],
     ["more", "More good days than bad", "Overall, are good days still outnumbering bad ones?"]
   ];
   // What each score from 0 to 10 looks like in everyday life.
@@ -1863,6 +1914,10 @@
     });
     wrap.appendChild(range);
     wrap.appendChild(mean);
+    if (it[3]) {
+      var note = el("aside", "from-me"); note.appendChild(el("span", "from-label", "From Ksenija")); note.appendChild(el("p", null, it[3]));
+      wrap.appendChild(note);
+    }
     scaleBox.appendChild(wrap);
   });
   function scaleValues() {
@@ -2477,6 +2532,12 @@
   }
   // Their own words, back on the days they belong to.
   function clip(t) { t = String(t).replace(/\s+/g, " ").trim(); return t.length > 160 ? t.slice(0, 157).replace(/\s+\S*$/, "") + "\u2026" : t; }
+  // Ksenija's own days, walking beside theirs.
+  var FROM_DAY = {
+    15: "Before the end there was so much: an inflamed liver she recovered from, an ear operation without anaesthetic because she was too old for it, skin cancer, new lumps all summer. When the last day fills my mind, I try to remember all of that too. She was brave for a long time.",
+    16: "Mosjka \u201cread\u201d books and pulled the hair out of dolls, one strand at a time. Writing these down made me smile for the first time.",
+    20: "I still can't look at her ashes. My husband keeps them for me. There is no right time for that, and no wrong one."
+  };
   function memoryFor(day) {
     var a = (store.get(KEYS.portrait, { answers: {} }).answers) || {}, n = dogWord();
     if (day === 15) return Object.keys(a).length ? "You've already begun telling " + n + "\u2019s story. You could add to it today: [Tell me about them](#remember)." : "If you'd like, nine gentle questions can help you write it down: [Tell me about them](#remember).";
@@ -2746,6 +2807,8 @@
       : "This day is still ahead. You can read it now; its check-in opens when you get here.";
     fillText(document.getElementById("jText"), d[1]);
     renderPresence();
+    document.getElementById("jFrom").hidden = !FROM_DAY[jView];
+    if (FROM_DAY[jView]) document.getElementById("jFromText").textContent = FROM_DAY[jView];
     var mem = memoryFor(jView), memBox = document.getElementById("jMemory");
     memBox.hidden = !mem;
     if (mem) { memBox.innerHTML = STAR_SVG; var memText = el("span"); fillText(memText, mem); memBox.appendChild(memText); }
@@ -2966,6 +3029,10 @@
       }
     }
     var d = daysBetween(gb, today());
+    // The first day of the first new season after the goodbye.
+    var SEASONS = { 2: "spring", 5: "summer", 8: "autumn", 11: "winter" };
+    if (t.getDate() === 1 && SEASONS[t.getMonth()] && d > 0 && d <= 92)
+      return { id: "season" + t.getFullYear() + t.getMonth(), text: "Today " + SEASONS[t.getMonth()] + " begins, the first without " + name + ". The first seasons can bring it all back. For me it will be autumn. \u2014 Ksenija", link: write };
     if (d === 7) return { id: "w1", text: "It's been a week since you said goodbye to " + name + ". You don't have to be okay today.", link: write };
     if (d > 0 && g.getDate() === t.getDate()) {
       var months = (t.getFullYear() - g.getFullYear()) * 12 + (t.getMonth() - g.getMonth());
@@ -3066,6 +3133,7 @@
     var bar = document.getElementById("rmProgress"); bar.innerHTML = "";
     RM.forEach(function (_, i) { bar.appendChild(el("span", i <= rmStep ? "on" : "")); });
     document.getElementById("rmA").value = pt.answers[q[0]] || "";
+    document.getElementById("rmA").placeholder = q[0] === "unique" ? "Mosjka stopped at caf\u00e9s for a drink of water, even when her bowl at home was full." : "";
     document.getElementById("rmAck").innerHTML = "";
     document.getElementById("rmBack").disabled = rmStep === 0;
     document.getElementById("rmNext").textContent = rmStep === RM.length - 1 ? "Finish" : "Next";
