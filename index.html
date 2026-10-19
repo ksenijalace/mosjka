@@ -333,6 +333,17 @@
     border: 1px solid var(--line-strong); border-radius: 6px; padding: 10px 12px; min-height: 46px; width: 100%;
   }
 
+  .j-dots { display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 5px; }
+  .j-dot { height: 12px; border-radius: 6px; border: 1px solid var(--line-strong); background: transparent; padding: 0; cursor: pointer; min-height: 0; }
+  .j-dot.done { background: var(--sage-ink); border-color: var(--sage-ink); }
+  .j-dot.reached { border-color: var(--accent); }
+  .j-dot.current { box-shadow: 0 0 0 2px var(--accent); }
+  .j-dot:disabled { cursor: default; opacity: .5; }
+  .moods { display: flex; flex-wrap: wrap; gap: 8px; }
+  .moods button { font: inherit; font-size: 15px; font-weight: 600; min-height: 44px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--text); cursor: pointer; }
+  .moods button[aria-pressed="true"] { background: var(--sage-bg); border-color: var(--accent); }
+  .j-check { border-top: 1px solid var(--line); padding-top: 18px; }
+
   .about { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 40px 64px; }
   .about > div { display: flex; flex-direction: column; gap: 12px; }
   .about h3 { font-size: 26px; }
@@ -431,7 +442,7 @@
     </a>
     <a class="path" href="#after">
       <span class="path-title">After the goodbye</span>
-      <span class="path-text">The thoughts that come back most often and what is true about them, short exercises for guilt and for the last moment, and a private place to write to your dog.</span>
+      <span class="path-text">The thoughts that come back most often and what is true about them, a gentle 30-day companion for the first month, and a private place to write to your dog.</span>
       <span class="path-more">Read this first &#8594;</span>
     </a>
   </div>
@@ -773,6 +784,60 @@
   </div>
 </section>
 
+<!-- ============ JOURNEY ============ -->
+<section id="journey">
+  <div class="wrap split">
+    <div class="side">
+      <h2>30 days after</h2>
+      <p>A gentle companion for the first month. Each day has one short thought, one small thing you could do, and a moment to say how you are.</p>
+      <p class="small">Go at your own pace. There are no streaks: skip a day, or a week, and simply carry on where you left off. Your check-ins are kept with your dog's history.</p>
+    </div>
+    <div class="main card stack" id="journeyCard" style="gap: 20px">
+      <div id="jStart" class="stack" style="gap: 14px">
+        <span class="card-title">Begin whenever you're ready</span>
+        <p class="muted">You can start on the day of the goodbye, or weeks later. It's for you, not a test.</p>
+        <div class="row"><button type="button" class="btn primary" id="jBegin">Start day 1</button></div>
+      </div>
+      <div id="jDay" class="stack" style="gap: 18px" hidden>
+        <div class="row" style="justify-content: space-between; align-items: baseline">
+          <span class="small muted" id="jCounter"></span>
+          <span class="row" style="gap: 6px">
+            <button type="button" class="btn quiet" id="jPrev" aria-label="Previous day">&#8592; Previous</button>
+            <button type="button" class="btn quiet" id="jNext" aria-label="Next day">Next &#8594;</button>
+          </span>
+        </div>
+        <div class="j-dots" id="jDots" role="group" aria-label="Days of the journey"></div>
+        <div class="stack" style="gap: 10px">
+          <h3 id="jTitle" style="margin: 0"></h3>
+          <p id="jText"></p>
+        </div>
+        <div class="try"><strong>Today, if you can. </strong><span id="jAction"></span></div>
+        <div class="stack j-check" style="gap: 12px">
+          <span class="card-title" style="font-size: 17px">How are you today?</span>
+          <div class="moods" role="group" aria-label="How are you today?" id="jMoods"></div>
+          <div><label for="jWord" class="field-label">One word or a sentence, if you like</label><input type="text" id="jWord" maxlength="200" autocomplete="off" style="width: 100%"></div>
+          <div class="row"><button type="button" class="btn primary" id="jSave">Save today's check-in</button><span class="status" id="jMsg" aria-live="polite"></span></div>
+        </div>
+        <div class="nudge" id="jSupport" hidden>
+          <p><strong>The last few days have been very hard.</strong> That happens in grief, and you don't have to carry it alone. Please consider talking to someone today: a friend, your doctor, or a helpline.</p>
+          <p style="margin-top: 8px"><a href="#help">Find someone to talk to</a></p>
+        </div>
+        <details id="jHistory">
+          <summary class="small" style="cursor: pointer; color: var(--accent); font-weight: 600">Your check-ins</summary>
+          <ul class="log" id="jLog" style="margin-top: 8px"></ul>
+        </details>
+        <div class="row row-split">
+          <button type="button" class="btn quiet" id="jRestart">Start the journey again</button>
+        </div>
+        <div id="jRestartConfirm" class="stack" style="gap: 10px" hidden>
+          <p class="small">Start again from day 1? Your earlier check-ins will be cleared.</p>
+          <div class="row"><button type="button" class="btn danger" id="jRestartYes">Start again</button><button type="button" class="btn" id="jRestartNo">Keep my journey</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ KEEPSAKES ============ -->
 <section id="keepsakes" class="band">
   <div class="wrap split">
@@ -995,7 +1060,7 @@
     <div id="sources">
       <h3>Sources and privacy</h3>
       <p>The quality-of-life scale is Dr Alice Villalobos's HHHHHMM scale. Helpline numbers were checked in October 2026 against the services' own websites, national health authorities and helpline directories; numbers can change, so please confirm one before relying on it.</p>
-      <p id="privacy">There are no accounts, no ads and no tracking. Photos stay in your browser. If you set up a PIN for your dog, the days, notes, scores, letters, checklist and your “Try this” answers are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
+      <p id="privacy">There are no accounts, no ads and no tracking. Photos stay in your browser. If you set up a PIN for your dog, the days, notes, scores, letters, checklist, 30-day check-ins and your “Try this” answers are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
     </div>
   </div>
 </section>
@@ -1011,6 +1076,7 @@
     <nav aria-label="Footer">
       <a href="#story">Her story</a>
       <a href="#day">The day</a>
+      <a href="#journey">30 days after</a>
       <a href="#keepsakes">Keepsakes</a>
       <a href="#family">For family and friends</a>
       <a href="#contact" id="footContact" hidden>Write to me</a>
@@ -1047,7 +1113,7 @@
     },
     remove: function (key) { try { localStorage.removeItem(key); } catch (e) {} }
   };
-  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", country: "hk.country", dog: "hk.dog", sync: "hk.sync", exercises: "hk.exercises", checklist: "hk.checklist" };
+  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", country: "hk.country", dog: "hk.dog", sync: "hk.sync", exercises: "hk.exercises", checklist: "hk.checklist", journey: "hk.journey" };
   var unsaved = "Saved for now, but this browser isn't keeping data, so it may be lost when you close the page.";
 
   function iso(d) {
@@ -1314,6 +1380,7 @@
     } else {
       dogPhoto.removeAttribute("src");
     }
+    renderJourney();
   }
 
   function saveDog(changes, okText) {
@@ -1358,7 +1425,7 @@
     var data = {
       app: "the-hardest-kindness", version: 1, exported: new Date().toISOString(),
       days: store.get(KEYS.days, {}), scores: store.get(KEYS.scores, []), letters: store.get(KEYS.letters, []),
-      dog: store.get(KEYS.dog, {}), exercises: store.get(KEYS.exercises, {}), checklist: store.get(KEYS.checklist, {})
+      dog: store.get(KEYS.dog, {}), exercises: store.get(KEYS.exercises, {}), checklist: store.get(KEYS.checklist, {}), journey: store.get(KEYS.journey, null)
     };
     var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     var a = document.createElement("a");
@@ -1396,6 +1463,7 @@
       var ok = store.set(KEYS.days, days)
         && store.set(KEYS.scores, mergeList(store.get(KEYS.scores, []), data.scores))
         && store.set(KEYS.letters, mergeList(store.get(KEYS.letters, []), data.letters));
+      if (ok && data.journey) ok = store.set(KEYS.journey, mergeJourney(store.get(KEYS.journey, null), data.journey));
       if (ok && data.checklist) ok = store.set(KEYS.checklist, mergeChecklist(store.get(KEYS.checklist, {}), data.checklist));
       if (ok && data.exercises) ok = store.set(KEYS.exercises, mergeExercises(store.get(KEYS.exercises, {}), data.exercises));
       // Keep anything already set on this device; fill in only what is missing.
@@ -1419,7 +1487,7 @@
   document.getElementById("clearBtn").addEventListener("click", function () { clearConfirm.hidden = false; });
   document.getElementById("clearNo").addEventListener("click", function () { clearConfirm.hidden = true; });
   document.getElementById("clearYes").addEventListener("click", function () {
-    store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters); store.remove(KEYS.dog); store.remove(KEYS.exercises); store.remove(KEYS.checklist);
+    store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters); store.remove(KEYS.dog); store.remove(KEYS.exercises); store.remove(KEYS.checklist); store.remove(KEYS.journey);
     store.remove(KEYS.sync); // disconnect too, so the empty device doesn't overwrite anything online
     clearConfirm.hidden = true;
     renderSync();
@@ -1616,6 +1684,141 @@
     }
   }
 
+  // ---- 30 days after ----
+  // {dog} becomes the dog's name (or "your dog"); [text](#anchor) becomes a link.
+  var JOURNEY = [
+    ["Just today", "In the first days you don't have to do anything with your grief. Crying for hours, feeling numb, not eating, not sleeping: all of it is normal. You only have to get through today.", "Drink a glass of water and eat something small. Tell one person how you are."],
+    ["The silence", "The house is quiet in a way you can hear. Many people keep hearing paws on the floor, or turn to the door at the time {dog} used to wait there. This is love looking for where it used to go.", "If a place or a sound hurts, say it out loud: \"This is where you used to lie.\" It sounds strange, and it helps."],
+    ["Let people help", "People around you may not know what to say, so they say nothing, or the wrong thing. It helps to tell them what you need.", "Send someone the part [for family and friends](#family)."],
+    ["The routine", "Often the hardest moments are the small ones: the time of the morning walk, the food bowl, coming home to no greeting. Meeting them unprepared is the hardest.", "Pick the hardest time of your day and decide what you'll do then instead: a short walk alone, a cup of tea, lighting a candle."],
+    ["Your body", "Grief is physical. Tiredness, aches, a tight chest, poor sleep and forgetting things are all common in the first weeks.", "Go outside for ten minutes today, even without anywhere to go."],
+    ["Their things", "You don't have to decide anything about the bowl, the bed, the collar or the toys. Some people put everything away at once; others leave it all for months. Both are fine.", "Choose one thing of theirs to keep close for now, and let the rest wait."],
+    ["One week", "A week has passed. For many people this is when it gets heavier, because everyone else seems to have moved on.", "[Write {dog} a short letter](#letter) about this week."],
+    ["The questions", "Was it too early? Too late? Should I have been there, or done it differently? These questions come for almost everyone who chose euthanasia.", "Open [the thought](#after) that sounds most like yours, and do its \"Try this\"."],
+    ["What you saw", "Your memory will keep offering you the good moments of the last weeks. It's worth writing down the other side too, while you still remember it clearly.", "Write three things you saw that told you it was time. Keep the list; you may need it later."],
+    ["Forgiving yourself", "Everyone who has loved a dog can list things they would do differently. That list is not proof that you failed them. It's proof of how much you cared.", "Write one sentence that starts with \"I forgive myself for…\", even if you don't believe it yet."],
+    ["Anger", "Anger is part of grief: at the vet, at the illness, at people who don't understand, at yourself, even at {dog} for leaving. It doesn't make you a bad person.", "Write it all down without filtering, then close the page. You don't have to show it to anyone."],
+    ["\"It was only a dog\"", "Some people won't understand how big this loss is. Their words can hurt more than they know. Your grief is real, and it is as big as your love was.", "Find one place that understands: a pet-loss group, or one of [the helplines](#help)."],
+    ["Waves", "You may have a lighter hour, then suddenly a crash. That isn't going backwards. Grief comes in waves, and over time the waves come less often.", "Notice one moment today that was a little lighter, and write it in your check-in."],
+    ["Two weeks", "Two weeks. There is no right speed for this. Some days will still feel like the first one.", "Open \"Your check-ins\" below and look at how the days have been. Be gentle with what you see."],
+    ["Their whole story", "In the first weeks the end fills everything. Now you can start to remember the whole life, not only the last days.", "Write down how {dog} came into your life: the first day, the first impression."],
+    ["Small joys", "Every dog has habits that only they had: the way they asked for food, a funny thing they stole, where they liked to sleep.", "Write down five of {dog}'s funny or stubborn habits. You may find yourself smiling."],
+    ["Photos", "Some people can't look at photos yet; others can't stop. Both are normal.", "If you feel ready, choose one photo where {dog} was happy and put it somewhere you will see it. If not, leave it for another day."],
+    ["Places", "Your walking routes, the park, the beach: places you shared can hurt to go back to, and can also bring you close.", "Visit one place you went to together, or decide not to yet. Either is fine."],
+    ["The firsts", "The first weekend away, the first holiday, the first birthday without them. Firsts are hard because they arrive without warning.", "Write down the next \"first\" that is coming, and one small plan for that day."],
+    ["Keeping something", "Some people want something they can hold: a piece of jewellery, a paw print, the collar. Others don't. There is no hurry.", "Read [keeping something of them](#keepsakes). No decision needed today."],
+    ["Three weeks", "Three weeks. You have been carrying this every day, even on the days it didn't look like it from the outside.", "[Write to {dog}](#letter) about one ordinary thing that happened today."],
+    ["The bond goes on", "Losing them doesn't end the bond. Many people find that the relationship changes rather than ends: you carry them, talk to them, remember them.", "Write down one thing {dog} taught you."],
+    ["Kindness in their name", "Some people find comfort in doing something kind in memory of their dog. Only if it feels right for you.", "If you'd like to: give food or old blankets to a shelter, walk a neighbour's dog, or simply be kind to someone today in {dog}'s name."],
+    ["Evenings", "Evenings and nights are often the hardest: the house is quiet and the thoughts get loud.", "Make a small evening ritual: a cup of tea, a few lines in your check-in, a candle, a minute with a photo."],
+    ["When guilt comes back", "Guilt doesn't leave in a straight line. It can come back weeks later, as strong as at the start.", "Read what you wrote on day 9 about what you saw. It was true then, and it is true now."],
+    ["Looking after yourself", "Caring for an ill dog can take everything you have, for months. Now there is room to look after you.", "Do one thing you kept postponing while you were caring for {dog}: a doctor's visit, a friend, a rest."],
+    ["Saying their name", "People often stop mentioning a dog who has died, to avoid hurting you. Many owners say that hearing the name is exactly what they need.", "Tell someone a funny story about {dog}, and say their name out loud."],
+    ["Four weeks", "Four weeks. Look back at your first check-ins. Even if today is hard, something may have changed in how you carry it.", "Open \"Your check-ins\" and compare the first days with the last."],
+    ["Another dog?", "The question may come from others, or from inside you. There is no right time. A new dog would never replace {dog}, and wanting one, or never wanting one, is not betrayal.", "When you see a dog on the street today, just notice what you feel. No decision is needed."],
+    ["Living forward", "Grief doesn't end on day 30. It softens and changes shape, and it becomes part of you, like the love did. You can come back to any day of this journey whenever you need it.", "[Write {dog} a letter](#letter) about what you will carry with you from your life together."]
+  ];
+  var MOODS = [[1, "Very hard"], [2, "Hard"], [3, "Up and down"], [4, "A little lighter"], [5, "Steady"]];
+  var jView = null, jMood = null;
+
+  function journeyState() { return store.get(KEYS.journey, { reached: 0, days: {} }); }
+  function dogWord() { var n = (store.get(KEYS.dog, {}).name || "").trim(); return n || "your dog"; }
+  function fillText(node, text) {
+    node.innerHTML = "";
+    text = text.replace(/\{dog\}/g, dogWord());
+    var re = /\[([^\]]+)\]\((#[a-z]+)\)/g, last = 0, m;
+    while ((m = re.exec(text))) {
+      node.appendChild(document.createTextNode(text.slice(last, m.index)));
+      var a = el("a", null, m[1]); a.href = m[2]; node.appendChild(a);
+      last = re.lastIndex;
+    }
+    node.appendChild(document.createTextNode(text.slice(last)));
+  }
+
+  var moodBox = document.getElementById("jMoods");
+  MOODS.forEach(function (mo) {
+    var b = el("button", null, mo[1]);
+    b.type = "button"; b.dataset.mood = mo[0]; b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", function () {
+      jMood = mo[0];
+      moodBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    });
+    moodBox.appendChild(b);
+  });
+
+  function renderJourney() {
+    var st = journeyState();
+    var started = st.reached > 0;
+    document.getElementById("jStart").hidden = started;
+    document.getElementById("jDay").hidden = !started;
+    if (!started) return;
+    if (jView == null) jView = st.reached;
+    jView = Math.min(Math.max(jView, 1), 30);
+    var d = JOURNEY[jView - 1], entry = st.days[jView];
+    document.getElementById("jCounter").textContent = "Day " + jView + " of 30";
+    document.getElementById("jTitle").textContent = d[0];
+    fillText(document.getElementById("jText"), d[1]);
+    fillText(document.getElementById("jAction"), d[2]);
+    jMood = entry ? entry.mood : null;
+    moodBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.mood === jMood)); });
+    document.getElementById("jWord").value = entry ? entry.word || "" : "";
+    document.getElementById("jPrev").disabled = jView <= 1;
+    document.getElementById("jNext").disabled = jView >= 30 || jView >= st.reached + 1;
+
+    var dots = document.getElementById("jDots");
+    dots.innerHTML = "";
+    for (var i = 1; i <= 30; i++) {
+      var dot = el("button", "j-dot" + (st.days[i] ? " done" : i <= st.reached ? " reached" : "") + (i === jView ? " current" : ""));
+      dot.type = "button";
+      dot.disabled = i > st.reached + 1 || i > 30;
+      dot.setAttribute("aria-label", "Day " + i + (st.days[i] ? ", checked in" : ""));
+      (function (n) { dot.addEventListener("click", function () { jView = n; renderJourney(); }); })(i);
+      dots.appendChild(dot);
+    }
+
+    var log = document.getElementById("jLog");
+    log.innerHTML = "";
+    var keys = Object.keys(st.days).map(Number).sort(function (a, b) { return a - b; });
+    if (!keys.length) log.appendChild(el("li", "muted", "No check-ins yet."));
+    keys.forEach(function (n) {
+      var e = st.days[n];
+      log.appendChild(el("li", null, "Day " + n + " · " + niceDate(e.date) + " · " + MOODS[e.mood - 1][1] + (e.word ? " · " + e.word : "")));
+    });
+    // Three "very hard" check-ins in a row: offer support, gently.
+    var last = keys.slice(-3).map(function (n) { return st.days[n].mood; });
+    document.getElementById("jSupport").hidden = !(last.length === 3 && last.every(function (m) { return m === 1; }));
+  }
+
+  document.getElementById("jBegin").addEventListener("click", function () {
+    var st = journeyState();
+    st.reached = Math.max(st.reached, 1); st.t = Date.now();
+    store.set(KEYS.journey, st);
+    jView = 1;
+    renderJourney();
+    scheduleSync();
+  });
+  document.getElementById("jSave").addEventListener("click", function () {
+    if (!jMood) { flash("jMsg", "Choose how you are today first."); return; }
+    var st = journeyState();
+    st.days[jView] = { mood: jMood, word: document.getElementById("jWord").value.trim(), date: today(), t: Date.now() };
+    st.reached = Math.max(st.reached, Math.min(jView + 1, 30));
+    st.t = Date.now();
+    flash("jMsg", store.set(KEYS.journey, st) ? (jView < 30 ? "Saved. Day " + (jView + 1) + " is there whenever you're ready." : "Saved. You've walked all 30 days.") : unsaved);
+    renderJourney();
+    scheduleSync();
+  });
+  document.getElementById("jPrev").addEventListener("click", function () { jView--; renderJourney(); });
+  document.getElementById("jNext").addEventListener("click", function () { jView++; renderJourney(); });
+  var jConfirm = document.getElementById("jRestartConfirm");
+  document.getElementById("jRestart").addEventListener("click", function () { jConfirm.hidden = false; });
+  document.getElementById("jRestartNo").addEventListener("click", function () { jConfirm.hidden = true; });
+  document.getElementById("jRestartYes").addEventListener("click", function () {
+    store.set(KEYS.journey, { reached: 1, days: {}, t: Date.now(), reset: Date.now() });
+    jConfirm.hidden = true; jView = 1;
+    renderJourney();
+    scheduleSync();
+  });
+
   // ---- Online history (nickname + date of birth + PIN) ----
   // Public project address and publishable key; both are safe to ship in the page.
   var SYNC_CONFIG = { url: "https://fqezebcjordsedotvesn.supabase.co", key: "sb_publishable_d4GwV_HElw0vJ6i35sdqTQ_fXtfKEQJ" };
@@ -1665,6 +1868,22 @@
         if (!out[id] || (src[id].t || 0) > (out[id].t || 0)) out[id] = src[id];
       });
     });
+    return out;
+  }
+  // Journey: a restart on any device wins over older check-ins; otherwise keep the newest entry per day.
+  function mergeJourney(a, b) {
+    a = a || { reached: 0, days: {} }; b = b || { reached: 0, days: {} };
+    var reset = Math.max(a.reset || 0, b.reset || 0);
+    var out = { reached: 0, days: {}, reset: reset || undefined, t: Math.max(a.t || 0, b.t || 0) };
+    [a, b].forEach(function (src) {
+      if ((src.reset || 0) === reset) out.reached = Math.max(out.reached, src.reached || 0);
+      Object.keys(src.days || {}).forEach(function (n) {
+        var e = src.days[n];
+        if ((e.t || 0) < reset) return;
+        if (!out.days[n] || (e.t || 0) > (out.days[n].t || 0)) out.days[n] = e;
+      });
+    });
+    Object.keys(out.days).forEach(function (n) { out.reached = Math.max(out.reached, Math.min(+n + 1, 30)); });
     return out;
   }
   function mergeLetters(a, b) {
@@ -1725,12 +1944,14 @@
       var letters = mergeLetters(store.get(KEYS.letters, []), remote.letters);
       var checklist = mergeChecklist(store.get(KEYS.checklist, {}), remote.checklist);
       store.set(KEYS.checklist, checklist);
+      var journey = mergeJourney(store.get(KEYS.journey, null), remote.journey);
+      store.set(KEYS.journey, journey);
       store.set(KEYS.days, days);
       store.set(KEYS.scores, scores);
       store.set(KEYS.exercises, exercises);
       store.set(KEYS.letters, letters);
-      renderDays(); renderScores(); loadDayIntoForm(); renderExercises(); renderLetters(); renderChecklist();
-      return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores, exercises: exercises, letters: letters, checklist: checklist } });
+      renderDays(); renderScores(); loadDayIntoForm(); renderExercises(); renderLetters(); renderChecklist(); renderJourney();
+      return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores, exercises: exercises, letters: letters, checklist: checklist, journey: journey } });
     }).then(function () {
       if (!quiet) setupMsg(card, "Saved online " + new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) + ".");
       return true;
@@ -1796,7 +2017,7 @@
       // Save everything online first, then clear this device so the next dog starts fresh.
       syncNow(true, card).then(function (ok) {
         if (!ok) return;
-        [KEYS.days, KEYS.scores, KEYS.letters, KEYS.exercises, KEYS.checklist, KEYS.dog, KEYS.sync].forEach(store.remove);
+        [KEYS.days, KEYS.scores, KEYS.letters, KEYS.exercises, KEYS.checklist, KEYS.journey, KEYS.dog, KEYS.sync].forEach(store.remove);
         setups.forEach(function (c) { c.querySelector(".s-nick").value = ""; c.querySelector(".s-dob").value = ""; });
         refreshAll();
         setupMsg(card, syncEnabled
@@ -1821,7 +2042,7 @@
   });
 
   function refreshAll() {
-    loadDayIntoForm(); renderDays(); renderScores(); renderLetters(); applyDog(); renderExercises(); renderChecklist(); renderSync();
+    loadDayIntoForm(); renderDays(); renderScores(); renderLetters(); applyDog(); renderExercises(); renderChecklist(); renderJourney(); renderSync();
   }
   refreshAll();
 })();
