@@ -228,6 +228,19 @@
     border-right: 1px solid var(--line-strong);
   }
   .segmented button:last-child { border-right: 0; }
+  .segmented button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 6px 8px; }
+  .paw { width: 20px; height: 20px; flex: none; }
+  @media (max-width: 640px) { .segmented button { flex-direction: column; gap: 4px; min-height: 64px; font-size: 15px; } }
+  .paw .pad, .paw .toes { stroke: currentColor; stroke-width: 1.3; }
+  .paw-good .pad, .paw-good .toes, .paw-okay .pad { fill: currentColor; }
+  .paw-okay .toes, .paw-bad .pad, .paw-bad .toes { fill: none; }
+  .segmented .choice[data-kind="good"] .paw { color: var(--good); }
+  .segmented .choice[data-kind="okay"] .paw { color: var(--okay); }
+  .segmented .choice[data-kind="bad"] .paw { color: #c9a39b; }
+  .day .paw { width: 16px; height: 16px; }
+  .week .day .paw { width: 14px; height: 14px; }
+  .legend .paw { width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px; }
+  .kind-hint { margin-top: 8px; }
   .segmented button[aria-pressed="true"] { background: var(--sage-bg); box-shadow: inset 0 0 0 2px var(--accent); }
   .field-label { display: block; font-size: 15px; color: var(--muted); margin-bottom: 6px; }
   input[type="date"], textarea, select {
@@ -279,6 +292,8 @@
   .scale-item { display: flex; flex-direction: column; gap: 2px; }
   .scale-item label { display: flex; justify-content: space-between; gap: 12px; font-weight: 600; }
   .scale-item small { color: var(--muted); font-size: 14px; }
+  .scale-item .meaning { font-size: 15px; color: var(--text); background: rgba(180,192,221,.07); border-radius: 4px; padding: 6px 10px; margin-top: 4px; min-height: 2.4em; }
+  .scale-item .meaning.untouched { color: var(--muted); }
   .scale-item input[type="range"] { width: 100%; accent-color: var(--honey); min-height: 32px; }
   .total { font-family: var(--font-quote); font-size: 28px; font-variant-numeric: tabular-nums; }
 
@@ -361,6 +376,8 @@
 <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
   <defs>
     <linearGradient id="starGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c3cde6"/><stop offset="1" stop-color="#8b9abd"/></linearGradient>
+    <path id="pawPad" d="M12 12.4c-2.7 0-5.7 3.3-5.7 5.8 0 1.8 1.4 2.7 2.9 2.7 1.1 0 1.9-.5 2.8-.5s1.7.5 2.8.5c1.5 0 2.9-.9 2.9-2.7 0-2.5-3-5.8-5.7-5.8z"/>
+    <g id="pawToes"><ellipse cx="5.1" cy="10.4" rx="1.9" ry="2.4" transform="rotate(-22 5.1 10.4)"/><ellipse cx="9.2" cy="6" rx="2" ry="2.6" transform="rotate(-8 9.2 6)"/><ellipse cx="14.8" cy="6" rx="2" ry="2.6" transform="rotate(8 14.8 6)"/><ellipse cx="18.9" cy="10.4" rx="1.9" ry="2.4" transform="rotate(22 18.9 10.4)"/></g>
     <path id="starShape" d="M11.26 2.02 L14.97 7.85 L21.46 8.78 L17.43 13.95 L18.36 20.18 L12.39 18.19 L6.59 21.25 L6.81 14.70 L2.10 10.13 L8.40 8.31Z"/>
   </defs>
 </svg>
@@ -488,24 +505,25 @@
           <span class="card-title" data-named="How was {possessive} day?">How was today?</span>
           <input type="date" id="dayDate" aria-label="Date of the entry" style="margin-left: auto">
         </div>
-        <div>
-          <div class="field-label">Overall</div>
-          <div class="segmented" role="group" aria-label="Kind of day">
-            <button type="button" class="choice" data-kind="good" aria-pressed="false">&#10003; Good day</button>
-            <button type="button" class="choice" data-kind="okay" aria-pressed="false">&#8211; In between</button>
-            <button type="button" class="choice" data-kind="bad" aria-pressed="false">&#215; Bad day</button>
-          </div>
-        </div>
         <div class="detail stack" style="gap: 14px">
           <div>
-            <div class="field-label" style="margin-bottom: 2px">In more detail</div>
-            <p class="small muted">The quality-of-life scale many vets use, by veterinary oncologist Dr Alice Villalobos. Score each area from 0 (very poor) to 10 (excellent).</p>
+            <div class="field-label" style="margin-bottom: 2px">Go through each area</div>
+            <p class="small muted">The quality-of-life scale many vets use, by veterinary oncologist Dr Alice Villalobos. Score each area from 0 (very poor) to 10 (excellent); under each slider you'll see what that number means.</p>
           </div>
           <div class="stack" id="scaleItems" style="gap: 14px"></div>
           <div class="row" style="justify-content: space-between; align-items: baseline">
             <span>Total <span class="total"><span id="scaleTotal">35</span> / 70</span></span>
             <span class="small muted">Above 35 generally means acceptable quality of life. The direction over weeks matters more than one score.</span>
           </div>
+        </div>
+        <div>
+          <div class="field-label">Overall, how was the day?</div>
+          <div class="segmented" role="group" aria-label="Kind of day">
+            <button type="button" class="choice" data-kind="good" aria-pressed="false"><svg class="paw paw-good" viewBox="0 0 24 24" aria-hidden="true"><use class="toes" href="#pawToes"/><use class="pad" href="#pawPad"/></svg> Good day</button>
+            <button type="button" class="choice" data-kind="okay" aria-pressed="false"><svg class="paw paw-okay" viewBox="0 0 24 24" aria-hidden="true"><use class="toes" href="#pawToes"/><use class="pad" href="#pawPad"/></svg> In between</button>
+            <button type="button" class="choice" data-kind="bad" aria-pressed="false"><svg class="paw paw-bad" viewBox="0 0 24 24" aria-hidden="true"><use class="toes" href="#pawToes"/><use class="pad" href="#pawPad"/></svg> Bad day</button>
+          </div>
+          <p class="small muted kind-hint" id="kindHint" aria-live="polite">Move the sliders above and a suggestion will appear here. You can always choose differently.</p>
         </div>
         <div>
           <label for="dayNote" class="field-label">Anything you noticed? Eating, walking, sleeping, pain, a wag.</label>
@@ -1085,32 +1103,61 @@
 
   // ---- Daily log ----
   var WORD = { good: "Good day", okay: "In between", bad: "Bad day" };
-  var MARK = { good: "✓", okay: "–", bad: "×" };
+  function paw(k) { return '<svg class="paw paw-' + k + '" viewBox="0 0 24 24" aria-hidden="true"><use class="toes" href="#pawToes"/><use class="pad" href="#pawPad"/></svg>'; }
   var dateInput = document.getElementById("dayDate");
   dateInput.value = today();
   dateInput.max = today();
-  var kind = null;
+  var kind = null, kindChosen = false, scaleTouched = false, loadingForm = false;
   var choices = document.querySelectorAll("button.choice");
+  function pressKind() { choices.forEach(function (c) { c.setAttribute("aria-pressed", String(c.dataset.kind === kind)); }); }
   choices.forEach(function (b) {
     b.addEventListener("click", function () {
-      kind = b.dataset.kind;
-      choices.forEach(function (c) { c.setAttribute("aria-pressed", String(c === b)); });
+      kind = b.dataset.kind; kindChosen = true;
+      pressKind(); updateHint();
     });
   });
+  // The scores propose an overall day; the owner has the last word.
+  function suggestKind() {
+    var v = scaleValues(), t = updateTotal();
+    var k = t >= 45 ? "good" : t >= 35 ? "okay" : "bad";
+    if (v.hurt <= 2) k = "bad"; // pain that isn't controlled outweighs everything else
+    else if (k === "good" && (v.hurt <= 3 || Math.min.apply(null, Object.keys(v).map(function (x) { return v[x]; })) <= 2)) k = "okay";
+    return k;
+  }
+  function updateHint() {
+    var hint = document.getElementById("kindHint");
+    if (!scaleTouched && !kindChosen) { hint.textContent = "Move the sliders above and a suggestion will appear here. You can always choose differently."; return; }
+    var k = suggestKind();
+    if (!scaleTouched) { hint.textContent = ""; return; }
+    hint.textContent = kind === k || !kind
+      ? "Suggested from the scores: " + WORD[k] + ". Change it if it doesn't feel right."
+      : "The scores suggest " + WORD[k] + ", but you know the day best.";
+  }
+  function onScaleInput() {
+    if (loadingForm) return;
+    scaleTouched = true;
+    if (!kindChosen) { kind = suggestKind(); pressKind(); }
+    updateHint();
+  }
 
   function loadDayIntoForm() {
     var date = dateInput.value;
     var entry = store.get(KEYS.days, {})[date];
     kind = entry ? entry.kind : null;
-    choices.forEach(function (c) { c.setAttribute("aria-pressed", String(c.dataset.kind === kind)); });
+    kindChosen = !!entry; scaleTouched = !!entry;
+    pressKind();
     document.getElementById("dayNote").value = entry ? entry.note : "";
     var score = store.get(KEYS.scores, []).filter(function (s) { return s.date === date; }).pop();
+    loadingForm = true;
     items.forEach(function (it) {
       var v = score && score.values && score.values[it[0]] != null ? score.values[it[0]] : 5;
       var range = document.getElementById("s-" + it[0]);
       range.value = v;
       range.dispatchEvent(new Event("input"));
     });
+    loadingForm = false;
+    showMeanings(!!score);
+    updateHint();
   }
   dateInput.addEventListener("change", loadDayIntoForm);
 
@@ -1125,7 +1172,8 @@
       d.setDate(d.getDate() - i);
       var key = iso(d);
       var entry = days[key];
-      var cell = el("span", "day" + (entry ? " " + entry.kind : "") + (key === t && !entry ? " today" : ""), entry ? MARK[entry.kind] : "");
+      var cell = el("span", "day" + (entry ? " " + entry.kind : "") + (key === t && !entry ? " today" : ""));
+      if (entry) cell.innerHTML = paw(entry.kind);
       var label = niceDate(key) + ": " + (entry ? WORD[entry.kind] : "not recorded");
       cell.title = label;
       cell.setAttribute("role", "img");
@@ -1137,9 +1185,9 @@
     var legend = document.getElementById("legend");
     legend.innerHTML = "";
     if (recorded) {
-      legend.appendChild(el("span", null, "✓ Good " + counts.good));
-      legend.appendChild(el("span", null, "– In between " + counts.okay));
-      legend.appendChild(el("span", null, "× Bad " + counts.bad));
+      [["good", "Good"], ["okay", "In between"], ["bad", "Bad"]].forEach(function (k) {
+        var sp = el("span"); sp.innerHTML = paw(k[0]); sp.appendChild(document.createTextNode(k[1] + " " + counts[k[0]])); legend.appendChild(sp);
+      });
       legend.appendChild(el("span", null, "Not recorded " + (14 - recorded)));
     }
     document.getElementById("daysEmpty").hidden = Object.keys(days).length > 0;
@@ -1170,7 +1218,8 @@
         for (var i = 0; i < 7; i++) {
           var d = new Date(w); d.setDate(d.getDate() + i);
           var key = iso(d), entry = days[key];
-          var cell = el("span", "day" + (entry ? " " + entry.kind : "") + (d > now ? " future" : ""), entry ? MARK[entry.kind] : "");
+          var cell = el("span", "day" + (entry ? " " + entry.kind : "") + (d > now ? " future" : ""));
+          if (entry) cell.innerHTML = paw(entry.kind);
           var label = niceDate(key) + ": " + (entry ? WORD[entry.kind] : d > now ? "" : "not recorded");
           cell.title = label;
           cell.setAttribute("aria-label", label);
@@ -1205,7 +1254,7 @@
 
   // ---- Quality-of-life scale ----
   var items = [
-    ["hurt", "Hurt", "Is pain well controlled? Is breathing comfortable?"],
+    ["hurt", "Hurt", "Is pain well controlled? Is breathing comfortable? 10 means no pain at all."],
     ["hunger", "Hunger", "Are they eating enough, with or without help?"],
     ["hydration", "Hydration", "Are they drinking enough?"],
     ["hygiene", "Hygiene", "Can they keep clean? Are there sores or accidents?"],
@@ -1213,6 +1262,51 @@
     ["mobility", "Mobility", "Can they get up, walk and move around as they need to?"],
     ["more", "More good days than bad", "Overall, are good days still outnumbering bad ones?"]
   ];
+  // What a score means, for 0-2, 3-4, 5-6, 7-8 and 9-10.
+  var MEANS = {
+    hurt: ["Clearly in pain or struggling to breathe, even with medicine: panting at rest, crying, unable to settle.",
+      "Pain shows often: restless at night, slow to lie down or get up, flinching when touched.",
+      "Some discomfort that medicine mostly controls. Stiff and slow, but able to settle.",
+      "Mostly comfortable. Occasional stiffness; breathing is calm.",
+      "No sign of pain. Breathing easy, sleeping soundly."],
+    hunger: ["Refuses food, even favourites or from your hand.",
+      "Eats only a little, or only when coaxed or hand-fed.",
+      "Eats, but less than before, or is picky.",
+      "Eats most meals with some interest.",
+      "Eats normally and looks forward to food."],
+    hydration: ["Barely drinks; gums are dry or sticky. May need fluids from the vet.",
+      "Drinks little; needs encouragement or wet food to keep up.",
+      "Drinks, but noticeably less, or much more, than usual.",
+      "Drinks enough through most of the day.",
+      "Drinks normally."],
+    hygiene: ["Can't stay clean: frequent accidents, soiled coat, sores that don't heal.",
+      "Accidents or cleaning needed most days; skin or coat getting worse.",
+      "Some accidents or needs help to keep clean, but mostly manages.",
+      "An occasional accident; stays clean with a little help.",
+      "Clean and comfortable, no accidents."],
+    happiness: ["Withdrawn: doesn't respond to you, hides, seems anxious or far away.",
+      "Little interest in you, toys or what's around them; rarely wags.",
+      "Some interest. Brightens at times, then fades.",
+      "Greets you, follows what's happening, enjoys small things.",
+      "Bright, curious and joyful: the dog you know."],
+    mobility: ["Can't get up or move without being lifted; can't go out.",
+      "Needs help to get up most of the time; manages only a few steps.",
+      "Gets up with effort or a little help; short, slow walks.",
+      "Moves around on their own, a bit slower or stiffer than before.",
+      "Moves freely and walks as they like."],
+    more: ["Bad days clearly outnumber good ones.",
+      "Recently more bad days than good.",
+      "About as many good days as bad.",
+      "Good days mostly outnumber bad ones.",
+      "Almost every day is a good day."]
+  };
+  function meaning(id, v) { return v + ": " + MEANS[id][v <= 2 ? 0 : Math.ceil(v / 2) - 1]; }
+  function showMeanings(on) {
+    items.forEach(function (it) {
+      var m = document.getElementById("m-" + it[0]);
+      m.classList.toggle("untouched", !on);
+    });
+  }
   var scaleBox = document.getElementById("scaleItems");
   items.forEach(function (it) {
     var wrap = el("div", "scale-item");
@@ -1225,8 +1319,18 @@
     wrap.appendChild(el("small", null, it[2]));
     var range = document.createElement("input");
     range.type = "range"; range.min = 0; range.max = 10; range.value = 5; range.id = "s-" + it[0];
-    range.addEventListener("input", function () { val.textContent = range.value; updateTotal(); });
+    var mean = el("span", "meaning untouched", meaning(it[0], 5));
+    mean.id = "m-" + it[0];
+    mean.setAttribute("aria-live", "polite");
+    range.setAttribute("aria-describedby", mean.id);
+    range.addEventListener("input", function () {
+      val.textContent = range.value;
+      mean.textContent = meaning(it[0], +range.value);
+      if (!loadingForm) mean.classList.remove("untouched");
+      updateTotal(); onScaleInput();
+    });
     wrap.appendChild(range);
+    wrap.appendChild(mean);
     scaleBox.appendChild(wrap);
   });
   function scaleValues() {
