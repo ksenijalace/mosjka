@@ -682,7 +682,6 @@
       <div class="card stack" id="checklist" style="gap: 18px">
         <div class="row" style="justify-content: space-between; align-items: baseline">
           <span class="card-title">Your checklist</span>
-          <span class="small muted" id="checkCount"></span>
         </div>
           <fieldset class="check-group"><legend>Before the day</legend>
             <label class="check"><input type="checkbox" data-check="where"><span>Decide where it will happen. Ask your vet, or a vet who works with a pet crematorium, whether they can come to your home.</span></label>
@@ -1849,7 +1848,6 @@
       c.checked = !!(state[c.dataset.check] && state[c.dataset.check].done);
       if (c.checked) done++;
     });
-    document.getElementById("checkCount").textContent = done + " of " + checks.length + " done";
     document.getElementById("checkDone").hidden = done !== checks.length;
   }
   checks.forEach(function (c) {
