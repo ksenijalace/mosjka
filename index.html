@@ -2822,8 +2822,11 @@ Ksenija, who loved Mosjka</p>
       : "This day is still ahead. You can read it now; its check-in opens when you get here.";
     fillText(document.getElementById("jText"), d[1]);
     renderPresence();
-    document.getElementById("jFrom").hidden = !FROM_DAY[jView];
-    if (FROM_DAY[jView]) document.getElementById("jFromText").textContent = FROM_DAY[jView];
+    // A day of the path that is one of the thoughts also carries Ksenija's note from that thought.
+    var fromText = FROM_DAY[jView];
+    if (!fromText && d[3]) { var tn = document.querySelector("#thought-" + d[3] + " .from-me p"); if (tn) fromText = tn.textContent; }
+    document.getElementById("jFrom").hidden = !fromText;
+    if (fromText) document.getElementById("jFromText").textContent = fromText;
     var mem = memoryFor(jView), memBox = document.getElementById("jMemory");
     memBox.hidden = !mem;
     if (mem) { memBox.innerHTML = STAR_SVG; var memText = el("span"); fillText(memText, mem); memBox.appendChild(memText); }
