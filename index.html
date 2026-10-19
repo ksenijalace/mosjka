@@ -326,6 +326,9 @@
   .stage-fold .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; justify-content: space-between; }
   .stage-fold strong { display: block; font-size: 17px; }
   .stage-fold p { color: var(--muted); font-size: 15px; margin-top: 2px; max-width: 40em; }
+  .date-moment { border-color: rgba(233,214,170,.35); background: linear-gradient(180deg, rgba(233,214,170,.07), rgba(233,214,170,0)); }
+  .date-moment .moment { font-size: 19px; color: var(--text); }
+  .sf-star.mine.today .sf-glow::before { background: radial-gradient(circle, rgba(246,230,190,.9) 0%, rgba(233,214,170,.35) 42%, rgba(233,214,170,0) 72%); }
   .owner-check { border-top: 1px solid var(--line); padding-top: 20px; }
   .segmented button[aria-pressed="true"] { background: var(--sage-bg); box-shadow: inset 0 0 0 2px var(--accent); }
   .field-label { display: block; font-size: 15px; color: var(--muted); margin-bottom: 6px; }
@@ -902,6 +905,10 @@
       <p>Grief keeps its own time. Tell me when you said goodbye, and this part of the site will meet you where you are.</p>
     </div>
     <div class="main stack">
+      <div class="card stack date-moment" id="dateMoment" style="gap: 10px" hidden>
+        <p class="moment" id="dateMomentText"></p>
+        <div class="row" style="justify-content: space-between"><a class="btn" id="dateMomentLink" href="#letter"></a><button type="button" class="btn quiet" id="dateMomentClose">Close</button></div>
+      </div>
       <div class="card stack" id="sinceCard" style="gap: 16px">
         <div id="sinceAsk" class="stack" style="gap: 12px">
           <label for="goodbyeDate" class="card-title" data-named="When did you say goodbye to {name}?">When did you say goodbye?</label>
@@ -2943,7 +2950,54 @@
     var x = new Date(a + "T00:00:00"), y = new Date(b + "T00:00:00");
     return Math.round((y - x) / 86400000);
   }
+  // Birthdays and anniversaries: one quiet line, only on the day itself.
+  function dateMomentToday() {
+    var dog = store.get(KEYS.dog, {}), c = syncConn();
+    var name = (dog.name || (c && c.label) || "").trim(), dob = dog.dob || (c && c.dob), gb = dog.goodbye;
+    if (!gb || !name) return null;
+    var t = new Date(today() + "T00:00:00"), g = new Date(gb + "T00:00:00");
+    var hasStar = !!dog.starId;
+    var write = ["Write to " + name, "#letter"], keep = [name + "\u2019s keepsake", "#remember"], star = hasStar ? ["See " + name + "\u2019s star", "#stars"] : write;
+    if (dob) {
+      var b = new Date(dob + "T00:00:00");
+      if (b.getMonth() === t.getMonth() && b.getDate() === t.getDate() && t > g) {
+        var age = t.getFullYear() - b.getFullYear();
+        return { id: "bday" + t.getFullYear(), text: "Today " + name + " would have turned " + age + ". Happy birthday, " + name + ". Maybe do one thing they loved today.", link: write };
+      }
+    }
+    var d = daysBetween(gb, today());
+    if (d === 7) return { id: "w1", text: "It's been a week since you said goodbye to " + name + ". You don't have to be okay today.", link: write };
+    if (d > 0 && g.getDate() === t.getDate()) {
+      var months = (t.getFullYear() - g.getFullYear()) * 12 + (t.getMonth() - g.getMonth());
+      if (months % 12 === 0 && months >= 12) {
+        var y = months / 12;
+        return y === 1
+          ? { id: "y1", text: "A year ago today you said goodbye to " + name + ". You were their person then, and you still are.", link: star }
+          : { id: "y" + y, text: y + " years since " + name + " went on ahead. Their star is still here.", link: star };
+      }
+      if (months === 1) return { id: "m1", text: "It's been a month since you said goodbye to " + name + ". However today feels, it's allowed.", link: write };
+      if (months === 2) return { id: "m2", text: "Two months today. Missing " + name + " this much is a measure of how much you loved them.", link: write };
+      if (months === 3) return { id: "m3", text: "Three months today. The world may have moved on; your love hasn't.", link: keep };
+      if (months === 6) return { id: "m6", text: "Half a year since you said goodbye to " + name + ". You're still their person.", link: keep };
+    }
+    return null;
+  }
+  function renderDateMoment() {
+    var m = dateMomentToday(), box = document.getElementById("dateMoment"), closed = null;
+    try { closed = localStorage.getItem("hk.dateMomentClosed"); } catch (e) {}
+    box.hidden = !m || closed === today() + ":" + m.id;
+    if (box.hidden) return;
+    moment("dateMomentText", m.text);
+    var a = document.getElementById("dateMomentLink"); a.textContent = m.link[0]; a.href = m.link[1];
+  }
+  document.getElementById("dateMomentClose").addEventListener("click", function () {
+    var m = dateMomentToday();
+    try { if (m) localStorage.setItem("hk.dateMomentClosed", today() + ":" + m.id); } catch (e) {}
+    document.getElementById("dateMoment").hidden = true;
+  });
+
   function renderSince() {
+    renderDateMoment();
     var dog = store.get(KEYS.dog, {}), conn = syncConn();
     var name = (dog.name || (conn && conn.label) || "").trim() || "your dog";
     var dob = dog.dob || (conn && conn.dob), gb = dog.goodbye;
@@ -3190,7 +3244,7 @@
       var x = slots[i][1] * cellW + cellW * (hx - 0.5) * 0.24;
       x = Math.max(60, Math.min(w - 60, x));
       var y = 20 + r * rowH + hy * 26; // top of the star
-      var item = el("div", "sf-star" + (st.id === mine ? " mine" : ""));
+      var item = el("div", "sf-star" + (st.id === mine ? " mine" + (dateMomentToday() ? " today" : "") : ""));
       item.setAttribute("role", "listitem");
       item.style.left = x + "px"; item.style.top = y + "px";
       item.style.setProperty("--breath-delay", (-hs * 5).toFixed(2) + "s");
