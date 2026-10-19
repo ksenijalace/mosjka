@@ -440,9 +440,17 @@
   .j-step.locked .foot, .j-step.locked .dogpaw { stroke-opacity: .45; }
   .j-step.done .foot { fill: #efe7d8; stroke: none; filter: drop-shadow(0 0 3px rgba(239,231,216,.45)); }
   .j-step.done .dogpaw { fill: #b4c4ab; stroke: none; filter: drop-shadow(0 0 3px rgba(180,196,171,.45)); }
+  .j-step.done.quiet .foot, .j-step.done.quiet .dogpaw { opacity: .38; filter: none; }
   .j-step.next .foot { stroke: rgba(233,225,211,.7); }
   .j-step.next .dogpaw { stroke: rgba(169,184,160,.7); }
   .j-step .glow { fill: url(#stepGlow); opacity: 0; }
+  .j-phase { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .j-expect { border-left: 2px solid var(--line-strong); padding: 2px 0 2px 14px; }
+  .j-expect p { font-family: var(--font-quote); font-size: 17px; line-height: 1.6; color: var(--text); }
+  .j-ahead { font-family: var(--font-quote); font-style: italic; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+  .trail-phase { font: 600 11px var(--font-body, sans-serif); letter-spacing: .06em; text-transform: uppercase; fill: rgba(196,206,234,.5); cursor: pointer; }
+  .trail-phase.now { fill: #e9d6aa; }
+  .trail-phase.past { fill: rgba(217,224,242,.8); }
   .trail-mark { font: italic 12px var(--font-quote); fill: rgba(196,206,234,.5); }
   .trail-mark.on { fill: rgba(217,224,242,.9); }
   .trail-here { font: italic 13px var(--font-quote); fill: var(--text); }
@@ -1086,8 +1094,16 @@
     <div class="main card stack" id="journeyCard" style="gap: 20px">
       <div id="jStart" class="stack" style="gap: 14px">
         <span class="card-title">Begin whenever you're ready</span>
-        <p class="muted">You can start on the day of the goodbye, or weeks later. It's for you, not a test.</p>
-        <div class="row"><button type="button" class="btn primary" id="jBegin">Start day 1</button></div>
+        <p class="muted">For most people the sharpest pain begins to soften within the first month. Not gone; softer. These 30 days walk with you through it, one day at a time.</p>
+        <div id="jAskDate" class="stack" style="gap: 10px">
+          <label for="jGoodbye" class="field-label" data-named="When did you say goodbye to {name}?">When did you say goodbye?</label>
+          <div class="row"><input type="date" id="jGoodbye"><button type="button" class="btn primary" id="jDateNext">Continue</button></div>
+          <span class="status" id="jStartMsg" aria-live="polite"></span>
+        </div>
+        <div id="jChoose" class="stack" style="gap: 10px" hidden>
+          <p id="jChooseText"></p>
+          <div class="row"><button type="button" class="btn primary" id="jBeginHere"></button><button type="button" class="btn" id="jBeginOne">Begin at day 1</button></div>
+        </div>
       </div>
       <div id="jDay" class="stack" style="gap: 18px" hidden>
         <div class="row" style="justify-content: space-between; align-items: baseline">
@@ -1100,10 +1116,12 @@
         <div class="j-dots" id="jDots" role="group" aria-label="Days of the journey"></div>
         <div class="j-presence" id="jPresence" hidden></div>
         <div class="stack" style="gap: 10px">
+          <span class="j-phase" id="jPhase"></span>
           <h3 id="jTitle" style="margin: 0"></h3>
           <p class="moment fade-in" id="jMilestone" hidden></p>
           <p id="jText"></p>
           <p class="moment fade-in" id="jMemory" hidden></p>
+          <div class="j-expect"><span class="field-label" style="margin: 0 0 2px">What many people feel around now</span><p id="jExpect"></p></div>
         </div>
         <div class="try"><strong id="jActionLabel">Today, if you can. </strong><span id="jAction"></span>
           <div class="stack" id="jEx" style="gap: 12px" hidden>
@@ -1113,7 +1131,8 @@
             <a id="jExLink" href="#after" class="small">Read the full thought</a>
           </div>
         </div>
-        <div class="stack j-check" style="gap: 12px">
+        <p class="j-ahead" id="jAhead" hidden></p>
+        <div class="stack j-check" id="jCheck" style="gap: 12px">
           <span class="card-title" style="font-size: 17px">How are you today?</span>
           <div class="moods" role="group" aria-label="How are you today?" id="jMoods"></div>
           <div class="j-near fade-in" id="jNear" hidden></div>
@@ -2465,41 +2484,38 @@
     return { x: x, y: y, s: sc, svg: '<g class="dogpaw" stroke-width="' + (1.1 / q).toFixed(2) + '" transform="translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + P.ang.toFixed(1) + ') scale(' + q.toFixed(3) + ') translate(-12 -12)"><use href="#pawToes"/><use href="#pawPad"/></g>' };
   }
   var lastLit = null;
-  var TRAIL_MARKS = { 7: "1 week", 14: "2 weeks", 21: "3 weeks" };
   // Only the days already walked leave prints; ahead, the path is a soft dotted line to the star.
   function renderTrail(st) {
     var box = document.getElementById("jDots"), n = 30, parts = [], dog = store.get(KEYS.dog, {});
     var latest = Object.keys(st.days).map(Number).sort(function (a, b) { return b - a; })[0] || null;
-    var here = Math.min(st.reached || 1, 30), hereT = (here - 0.5) / n;
+    var here = hereDay(st), hereT = (here - 0.5) / n;
     function at(t) { var u = 1 - Math.pow(1 - t, 1.3); var P = trailAt(u); P.s = 1 - 0.66 * u; return P; }
     // The way ahead.
     var pts = [];
     for (var k = 0; k <= 40; k++) { var tt = hereT + (1 - hereT) * k / 40; var P = at(tt); pts.push(P.x.toFixed(1) + " " + P.y.toFixed(1)); }
-    var ahead = '<path d="M' + pts.join(" L") + '" fill="none" stroke="rgba(196,206,234,.42)" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="0.1 7"/>';
-    // Week markers along the way.
+    var ahead = '<path d="M' + pts.join(" L") + '" fill="none" stroke="url(#aheadWarm)" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="0.1 7"/>';
+    // The five phases along the way; the one you're in is warm.
     var marks = "";
-    Object.keys(TRAIL_MARKS).forEach(function (d) {
-      d = +d; var P = at((d - 0.5) / n), reached = !!st.days[d];
-      var nx = -P.ty, ny = P.tx, off = 44 * P.s + 10;
-      var mx = P.x + nx * off, my = P.y + ny * off;
-      var anchor = mx > 232 ? "end" : "start";
-      if (anchor === "end") { mx = P.x - nx * (40 * P.s + 30); my = P.y - ny * (40 * P.s + 30); }
-      var dot = reached
-        ? '<g transform="translate(' + (P.x + nx * 20 * P.s).toFixed(1) + ' ' + (P.y + ny * 20 * P.s).toFixed(1) + ') scale(.42) translate(-12 -12)"><use href="#starShape" fill="#c4cee8" stroke="#c4cee8" stroke-width="2.2" stroke-linejoin="round"/></g>'
-        : '<circle cx="' + (P.x + nx * 20 * P.s).toFixed(1) + '" cy="' + (P.y + ny * 20 * P.s).toFixed(1) + '" r="2" fill="rgba(196,206,234,.45)"/>';
-      marks += dot + '<text class="trail-mark' + (reached ? " on" : "") + '" x="' + mx.toFixed(1) + '" y="' + (my + 4).toFixed(1) + '" text-anchor="' + anchor + '">' + TRAIL_MARKS[d] + '</text>';
+    PHASES.forEach(function (ph) {
+      var P = at((ph[0] - 0.5) / n), nx = -P.ty, ny = P.tx;
+      var state = here > ph[1] ? " past" : here >= ph[0] ? " now" : "";
+      var mx = P.x + nx * (46 * P.s + 14), my = P.y + ny * (46 * P.s + 14) + 4, anchor = "start";
+      if (mx > 200) { mx = P.x - nx * (44 * P.s + 30); my = P.y - ny * (44 * P.s + 30) + 16; anchor = "end"; }
+      marks += '<circle cx="' + (P.x + nx * 22 * P.s).toFixed(1) + '" cy="' + (P.y + ny * 22 * P.s).toFixed(1) + '" r="2.2" fill="' + (state ? "#e9d6aa" : "rgba(196,206,234,.45)") + '"/>' +
+        '<text class="trail-phase' + state + '" data-go="' + ph[0] + '" x="' + mx.toFixed(1) + '" y="' + my.toFixed(1) + '" text-anchor="' + anchor + '">' + ph[2] + '</text>';
     });
     // The walked days: your step, and two of theirs.
     for (var i = 1; i <= n; i++) {
-      if (!st.days[i]) continue;
+      // Checked-in days are bright; days already lived without a check-in are quieter, but still there.
+      if (!st.days[i] && i >= here) continue;
       var t = (i - 0.5) / n, half = 0.5 / n, left = i % 2 === 1;
       var foot = trailPrint(t, left ? 12 : 30, 0, "foot", left);
       var p1 = trailPrint(t - half * 0.55, i % 2 ? -30 : -21, 0, "paw");
       var p2 = trailPrint(t + half * 0.25, i % 2 ? -19 : -32, 0, "paw");
-      var cls = "j-step done" + (i === jView ? " current" : "") + (i === latest && lastLit !== latest ? " lit" : "");
+      var cls = "j-step done" + (st.days[i] ? "" : " quiet") + (i === jView ? " current" : "") + (i === latest && lastLit !== latest ? " lit" : "");
       var prevF = trailPrint((i - 1.5) / n, 20, 0, "foot"), nextF = trailPrint((i + 0.5) / n, 20, 0, "foot");
       var gap = Math.min(Math.abs(prevF.y - foot.y), Math.abs(nextF.y - foot.y)) || 12;
-      parts.push('<g class="' + cls + '" data-day="' + i + '" role="button" tabindex="0" aria-label="Day ' + i + ', checked in">' +
+      parts.push('<g class="' + cls + '" data-day="' + i + '" role="button" tabindex="0" aria-label="Day ' + i + (st.days[i] ? ", checked in" : "") + '">' +
         '<ellipse class="glow" cx="' + ((foot.x + p1.x) / 2).toFixed(1) + '" cy="' + foot.y.toFixed(1) + '" rx="' + (40 * foot.s + 8).toFixed(1) + '" ry="' + (26 * foot.s + 6).toFixed(1) + '"/>' +
         '<ellipse class="hit" cx="' + ((foot.x + p1.x) / 2).toFixed(1) + '" cy="' + foot.y.toFixed(1) + '" rx="' + (34 * foot.s + 10).toFixed(1) + '" ry="' + Math.max(5, gap * 0.5).toFixed(1) + '"/>' +
         p1.svg + p2.svg + foot.svg + '</g>');
@@ -2529,15 +2545,97 @@
       (allDone ? "" : '<text class="trail-mark" x="' + (sx - 26).toFixed(1) + '" y="' + (sy + 5).toFixed(1) + '" text-anchor="end">a month</text>');
     box.innerHTML = '<svg class="j-trail" viewBox="0 0 300 440" aria-label="Your 30 days, as a path">' +
       '<defs><radialGradient id="stepGlow"><stop offset="0" stop-color="rgba(196,206,234,.28)"/><stop offset="1" stop-color="rgba(196,206,234,0)"/></radialGradient>' +
-      '<radialGradient id="starHalo"><stop offset="0" stop-color="rgba(217,224,242,.65)"/><stop offset=".45" stop-color="rgba(180,192,221,.18)"/><stop offset="1" stop-color="rgba(180,192,221,0)"/></radialGradient>' +
+      '<radialGradient id="starHalo"><stop offset="0" stop-color="rgba(240,226,190,.7)"/><stop offset=".45" stop-color="rgba(233,214,170,.2)"/><stop offset="1" stop-color="rgba(180,192,221,0)"/></radialGradient>' +
+      '<linearGradient id="aheadWarm" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="rgba(196,206,234,.45)"/><stop offset="1" stop-color="rgba(233,214,170,.85)"/></linearGradient>' +
       '<linearGradient id="horizon" x1="0" x2="1"><stop offset="0" stop-color="rgba(180,192,221,0)"/><stop offset=".7" stop-color="rgba(180,192,221,.35)"/><stop offset="1" stop-color="rgba(180,192,221,0)"/></linearGradient></defs>' +
       sky + ahead + marks + parts.reverse().join("") + hereG + '</svg>';
+    box.querySelectorAll(".trail-phase").forEach(function (t) { t.addEventListener("click", function () { jView = +t.dataset.go; renderJourney(); }); });
     box.querySelectorAll(".j-step").forEach(function (g) {
       function go() { jView = +g.dataset.day; renderJourney(); }
       g.addEventListener("click", go);
       g.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
     });
   }
+
+  // The month in five phases. Not a timetable: what many people go through, roughly when.
+  var PHASES = [
+    [1, 3, "First days"], [4, 10, "The rawest days"], [11, 17, "Waves"], [18, 24, "Remembering"], [25, 30, "Carrying them with you"]
+  ];
+  function phaseOf(day) { return PHASES.filter(function (p) { return day >= p[0] && day <= p[1]; })[0]; }
+  var EXPECT = [
+    "Many people feel numb or in shock. Some can't stop crying; some feel nothing at all. Both are normal.",
+    "Sleep may be broken. You might keep listening for them, or reach for the lead out of habit.",
+    "Exhaustion is common now. Grief is physical; your body is carrying it too.",
+    "The house can feel unbearably quiet. The routines without them may hurt the most.",
+    "Guilt often arrives around now: replaying the decision, the last days, what you could have done.",
+    "You may look for them, or think you saw them out of the corner of your eye.",
+    "A week. For many people this is when it gets heavier, as the world around them goes back to normal.",
+    "Questions like \u201cwas it too early?\u201d can feel urgent. They are the mind trying to understand.",
+    "Some people feel angry: at the illness, the vet, themselves, or people who don't understand.",
+    "Some days can feel worse than the very first ones. It doesn't mean you're going backwards.",
+    "The first calmer hours may come, and then something small brings it all back. That is how waves work.",
+    "People may stop asking how you are. Your grief can feel lonelier now.",
+    "Images of the last moment may still return. For many, they begin to soften from here.",
+    "Two weeks. Many people notice a few steadier hours in a day, even if the nights are still hard.",
+    "You might start wanting to talk about their whole life, not only the end.",
+    "Small joys can return: a memory that makes you smile. It's all right to smile.",
+    "Relief and sadness can sit side by side. Both are allowed.",
+    "Remembering often grows warmer now. The funny habits come back before the hard days do.",
+    "Times of day can still hurt: the walk, the evening, the weekend.",
+    "Many people begin to think about what to keep: the collar, a photo, a habit.",
+    "Three weeks. The waves may come less often, but still knock you over when they do.",
+    "You may notice the bond hasn't ended, only changed. Talking to them is still normal.",
+    "Anger or guilt may come back for a while. It usually passes faster than before.",
+    "Evenings can stay tender. A small ritual helps many people.",
+    "The pain is often softer now. Not gone, but easier to carry.",
+    "You might worry that feeling better means forgetting. It doesn't.",
+    "Saying their name can begin to feel warm as well as sad.",
+    "Four weeks. Many people can think of the good years now without falling apart.",
+    "You are still their person. Love doesn't end when the walks do.",
+    "A month. Grief may still return on dates and in seasons, but for most people it keeps softening."
+  ];
+  // Where you are today: from the journey's start date if there is one.
+  function addDays(iso, n) { var d = new Date(iso + "T00:00:00"); d.setDate(d.getDate() + n); return iso2(d); }
+  function iso2(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function hereDay(st) {
+    if (st.start) return Math.max(1, Math.min(30, daysBetween(st.start, today()) + 1));
+    return Math.max(1, Math.min(st.reached || 1, 30));
+  }
+  function renderStart() {
+    var dog = store.get(KEYS.dog, {}), gb = dog.goodbye, name = (dog.name || "").trim() || "your dog";
+    var ask = document.getElementById("jAskDate"), choose = document.getElementById("jChoose");
+    document.getElementById("jGoodbye").max = today();
+    ask.hidden = !!gb; choose.hidden = !gb;
+    if (!gb) return;
+    var n = daysBetween(gb, today()) + 1, here = document.getElementById("jBeginHere"), one = document.getElementById("jBeginOne");
+    if (n <= 1) {
+      document.getElementById("jChooseText").textContent = "Today is the first day. Begin whenever you're ready.";
+      here.textContent = "Begin"; here.dataset.start = gb; one.hidden = true;
+    } else if (n > 30) {
+      document.getElementById("jChooseText").textContent = "It's been more than a month since you said goodbye to " + name + ". You can still walk these 30 days, from day 1, at your own pace.";
+      here.textContent = "Begin at day 1"; here.dataset.start = today(); one.hidden = true;
+    } else {
+      document.getElementById("jChooseText").textContent = "It's been " + (n - 1) + (n - 1 === 1 ? " day" : " days") + " since you said goodbye to " + name + ". Would you like to begin at day " + n + ", where you are now, or start from day 1?";
+      here.textContent = "Begin at day " + n; here.dataset.start = gb; one.hidden = false;
+    }
+  }
+  function beginJourney(start) {
+    var st = journeyState();
+    st.start = start; st.reached = Math.max(st.reached || 0, 1); st.t = Date.now();
+    store.set(KEYS.journey, st);
+    jView = null;
+    renderJourney();
+    scheduleSync();
+  }
+  document.getElementById("jDateNext").addEventListener("click", function () {
+    var v = document.getElementById("jGoodbye").value;
+    if (!v) { flash("jStartMsg", "Choose the date first."); return; }
+    if (v > today()) { flash("jStartMsg", "That date is still to come."); return; }
+    saveProfile({ goodbye: v });
+    renderStart();
+  });
+  document.getElementById("jBeginHere").addEventListener("click", function () { beginJourney(this.dataset.start); });
+  document.getElementById("jBeginOne").addEventListener("click", function () { beginJourney(today()); });
 
   var MILESTONES = {
     7: "You're still here, and so is your love for {dog}.",
@@ -2550,12 +2648,23 @@
     var started = st.reached > 0;
     document.getElementById("jStart").hidden = started;
     document.getElementById("jDay").hidden = !started;
-    if (!started) return;
-    if (jView == null) jView = st.reached;
+    if (!started) { renderStart(); return; }
+    var here = hereDay(st);
+    if (st.start && here > st.reached) { st.reached = here; store.set(KEYS.journey, st); }
+    if (jView == null) jView = here;
     jView = Math.min(Math.max(jView, 1), 30);
     var d = JOURNEY[jView - 1], entry = st.days[jView];
     document.getElementById("jCounter").textContent = "Day " + jView + " of 30";
     document.getElementById("jTitle").textContent = d[0];
+    var ph = phaseOf(jView);
+    document.getElementById("jPhase").textContent = ph[2] + " \u00b7 days " + ph[0] + "\u2013" + ph[1];
+    document.getElementById("jExpect").textContent = EXPECT[jView - 1];
+    var ahead = jView > here;
+    document.getElementById("jCheck").hidden = ahead;
+    document.getElementById("jAhead").hidden = !ahead;
+    if (ahead) document.getElementById("jAhead").textContent = st.start
+      ? "This day is still ahead. You can read it now; its check-in opens on " + niceDate(addDays(st.start, jView - 1)) + "."
+      : "This day is still ahead. You can read it now; its check-in opens when you get here.";
     fillText(document.getElementById("jText"), d[1]);
     renderPresence();
     var mem = memoryFor(jView), memBox = document.getElementById("jMemory");
@@ -2581,7 +2690,7 @@
     if (ms && entry) moment("jMilestone", ms.replace(/\{dog\}/g, dogWord()));
     document.getElementById("jWord").value = entry ? entry.word || "" : "";
     document.getElementById("jPrev").disabled = jView <= 1;
-    document.getElementById("jNext").disabled = jView >= 30 || jView >= st.reached + 1;
+    document.getElementById("jNext").disabled = jView >= 30;
 
     renderTrail(st);
 
@@ -2637,21 +2746,13 @@
     if (d) d.open = true;
   });
 
-  document.getElementById("jBegin").addEventListener("click", function () {
-    var st = journeyState();
-    st.reached = Math.max(st.reached, 1); st.t = Date.now();
-    store.set(KEYS.journey, st);
-    jView = 1;
-    renderJourney();
-    scheduleSync();
-  });
   document.getElementById("jSave").addEventListener("click", function () {
     if (!jMood) { flash("jMsg", "Choose how you are today first."); return; }
     var st = journeyState();
     st.days[jView] = { mood: jMood, word: document.getElementById("jWord").value.trim(), date: today(), t: Date.now() };
     st.reached = Math.max(st.reached, Math.min(jView + 1, 30));
     st.t = Date.now();
-    flash("jMsg", store.set(KEYS.journey, st) ? (jView < 30 ? "Saved. Day " + (jView + 1) + " is there whenever you're ready." : "Saved. You've walked all 30 days.") : unsaved);
+    flash("jMsg", store.set(KEYS.journey, st) ? (jView >= 30 ? "Saved. You've walked all 30 days." : st.start ? "Saved. Day " + (jView + 1) + " will be waiting tomorrow." : "Saved. Day " + (jView + 1) + " is there whenever you're ready.") : unsaved);
     renderJourney();
     scheduleSync();
   });
@@ -2661,8 +2762,8 @@
   document.getElementById("jRestart").addEventListener("click", function () { jConfirm.hidden = false; });
   document.getElementById("jRestartNo").addEventListener("click", function () { jConfirm.hidden = true; });
   document.getElementById("jRestartYes").addEventListener("click", function () {
-    store.set(KEYS.journey, { reached: 1, days: {}, t: Date.now(), reset: Date.now() });
-    jConfirm.hidden = true; jView = 1;
+    store.set(KEYS.journey, { reached: 0, days: {}, t: Date.now(), reset: Date.now() });
+    jConfirm.hidden = true; jView = null;
     renderJourney();
     scheduleSync();
   });
@@ -3251,6 +3352,8 @@
     a = a || { reached: 0, days: {} }; b = b || { reached: 0, days: {} };
     var reset = Math.max(a.reset || 0, b.reset || 0);
     var out = { reached: 0, days: {}, reset: reset || undefined, t: Math.max(a.t || 0, b.t || 0) };
+    var newer = (b.t || 0) > (a.t || 0) ? b : a, older = newer === a ? b : a;
+    out.start = ((newer.reset || 0) === reset && newer.start) || ((older.reset || 0) === reset && older.start) || undefined;
     [a, b].forEach(function (src) {
       if ((src.reset || 0) === reset) out.reached = Math.max(out.reached, src.reached || 0);
       Object.keys(src.days || {}).forEach(function (n) {
