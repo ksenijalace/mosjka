@@ -323,6 +323,16 @@
   .confession p { font-style: italic; color: var(--accent-hover); }
   .story .signature { font-style: italic; color: var(--muted); margin-top: 8px; }
 
+  .check-group { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .check-group legend { font-weight: 700; margin-bottom: 8px; padding: 0; }
+  .check { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 12px; align-items: start; cursor: pointer; font-size: 17px; line-height: 1.5; }
+  .check input { width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--honey); }
+  .check input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line-strong); }
+  input[type="email"] {
+    font: inherit; font-size: 16px; color: var(--text); background: var(--bg);
+    border: 1px solid var(--line-strong); border-radius: 6px; padding: 10px 12px; min-height: 46px; width: 100%;
+  }
+
   .about { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 40px 64px; }
   .about > div { display: flex; flex-direction: column; gap: 12px; }
   .about h3 { font-size: 26px; }
@@ -416,7 +426,7 @@
   <div class="wrap paths">
     <a class="path" href="#before">
       <span class="path-title">Facing the decision</span>
-      <span class="path-text">A daily tracker and the quality-of-life scale vets use, what happens during the appointment, questions to ask your vet, and planning the last day.</span>
+      <span class="path-text">A daily tracker and the quality-of-life scale vets use, what happens during the appointment, questions to ask your vet, and a checklist for the day itself.</span>
       <span class="path-more">Read this first &#8594;</span>
     </a>
     <a class="path" href="#after">
@@ -610,6 +620,62 @@
   </div>
 </section>
 
+<!-- ============ THE DAY ============ -->
+<section id="day" class="band">
+  <div class="wrap split">
+    <div class="side">
+      <h2>The day of the appointment</h2>
+      <p>If you have made the decision and the day is coming, this is a list to lean on, so you don't have to remember everything yourself. Tick what you've done; it's kept with your dog's history.</p>
+      <p class="small">Nothing here is a rule. Skip what doesn't fit you.</p>
+    </div>
+    <div class="main stack">
+      <div class="card stack" id="checklist" style="gap: 18px">
+        <div class="row" style="justify-content: space-between; align-items: baseline">
+          <span class="card-title">Your checklist</span>
+          <span class="small muted" id="checkCount"></span>
+        </div>
+          <fieldset class="check-group"><legend>Before the day</legend>
+            <label class="check"><input type="checkbox" data-check="where"><span>Decide where it will happen. Ask your vet, or a vet who works with a pet crematorium, whether they can come to your home.</span></label>
+            <label class="check"><input type="checkbox" data-check="papers"><span>Ask the vet to prepare the paperwork in advance, and have your dog's passport ready, so the last hour is only for them.</span></label>
+            <label class="check"><input type="checkbox" data-check="aftercare"><span>Choose what happens afterwards: individual or communal cremation, or burial. You can decide later, but it helps to know.</span></label>
+            <label class="check"><input type="checkbox" data-check="crematorium"><span>Tell the crematorium in advance that you won't help to move or wrap your dog.</span></label>
+            <label class="check"><input type="checkbox" data-check="dayoff"><span>Take the next day off, or two. Cancel what you can.</span></label>
+            <label class="check"><input type="checkbox" data-check="someone"><span>Ask someone to be with you: to open doors, talk to the vet and the crematorium, and stay with you afterwards.</span></label>
+            <label class="check"><input type="checkbox" data-check="family"><span>Talk with your family about who will be in the room. Children can say goodbye in their own way, before or after.</span></label>
+          </fieldset>
+          <fieldset class="check-group"><legend>On the day</legend>
+            <label class="check"><input type="checkbox" data-check="treat"><span>Have their favourite treat ready.</span></label>
+            <label class="check"><input type="checkbox" data-check="bed"><span>Put their own bed or blanket where they will lie.</span></label>
+            <label class="check"><input type="checkbox" data-check="keep"><span>Keep something of them: a little fur, a paw print, photos, a short video, a recording of their sounds.</span></label>
+            <label class="check"><input type="checkbox" data-check="phone"><span>Put your phone on silent.</span></label>
+            <label class="check"><input type="checkbox" data-check="say"><span>Take time to say everything you want to say. They know your voice.</span></label>
+          </fieldset>
+          <fieldset class="check-group"><legend>Afterwards</legend>
+            <label class="check"><input type="checkbox" data-check="noRush"><span>Leave the collar, the bowl and the bed for now. There is no hurry to decide what to keep.</span></label>
+            <label class="check"><input type="checkbox" data-check="eat"><span>Eat something and drink some water, even if you don't want to.</span></label>
+            <label class="check"><input type="checkbox" data-check="tonight"><span>Make sure you are not alone tonight, or that you can call someone.</span></label>
+          </fieldset>
+        <div class="row"><button type="button" class="btn quiet" id="checkReset">Untick everything</button></div>
+      </div>
+
+      <div class="prose day-steps">
+        <h3 style="margin-top: 0">The morning</h3>
+        <p>You may wake up hoping you've changed your mind, or feeling strangely calm. Both are normal. Keep the day as ordinary for them as you can: their usual walk if they can manage it, their food, their place in the sun.</p>
+        <h3>The last hours</h3>
+        <p>Stay close. Lie beside them, stroke them, talk to them. If you want photos, take them now, but don't let the camera take the hours. It's fine if the time feels quiet and ordinary; that is what they knew with you.</p>
+        <h3>When the vet arrives</h3>
+        <p>You can ask the vet to explain each step before doing it, or to do it without explaining. You can ask for a few more minutes at any point. Usually there is first a sedative, so your dog falls deeply asleep in your arms, and only then the final injection.</p>
+        <h3>The moment</h3>
+        <p>Hold them, and let your voice be the last thing they hear. Their eyes may stay open, and there may be a last breath or a twitch after the heart has stopped. These are reflexes; your dog is no longer aware. Take as long as you need afterwards. You don't have to leave the room or let them go straight away.</p>
+        <h3>The first evening</h3>
+        <p>The house will feel very quiet. Many people cry for hours, or feel numb, or both. Don't try to do anything with it. Eat a little, drink water, and have someone with you or within reach. If you want to, <a href="#letter">write to them</a>.</p>
+        <h3>The next days</h3>
+        <p>Expect waves rather than a straight line. The hardest moments are often the small routines: the time of the walk, the bowl, the door. <a href="#after">The thoughts that won't stop</a> are there for when the guilt comes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ AFTER ============ -->
 <section id="after" class="band">
   <div class="wrap split">
@@ -703,6 +769,37 @@
         <h3 style="margin-top: 0">The empty routine</h3>
         <p>For many people the hardest moments are not the big ones but the small daily ones: the time you used to go for a walk, the food bowl, coming home to a silent door. If you can, decide gently what to do with those times instead of meeting them unprepared. Some people take the walk anyway. Some light a candle at dinner time. There is no right way, only your way.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KEEPSAKES ============ -->
+<section id="keepsakes" class="band">
+  <div class="wrap split">
+    <div class="side">
+      <h2>Keeping something of them</h2>
+      <p>Some people want to carry a small piece of their dog with them. Others don't, or not yet. There is no right time and no wrong choice.</p>
+      <p class="voice">"I still can't look at her ashes; my husband keeps them. I want to make a brooch from her medallion. I'm afraid I'll cry when I look at it, but I will make it."</p>
+    </div>
+    <div class="main prose">
+      <h3 style="margin-top: 0">Ideas</h3>
+      <ul>
+        <li><strong>Their own things.</strong> A collar, a tag or a medallion can become a brooch, a bracelet or a keyring. Some people keep the collar just as it is, in the car or by the door.</li>
+        <li><strong>Fur.</strong> A little fur, clipped before or kept from their brush, can be sealed in a locket, a ring or a small glass or resin piece.</li>
+        <li><strong>Paw and nose prints.</strong> In clay or ink. Many vets and crematoriums can make them on the day if you ask in advance.</li>
+        <li><strong>Ashes.</strong> Jewellery needs only a pinch: a pendant, a ring, a glass bead. The rest can stay in an urn, be buried, or be scattered somewhere you both loved, such as the sea or a favourite walk.</li>
+        <li><strong>Photos and sounds.</strong> A small printed book of photos, or a recording of their bark or breathing, can mean more than you expect.</li>
+        <li><strong>Something living.</strong> A tree or a plant in the garden, sometimes with a little of their ashes.</li>
+      </ul>
+      <h3>If you choose jewellery</h3>
+      <ul>
+        <li>If you want their own ashes back, ask the crematorium for an <strong>individual</strong> cremation.</li>
+        <li>Ask the maker how much ash or fur they need, and whether they return what they don't use.</li>
+        <li>Ask how it is sealed, and whether it is safe to wear every day and in water.</li>
+        <li>Look at photos of their real work and read reviews from other owners. Take your time; good makers don't rush you.</li>
+      </ul>
+      <h3>If you're not ready</h3>
+      <p>That's completely fine. Someone else can keep the ashes for you, for as long as you need. Many people wait months before making anything, and some never do. The love doesn't depend on an object.</p>
     </div>
   </div>
 </section>
@@ -859,6 +956,30 @@
   </div>
 </section>
 
+<!-- ============ CONTACT ============ -->
+<section id="contact" hidden>
+  <div class="wrap split">
+    <div class="side">
+      <h2>Write to me</h2>
+      <p>If you want to tell someone about your dog, or ask something, you can write to me. I read every message and reply when I can, usually within a week.</p>
+      <p class="small">I'm not a vet or a counsellor, just someone who has been through this. If you are struggling right now, please <a href="#help">call a helpline</a>.</p>
+      <p class="small" id="contactEmailLine" hidden>Or email <a id="contactEmail" href="#"></a>.</p>
+    </div>
+    <div class="main card stack" style="gap: 14px">
+      <form id="contactForm" class="stack" style="gap: 14px" novalidate>
+        <div class="sync-fields">
+          <div><label for="cName" class="field-label">Your name (optional)</label><input type="text" id="cName" name="name" maxlength="80" autocomplete="name"></div>
+          <div><label for="cEmail" class="field-label">Your email, if you'd like a reply</label><input type="email" id="cEmail" name="email" maxlength="120" autocomplete="email"></div>
+        </div>
+        <div><label for="cMessage" class="field-label">Your message</label><textarea id="cMessage" name="message" style="min-height: 160px" required></textarea></div>
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px">
+        <p class="small muted">Your message is sent to my email. I use your address only to reply, and never share it.</p>
+        <div class="row"><button type="submit" class="btn primary" id="cSend">Send</button><span class="status" id="cStatus" aria-live="polite"></span></div>
+      </form>
+    </div>
+  </div>
+</section>
+
 <!-- ============ ABOUT ============ -->
 <section id="about">
   <div class="wrap about">
@@ -874,7 +995,7 @@
     <div id="sources">
       <h3>Sources and privacy</h3>
       <p>The quality-of-life scale is Dr Alice Villalobos's HHHHHMM scale. Helpline numbers were checked in October 2026 against the services' own websites, national health authorities and helpline directories; numbers can change, so please confirm one before relying on it.</p>
-      <p id="privacy">There are no accounts, no ads and no tracking. Photos stay in your browser. If you set up a PIN for your dog, the days, notes, scores, letters and your “Try this” answers are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
+      <p id="privacy">There are no accounts, no ads and no tracking. Photos stay in your browser. If you set up a PIN for your dog, the days, notes, scores, letters, checklist and your “Try this” answers are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. Fonts are loaded from Google Fonts.</p>
     </div>
   </div>
 </section>
@@ -889,7 +1010,10 @@
     </span>
     <nav aria-label="Footer">
       <a href="#story">Her story</a>
+      <a href="#day">The day</a>
+      <a href="#keepsakes">Keepsakes</a>
       <a href="#family">For family and friends</a>
+      <a href="#contact" id="footContact" hidden>Write to me</a>
       <a href="#about">About</a>
       <a href="#privacy">Privacy</a>
       <a href="#sources">Sources</a>
@@ -923,7 +1047,7 @@
     },
     remove: function (key) { try { localStorage.removeItem(key); } catch (e) {} }
   };
-  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", country: "hk.country", dog: "hk.dog", sync: "hk.sync", exercises: "hk.exercises" };
+  var KEYS = { days: "hk.days", scores: "hk.scores", letters: "hk.letters", country: "hk.country", dog: "hk.dog", sync: "hk.sync", exercises: "hk.exercises", checklist: "hk.checklist" };
   var unsaved = "Saved for now, but this browser isn't keeping data, so it may be lost when you close the page.";
 
   function iso(d) {
@@ -1234,7 +1358,7 @@
     var data = {
       app: "the-hardest-kindness", version: 1, exported: new Date().toISOString(),
       days: store.get(KEYS.days, {}), scores: store.get(KEYS.scores, []), letters: store.get(KEYS.letters, []),
-      dog: store.get(KEYS.dog, {}), exercises: store.get(KEYS.exercises, {})
+      dog: store.get(KEYS.dog, {}), exercises: store.get(KEYS.exercises, {}), checklist: store.get(KEYS.checklist, {})
     };
     var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     var a = document.createElement("a");
@@ -1272,6 +1396,7 @@
       var ok = store.set(KEYS.days, days)
         && store.set(KEYS.scores, mergeList(store.get(KEYS.scores, []), data.scores))
         && store.set(KEYS.letters, mergeList(store.get(KEYS.letters, []), data.letters));
+      if (ok && data.checklist) ok = store.set(KEYS.checklist, mergeChecklist(store.get(KEYS.checklist, {}), data.checklist));
       if (ok && data.exercises) ok = store.set(KEYS.exercises, mergeExercises(store.get(KEYS.exercises, {}), data.exercises));
       // Keep anything already set on this device; fill in only what is missing.
       if (ok && data.dog) {
@@ -1294,7 +1419,7 @@
   document.getElementById("clearBtn").addEventListener("click", function () { clearConfirm.hidden = false; });
   document.getElementById("clearNo").addEventListener("click", function () { clearConfirm.hidden = true; });
   document.getElementById("clearYes").addEventListener("click", function () {
-    store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters); store.remove(KEYS.dog); store.remove(KEYS.exercises);
+    store.remove(KEYS.days); store.remove(KEYS.scores); store.remove(KEYS.letters); store.remove(KEYS.dog); store.remove(KEYS.exercises); store.remove(KEYS.checklist);
     store.remove(KEYS.sync); // disconnect too, so the empty device doesn't overwrite anything online
     clearConfirm.hidden = true;
     renderSync();
@@ -1422,6 +1547,75 @@
     });
   });
 
+  // ---- Checklist for the day ----
+  var checks = Array.prototype.slice.call(document.querySelectorAll("[data-check]"));
+  function renderChecklist() {
+    var state = store.get(KEYS.checklist, {});
+    var done = 0;
+    checks.forEach(function (c) {
+      c.checked = !!(state[c.dataset.check] && state[c.dataset.check].done);
+      if (c.checked) done++;
+    });
+    document.getElementById("checkCount").textContent = done + " of " + checks.length + " done";
+  }
+  checks.forEach(function (c) {
+    c.addEventListener("change", function () {
+      var state = store.get(KEYS.checklist, {});
+      state[c.dataset.check] = { done: c.checked, t: Date.now() };
+      store.set(KEYS.checklist, state);
+      renderChecklist();
+      scheduleSync();
+    });
+  });
+  document.getElementById("checkReset").addEventListener("click", function () {
+    var state = {}, t = Date.now();
+    checks.forEach(function (c) { state[c.dataset.check] = { done: false, t: t }; });
+    store.set(KEYS.checklist, state);
+    renderChecklist();
+    scheduleSync();
+  });
+
+  // ---- Write to me ----
+  // A Formspree form address and/or a forwarding email address; the section stays hidden until one is set.
+  var CONTACT_CONFIG = { formEndpoint: "", email: "" };
+  if (CONTACT_CONFIG.formEndpoint || CONTACT_CONFIG.email) {
+    document.getElementById("contact").hidden = false;
+    document.getElementById("footContact").hidden = false;
+    if (CONTACT_CONFIG.email) {
+      var mail = document.getElementById("contactEmail");
+      mail.textContent = CONTACT_CONFIG.email;
+      mail.href = "mailto:" + CONTACT_CONFIG.email;
+      document.getElementById("contactEmailLine").hidden = false;
+    }
+    var form = document.getElementById("contactForm");
+    if (!CONTACT_CONFIG.formEndpoint) {
+      form.parentNode.hidden = true;
+    } else {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var msg = document.getElementById("cMessage").value.trim();
+        var email = document.getElementById("cEmail").value.trim();
+        if (!msg) { flash("cStatus", "Please write a message first."); return; }
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { flash("cStatus", "That email address doesn't look right."); return; }
+        var send = document.getElementById("cSend");
+        send.disabled = true;
+        flash("cStatus", "Sending\u2026");
+        fetch(CONTACT_CONFIG.formEndpoint, { method: "POST", headers: { Accept: "application/json" }, body: new FormData(form) })
+          .then(function (r) {
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            form.reset();
+            flash("cStatus", "Thank you. Your message has been sent.");
+          })
+          .catch(function () {
+            flash("cStatus", CONTACT_CONFIG.email
+              ? "Sorry, it couldn't be sent. Please try again later, or email " + CONTACT_CONFIG.email + "."
+              : "Sorry, it couldn't be sent. Please try again later.");
+          })
+          .then(function () { send.disabled = false; });
+      });
+    }
+  }
+
   // ---- Online history (nickname + date of birth + PIN) ----
   // Public project address and publishable key; both are safe to ship in the page.
   var SYNC_CONFIG = { url: "https://fqezebcjordsedotvesn.supabase.co", key: "sb_publishable_d4GwV_HElw0vJ6i35sdqTQ_fXtfKEQJ" };
@@ -1463,6 +1657,15 @@
       if (!byDate[s.date] || (s.t || 0) > (byDate[s.date].t || 0)) byDate[s.date] = s;
     });
     return Object.keys(byDate).sort().map(function (d) { return byDate[d]; });
+  }
+  function mergeChecklist(a, b) {
+    var out = {};
+    [a || {}, b || {}].forEach(function (src) {
+      Object.keys(src).forEach(function (id) {
+        if (!out[id] || (src[id].t || 0) > (out[id].t || 0)) out[id] = src[id];
+      });
+    });
+    return out;
   }
   function mergeLetters(a, b) {
     var seen = {}, out = [];
@@ -1520,12 +1723,14 @@
       var scores = mergeScores(store.get(KEYS.scores, []), remote.scores);
       var exercises = mergeExercises(store.get(KEYS.exercises, {}), remote.exercises);
       var letters = mergeLetters(store.get(KEYS.letters, []), remote.letters);
+      var checklist = mergeChecklist(store.get(KEYS.checklist, {}), remote.checklist);
+      store.set(KEYS.checklist, checklist);
       store.set(KEYS.days, days);
       store.set(KEYS.scores, scores);
       store.set(KEYS.exercises, exercises);
       store.set(KEYS.letters, letters);
-      renderDays(); renderScores(); loadDayIntoForm(); renderExercises(); renderLetters();
-      return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores, exercises: exercises, letters: letters } });
+      renderDays(); renderScores(); loadDayIntoForm(); renderExercises(); renderLetters(); renderChecklist();
+      return rpc("save_history", { p_key: conn.key, p_data: { v: 1, days: days, scores: scores, exercises: exercises, letters: letters, checklist: checklist } });
     }).then(function () {
       if (!quiet) setupMsg(card, "Saved online " + new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) + ".");
       return true;
@@ -1591,7 +1796,7 @@
       // Save everything online first, then clear this device so the next dog starts fresh.
       syncNow(true, card).then(function (ok) {
         if (!ok) return;
-        [KEYS.days, KEYS.scores, KEYS.letters, KEYS.exercises, KEYS.dog, KEYS.sync].forEach(store.remove);
+        [KEYS.days, KEYS.scores, KEYS.letters, KEYS.exercises, KEYS.checklist, KEYS.dog, KEYS.sync].forEach(store.remove);
         setups.forEach(function (c) { c.querySelector(".s-nick").value = ""; c.querySelector(".s-dob").value = ""; });
         refreshAll();
         setupMsg(card, syncEnabled
@@ -1616,7 +1821,7 @@
   });
 
   function refreshAll() {
-    loadDayIntoForm(); renderDays(); renderScores(); renderLetters(); applyDog(); renderExercises(); renderSync();
+    loadDayIntoForm(); renderDays(); renderScores(); renderLetters(); applyDog(); renderExercises(); renderChecklist(); renderSync();
   }
   refreshAll();
 })();
