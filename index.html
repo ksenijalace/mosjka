@@ -2984,9 +2984,11 @@ Ksenija, who loved Mosjka</p>
   names.sort().concat(["Mixed breed", "Not sure"]).forEach(function (v) { var o = document.createElement("option"); o.value = v; breedList.appendChild(o); });
 
   function saveProfile(changes) {
-    var dog = store.get(KEYS.dog, {});
-    for (var k in changes) dog[k] = changes[k];
-    dog.profileT = Date.now();
+    var dog = store.get(KEYS.dog, {}), now = Date.now();
+    dog.pt = dog.pt || {};
+    // Each detail remembers when it was last changed, so devices merge them one by one.
+    for (var k in changes) { dog[k] = changes[k]; dog.pt[k] = now; }
+    dog.profileT = now;
     store.set(KEYS.dog, dog);
     renderProfile();
     scheduleSync();
@@ -3545,10 +3547,27 @@ Ksenija, who loved Mosjka</p>
   });
 
   // The newer of the two profiles wins.
+  // Merge the dog's details field by field. A value counts with its own change time; values from before
+  // per-field times existed only count if they're not empty, so an old blank can never erase a real one.
+  var PROFILE_FIELDS = ["breed", "size", "sizeFromBreed", "goodbye", "stage", "starId", "starName", "starToken"];
+  function fieldTime(src, f, legacyT) {
+    if (src.pt && src.pt[f] != null) return src.pt[f];
+    var v = src[f];
+    return v != null && v !== "" && v !== false ? legacyT : -1;
+  }
   function mergeProfile(local, remote) {
-    if (!remote) return null;
-    if ((remote.t || 0) <= (local.profileT || 0)) return null;
-    return remote;
+    var out = {}, pt = {};
+    remote = remote || {};
+    PROFILE_FIELDS.forEach(function (f) {
+      var lt = fieldTime(local, f, local.profileT || 0), rt = fieldTime(remote, f, remote.t || 0);
+      var useRemote = rt > lt;
+      out[f] = useRemote ? remote[f] : local[f];
+      pt[f] = Math.max(lt, rt);
+      if (pt[f] < 0) delete pt[f];
+    });
+    out.pt = pt;
+    out.t = Math.max(local.profileT || 0, remote.t || 0);
+    return out;
   }
   var syncTimer = null;
 
@@ -3685,15 +3704,21 @@ Ksenija, who loved Mosjka</p>
       store.set(KEYS.exercises, exercises);
       store.set(KEYS.letters, letters);
       var dogNow = store.get(KEYS.dog, {}), prof = mergeProfile(dogNow, remote.profile);
-      if (prof) {
-        dogNow.breed = prof.breed || ""; dogNow.size = prof.size || null; dogNow.sizeFromBreed = !!prof.sizeFromBreed;
-        dogNow.goodbye = prof.goodbye || null; dogNow.stage = prof.stage || null; dogNow.starId = prof.starId || null; dogNow.starName = prof.starName || null; dogNow.starToken = prof.starToken || null; dogNow.profileT = prof.t;
-        store.set(KEYS.dog, dogNow);
+      PROFILE_FIELDS.forEach(function (f) { dogNow[f] = prof[f] != null ? prof[f] : null; });
+      dogNow.breed = dogNow.breed || ""; dogNow.sizeFromBreed = !!dogNow.sizeFromBreed;
+      dogNow.pt = prof.pt; if (prof.t) dogNow.profileT = prof.t;
+      store.set(KEYS.dog, dogNow);
+      var profile = { t: dogNow.profileT || 0, pt: dogNow.pt };
+      PROFILE_FIELDS.forEach(function (f) { profile[f] = dogNow[f] != null ? dogNow[f] : null; });
+      // "Tell me about them": keep every answer from both devices; where both answered, the newer side wins.
+      var localPt = store.get(KEYS.portrait, null), remotePt = remote.portrait || null, portraitNow = localPt || remotePt;
+      if (localPt && remotePt) {
+        var newerP = (remotePt.t || 0) > (localPt.t || 0) ? remotePt : localPt, olderP = newerP === remotePt ? localPt : remotePt;
+        var answers = {};
+        Object.keys(olderP.answers || {}).forEach(function (k) { answers[k] = olderP.answers[k]; });
+        Object.keys(newerP.answers || {}).forEach(function (k) { answers[k] = newerP.answers[k]; });
+        portraitNow = { answers: answers, done: !!(localPt.done || remotePt.done), t: Math.max(localPt.t || 0, remotePt.t || 0) };
       }
-      var profile = dogNow.profileT ? { breed: dogNow.breed || "", size: dogNow.size || null, sizeFromBreed: !!dogNow.sizeFromBreed,
-        goodbye: dogNow.goodbye || null, stage: dogNow.stage || null, starId: dogNow.starId || null, starName: dogNow.starName || null, starToken: dogNow.starToken || null, t: dogNow.profileT } : null;
-      var localPt = store.get(KEYS.portrait, null), remotePt = remote.portrait || null;
-      var portraitNow = remotePt && (!localPt || (remotePt.t || 0) > (localPt.t || 0)) ? remotePt : localPt;
       if (portraitNow) store.set(KEYS.portrait, portraitNow);
       renderSync();
       renderDays(); renderScores(); if (!dayDirty) loadDayIntoForm(); renderExercises(); renderLetters(); renderChecklist(); renderJourney();
