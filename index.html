@@ -587,7 +587,7 @@
           <p>A calm guide for deciding whether it is time to say goodbye to your dog, for the day itself, and for the guilt and grief afterwards. <a href="#story">Written by someone who has been there.</a></p>
           <p class="moment" id="nightNote" hidden><svg class="moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 1 1 9.4 4a6.9 6.9 0 0 0 10.6 10.6z" fill="#b4c0dd"/></svg><span>Still up? Nights are the hardest. You're not the only one awake.</span></p>
           <div class="actions">
-            <a class="btn primary" href="#before" data-set-stage="deciding">I'm still deciding</a>
+            <a class="btn primary" href="#before" data-set-stage="deciding">Wondering if it's time</a>
             <a class="btn" href="#prepare" data-set-stage="decided">The decision is made</a>
             <a class="btn" href="#since" data-set-stage="after">I've already said goodbye</a>
           </div>
@@ -615,7 +615,7 @@
   <div class="wrap paths">
     <a class="path" href="#before" data-set-stage="deciding">
       <span class="path-step">Deciding</span>
-      <span class="path-title">I'm still deciding</span>
+      <span class="path-title">Wondering if it's time</span>
       <span class="path-text">A daily tracker with notes and the quality-of-life scale vets use, so you can see the pattern over time and bring something clear to your vet.</span>
       <span class="path-more">The daily tracker &#8594;</span>
     </a>
@@ -1010,7 +1010,7 @@
   <div class="wrap">
     <h2>The field of stars</h2>
     <p class="muted" style="max-width: 36em">Each star is a dog someone loved and had to let go. They were lit by the people who said goodbye to them.</p>
-    <aside class="from-me" style="max-width: 36em"><span class="from-label">From Ksenija</span><p>I can't watch films about dogs yet. I thought I would be angry at people who still have their dogs. But I'm not. I understand that they are in the same boat, and that soon this will come to them too.</p></aside>
+    <aside class="from-me" style="max-width: 36em"><span class="from-label">From Ksenija</span><p>I can't watch films about dogs yet. I thought I would be angry at people who still have their dogs. But I'm not. We are all in the same boat. One day this moment waits for each of us who loves a dog, and none of us has to go through it alone.</p></aside>
     <div class="star-field" id="starField" role="list" aria-label="Stars lit for dogs"></div>
     <p class="small muted" id="starCount" style="margin-top: 12px"></p>
     <div class="row" id="starMoreRow" hidden><button type="button" class="btn quiet" id="starMore">Show more stars</button></div>
@@ -2508,6 +2508,163 @@ Ksenija, who loved Mosjka</p>
   });
 
   // Their dog, quietly present: a soft photo if there is one, otherwise a sleeping silhouette shaped by breed and size.
+  // ---- Breed and size ----
+  // Breeds are kept by id, so the same dog reads right in either language. [id, English, Russian, usual size]
+  // Size matters more than breed for how long dogs usually live; a breed suggests a size, the owner can change it.
+  var BREEDS = [
+    ["affenpinscher", "Affenpinscher", "Аффенпинчер", "s"],
+    ["bichon-frise", "Bichon Frise", "Бишон фризе", "s"],
+    ["bolognese", "Bolognese", "Болоньез", "s"],
+    ["border-terrier", "Border Terrier", "Бордер-терьер", "s"],
+    ["boston-terrier", "Boston Terrier", "Бостон-терьер", "s"],
+    ["brussels-griffon", "Brussels Griffon", "Брюссельский гриффон", "s"],
+    ["cairn-terrier", "Cairn Terrier", "Керн-терьер", "s"],
+    ["cavalier-king-charles-spaniel", "Cavalier King Charles Spaniel", "Кавалер-кинг-чарльз-спаниель", "s"],
+    ["chihuahua", "Chihuahua", "Чихуахуа", "s"],
+    ["chinese-crested", "Chinese Crested", "Китайская хохлатая", "s"],
+    ["cockapoo", "Cockapoo", "Кокапу", "s"],
+    ["coton-de-tulear", "Coton de Tulear", "Котон-де-тулеар", "s"],
+    ["dachshund", "Dachshund", "Такса", "s"],
+    ["miniature-dachshund", "Miniature Dachshund", "Карликовая такса", "s"],
+    ["french-bulldog", "French Bulldog", "Французский бульдог", "s"],
+    ["havanese", "Havanese", "Гаванский бишон", "s"],
+    ["italian-greyhound", "Italian Greyhound", "Левретка", "s"],
+    ["jack-russell-terrier", "Jack Russell Terrier", "Джек-рассел-терьер", "s"],
+    ["japanese-chin", "Japanese Chin", "Японский хин", "s"],
+    ["lhasa-apso", "Lhasa Apso", "Лхаса апсо", "s"],
+    ["lowchen", "Löwchen", "Левхен", "s"],
+    ["maltese", "Maltese", "Мальтезе", "s"],
+    ["miniature-pinscher", "Miniature Pinscher", "Цвергпинчер", "s"],
+    ["miniature-poodle", "Miniature Poodle", "Малый пудель", "s"],
+    ["toy-poodle", "Toy Poodle", "Той-пудель", "s"],
+    ["miniature-schnauzer", "Miniature Schnauzer", "Цвергшнауцер", "s"],
+    ["norfolk-terrier", "Norfolk Terrier", "Норфолк-терьер", "s"],
+    ["norwich-terrier", "Norwich Terrier", "Норвич-терьер", "s"],
+    ["papillon", "Papillon", "Папийон", "s"],
+    ["parson-russell-terrier", "Parson Russell Terrier", "Парсон-рассел-терьер", "s"],
+    ["pekingese", "Pekingese", "Пекинес", "s"],
+    ["pomeranian", "Pomeranian", "Померанский шпиц", "s"],
+    ["prague-ratter", "Prague Ratter", "Пражский крысарик", "s"],
+    ["pug", "Pug", "Мопс", "s"],
+    ["russian-toy", "Russian Toy", "Русский той", "s"],
+    ["scottish-terrier", "Scottish Terrier", "Скотч-терьер", "s"],
+    ["shetland-sheepdog", "Shetland Sheepdog", "Шелти", "s"],
+    ["shiba-inu", "Shiba Inu", "Сиба-ину", "s"],
+    ["shih-tzu", "Shih Tzu", "Ши-тцу", "s"],
+    ["tibetan-spaniel", "Tibetan Spaniel", "Тибетский спаниель", "s"],
+    ["pembroke-welsh-corgi", "Pembroke Welsh Corgi", "Вельш-корги пемброк", "s"],
+    ["west-highland-white-terrier", "West Highland White Terrier", "Вест-хайленд-уайт-терьер", "s"],
+    ["yorkshire-terrier", "Yorkshire Terrier", "Йоркширский терьер", "s"],
+    ["american-staffordshire-terrier", "American Staffordshire Terrier", "Американский стаффордширский терьер", "m"],
+    ["australian-cattle-dog", "Australian Cattle Dog", "Австралийская пастушья собака", "m"],
+    ["australian-shepherd", "Australian Shepherd", "Австралийская овчарка (аусси)", "m"],
+    ["basenji", "Basenji", "Басенджи", "m"],
+    ["basset-hound", "Basset Hound", "Бассет-хаунд", "m"],
+    ["beagle", "Beagle", "Бигль", "m"],
+    ["bearded-collie", "Bearded Collie", "Бородатый колли", "m"],
+    ["border-collie", "Border Collie", "Бордер-колли", "m"],
+    ["brittany", "Brittany", "Бретонский эпаньоль", "m"],
+    ["bull-terrier", "Bull Terrier", "Бультерьер", "m"],
+    ["bulldog", "Bulldog", "Английский бульдог", "m"],
+    ["cardigan-welsh-corgi", "Cardigan Welsh Corgi", "Вельш-корги кардиган", "m"],
+    ["chow-chow", "Chow Chow", "Чау-чау", "m"],
+    ["cocker-spaniel", "Cocker Spaniel", "Американский кокер-спаниель", "m"],
+    ["english-cocker-spaniel", "English Cocker Spaniel", "Английский кокер-спаниель", "m"],
+    ["english-springer-spaniel", "English Springer Spaniel", "Английский спрингер-спаниель", "m"],
+    ["eurasier", "Eurasier", "Евразиер", "m"],
+    ["finnish-lapphund", "Finnish Lapphund", "Финский лаппхунд", "m"],
+    ["goldendoodle", "Goldendoodle", "Голдендудль", "m"],
+    ["icelandic-sheepdog", "Icelandic Sheepdog", "Исландская овчарка", "m"],
+    ["keeshond", "Keeshond", "Кеесхонд (вольфшпиц)", "m"],
+    ["kooikerhondje", "Kooikerhondje", "Коикерхондье", "m"],
+    ["labradoodle", "Labradoodle", "Лабрадудль", "m"],
+    ["lagotto-romagnolo", "Lagotto Romagnolo", "Лаготто-романьоло", "m"],
+    ["mudi", "Mudi", "Муди", "m"],
+    ["nova-scotia-duck-tolling-retriever", "Nova Scotia Duck Tolling Retriever", "Новошотландский ретривер", "m"],
+    ["pit-bull-terrier", "Pit Bull Terrier", "Питбультерьер", "m"],
+    ["portuguese-water-dog", "Portuguese Water Dog", "Португальская водяная собака", "m"],
+    ["puli", "Puli", "Пули", "m"],
+    ["pumi", "Pumi", "Пуми", "m"],
+    ["samoyed", "Samoyed", "Самоед", "m"],
+    ["shar-pei", "Shar Pei", "Шарпей", "m"],
+    ["siberian-husky", "Siberian Husky", "Сибирский хаски", "m"],
+    ["soft-coated-wheaten-terrier", "Soft-coated Wheaten Terrier", "Пшеничный терьер", "m"],
+    ["spanish-water-dog", "Spanish Water Dog", "Испанская водяная собака", "m"],
+    ["staffordshire-bull-terrier", "Staffordshire Bull Terrier", "Стаффордширский бультерьер", "m"],
+    ["standard-poodle", "Standard Poodle", "Большой пудель", "m"],
+    ["standard-schnauzer", "Standard Schnauzer", "Миттельшнауцер", "m"],
+    ["whippet", "Whippet", "Уиппет", "m"],
+    ["airedale-terrier", "Airedale Terrier", "Эрдельтерьер", "m"],
+    ["afghan-hound", "Afghan Hound", "Афганская борзая", "l"],
+    ["akita", "Akita", "Акита-ину", "l"],
+    ["alaskan-malamute", "Alaskan Malamute", "Аляскинский маламут", "l"],
+    ["american-bulldog", "American Bulldog", "Американский бульдог", "l"],
+    ["belgian-shepherd-malinois", "Belgian Shepherd (Malinois)", "Бельгийская овчарка (малинуа)", "l"],
+    ["borzoi", "Borzoi", "Русская псовая борзая", "l"],
+    ["boxer", "Boxer", "Боксёр", "l"],
+    ["chesapeake-bay-retriever", "Chesapeake Bay Retriever", "Чесапик-бей-ретривер", "l"],
+    ["czechoslovakian-wolfdog", "Czechoslovakian Wolfdog", "Чехословацкий влчак", "l"],
+    ["dalmatian", "Dalmatian", "Далматин", "l"],
+    ["dobermann", "Dobermann", "Доберман", "l"],
+    ["dogo-argentino", "Dogo Argentino", "Аргентинский дог", "l"],
+    ["dutch-shepherd", "Dutch Shepherd", "Голландская овчарка", "l"],
+    ["east-european-shepherd", "East European Shepherd", "Восточноевропейская овчарка", "l"],
+    ["english-setter", "English Setter", "Английский сеттер", "l"],
+    ["flat-coated-retriever", "Flat-coated Retriever", "Прямошёрстный ретривер", "l"],
+    ["german-shepherd", "German Shepherd", "Немецкая овчарка", "l"],
+    ["german-shorthaired-pointer", "German Shorthaired Pointer", "Курцхаар", "l"],
+    ["german-wirehaired-pointer", "German Wirehaired Pointer", "Дратхаар", "l"],
+    ["giant-schnauzer", "Giant Schnauzer", "Ризеншнауцер", "l"],
+    ["golden-retriever", "Golden Retriever", "Золотистый ретривер", "l"],
+    ["gordon-setter", "Gordon Setter", "Гордон-сеттер", "l"],
+    ["greyhound", "Greyhound", "Грейхаунд", "l"],
+    ["hovawart", "Hovawart", "Ховаварт", "l"],
+    ["irish-setter", "Irish Setter", "Ирландский сеттер", "l"],
+    ["labrador-retriever", "Labrador Retriever", "Лабрадор-ретривер", "l"],
+    ["maremma-sheepdog", "Maremma Sheepdog", "Мареммо-абруццкая овчарка", "l"],
+    ["old-english-sheepdog", "Old English Sheepdog", "Бобтейл", "l"],
+    ["pointer", "Pointer", "Пойнтер", "l"],
+    ["rhodesian-ridgeback", "Rhodesian Ridgeback", "Родезийский риджбек", "l"],
+    ["rottweiler", "Rottweiler", "Ротвейлер", "l"],
+    ["rough-collie", "Rough Collie", "Колли", "l"],
+    ["saluki", "Saluki", "Салюки", "l"],
+    ["vizsla", "Vizsla", "Венгерская выжла", "l"],
+    ["weimaraner", "Weimaraner", "Веймаранер", "l"],
+    ["white-swiss-shepherd", "White Swiss Shepherd", "Белая швейцарская овчарка", "l"],
+    ["anatolian-shepherd-kangal", "Anatolian Shepherd (Kangal)", "Анатолийская овчарка (кангал)", "g"],
+    ["bernese-mountain-dog", "Bernese Mountain Dog", "Бернский зенненхунд", "g"],
+    ["black-russian-terrier", "Black Russian Terrier", "Русский чёрный терьер", "g"],
+    ["boerboel", "Boerboel", "Бурбуль", "g"],
+    ["bullmastiff", "Bullmastiff", "Бульмастиф", "g"],
+    ["cane-corso", "Cane Corso", "Кане-корсо", "g"],
+    ["caucasian-shepherd", "Caucasian Shepherd", "Кавказская овчарка", "g"],
+    ["central-asian-shepherd-alabai", "Central Asian Shepherd (Alabai)", "Среднеазиатская овчарка (алабай)", "g"],
+    ["dogue-de-bordeaux", "Dogue de Bordeaux", "Бордоский дог", "g"],
+    ["great-dane", "Great Dane", "Немецкий дог", "g"],
+    ["great-pyrenees-pyrenean-mountain-dog", "Great Pyrenees (Pyrenean Mountain Dog)", "Пиренейская горная собака", "g"],
+    ["greater-swiss-mountain-dog", "Greater Swiss Mountain Dog", "Большой швейцарский зенненхунд", "g"],
+    ["irish-wolfhound", "Irish Wolfhound", "Ирландский волкодав", "g"],
+    ["komondor", "Komondor", "Комондор", "g"],
+    ["kuvasz", "Kuvasz", "Кувас", "g"],
+    ["landseer", "Landseer", "Ландсир", "g"],
+    ["leonberger", "Leonberger", "Леонбергер", "g"],
+    ["mastiff", "Mastiff", "Английский мастиф", "g"],
+    ["moscow-watchdog", "Moscow Watchdog", "Московская сторожевая", "g"],
+    ["neapolitan-mastiff", "Neapolitan Mastiff", "Неаполитанский мастиф", "g"],
+    ["newfoundland", "Newfoundland", "Ньюфаундленд", "g"],
+    ["saint-bernard", "Saint Bernard", "Сенбернар", "g"],
+    ["scottish-deerhound", "Scottish Deerhound", "Дирхаунд", "g"],
+    ["tibetan-mastiff", "Tibetan Mastiff", "Тибетский мастиф", "g"],
+    ["mixed", "Mixed breed", "Метис", ""],
+    ["unsure", "Not sure", "Не знаю", ""]
+  ];
+  var BREED_LANG = 1;
+  var breedById = {}, breedByName = {};
+  BREEDS.forEach(function (b) { breedById[b[0]] = b; breedByName[b[1].toLowerCase()] = b; breedByName[b[2].toLowerCase()] = b; });
+  // An id, or a name in either language (older saves kept the English name); anything else is the owner's own words.
+  function breedOf(v) { v = (v || "").trim(); return breedById[v] || breedByName[v.toLowerCase()] || null; }
+  function breedLabel(v) { var b = breedOf(v); return b ? b[BREED_LANG] : (v || ""); }
+  function breedEn(v) { var b = breedOf(v); return b ? b[1].toLowerCase() : ""; }
   var POINTY = ("German Shepherd, Belgian Shepherd (Malinois), Dutch Shepherd, White Swiss Shepherd, East European Shepherd, Czechoslovakian Wolfdog, " +
     "Siberian Husky, Alaskan Malamute, Samoyed, Akita, Shiba Inu, Pembroke Welsh Corgi, Cardigan Welsh Corgi, Chihuahua, Pomeranian, Keeshond, " +
     "Finnish Lapphund, Icelandic Sheepdog, Eurasier, Chow Chow, French Bulldog, Boston Terrier, West Highland White Terrier, Scottish Terrier, " +
@@ -2515,7 +2672,7 @@ Ksenija, who loved Mosjka</p>
     "Shetland Sheepdog, Bull Terrier, Pumi, Mudi, Caucasian Shepherd, Central Asian Shepherd (Alabai)").toLowerCase().split(", ");
   var SIL_W = { s: 120, m: 150, l: 180, g: 205 };
   function dogSilhouette(dog, w) {
-    var pointy = POINTY.indexOf((dog.breed || "").toLowerCase()) >= 0;
+    var pointy = POINTY.indexOf(breedEn(dog.breed)) >= 0;
     var ear = pointy ? '<use href="#earPointy"/>' : '<use href="#earSoft" stroke="#1f2433" stroke-opacity=".35" stroke-width="1.5"/>';
     return '<svg class="dog-sil" viewBox="0 0 230 104" width="' + w + '" aria-hidden="true">' +
       '<line x1="0" y1="100.5" x2="230" y2="100.5" stroke="rgba(180,192,221,.22)"/>' +
@@ -2524,7 +2681,7 @@ Ksenija, who loved Mosjka</p>
   }
   // Sitting up beside you, looking toward the words: for the small picture on hard days.
   function sitSilhouette(dog, w) {
-    var pointy = POINTY.indexOf((dog.breed || "").toLowerCase()) >= 0;
+    var pointy = POINTY.indexOf(breedEn(dog.breed)) >= 0;
     var ear = pointy ? '<use href="#sitEarPointy"/>' : '<use href="#sitEarSoft" stroke="#1f2433" stroke-opacity=".35" stroke-width="1.4"/>';
     return '<svg class="dog-sil" viewBox="0 0 100 106" width="' + w + '" aria-hidden="true">' +
       '<line x1="0" y1="104.5" x2="100" y2="104.5" stroke="rgba(180,192,221,.22)"/>' +
@@ -2533,7 +2690,7 @@ Ksenija, who loved Mosjka</p>
   }
   // On the path: sitting with their back to you, looking up the way ahead, towards the star.
   function backSilhouette(dog) {
-    var pointy = POINTY.indexOf((dog.breed || "").toLowerCase()) >= 0, w = { s: 26, m: 30, l: 34, g: 38 }[dog.size] || 32;
+    var pointy = POINTY.indexOf(breedEn(dog.breed)) >= 0, w = { s: 26, m: 30, l: 34, g: 38 }[dog.size] || 32;
     return { vb: "0 0 80 100", w: w, h: Math.round(w * 1.25), svg:
       '<g fill="#b4c0dd" opacity=".82"><g class="sil-wag sil-wag-side"><use href="#backTail"/></g><use href="#backBody"/><g class="turn-muzzle"><rect x="7" y="26" width="26" height="10" rx="5"/><circle cx="8.5" cy="29.5" r="3" fill="#1f2433" opacity=".55"/></g>' +
       (pointy ? '<use href="#backEarPointy"/>' : '<use href="#backEarSoft" stroke="#1f2433" stroke-opacity=".3" stroke-width="1.2"/>') + '</g>' +
@@ -2974,18 +3131,10 @@ Ksenija, who loved Mosjka</p>
   var syncEnabled = !!(SYNC_CONFIG.url && SYNC_CONFIG.key && window.crypto && crypto.subtle);
   var setups = Array.prototype.slice.call(document.querySelectorAll("[data-setup]"));
 
-  // ---- Breed and size ----
-  // Size matters more than breed for how long dogs usually live; a breed suggests a size, the owner can change it.
-  var BREED_SIZES = {"s": "Affenpinscher, Bichon Frise, Bolognese, Border Terrier, Boston Terrier, Brussels Griffon, Cairn Terrier, Cavalier King Charles Spaniel, Chihuahua, Chinese Crested, Cockapoo, Coton de Tulear, Dachshund, Miniature Dachshund, French Bulldog, Havanese, Italian Greyhound, Jack Russell Terrier, Japanese Chin, Lhasa Apso, Löwchen, Maltese, Miniature Pinscher, Miniature Poodle, Toy Poodle, Miniature Schnauzer, Norfolk Terrier, Norwich Terrier, Papillon, Parson Russell Terrier, Pekingese, Pomeranian, Prague Ratter, Pug, Russian Toy, Scottish Terrier, Shetland Sheepdog, Shiba Inu, Shih Tzu, Tibetan Spaniel, Pembroke Welsh Corgi, West Highland White Terrier, Yorkshire Terrier", "m": "American Staffordshire Terrier, Australian Cattle Dog, Australian Shepherd, Basenji, Basset Hound, Beagle, Bearded Collie, Border Collie, Brittany, Bull Terrier, Bulldog, Cardigan Welsh Corgi, Chow Chow, Cocker Spaniel, English Cocker Spaniel, English Springer Spaniel, Eurasier, Finnish Lapphund, Goldendoodle, Icelandic Sheepdog, Keeshond, Kooikerhondje, Labradoodle, Lagotto Romagnolo, Mudi, Nova Scotia Duck Tolling Retriever, Pit Bull Terrier, Portuguese Water Dog, Puli, Pumi, Samoyed, Shar Pei, Siberian Husky, Soft-coated Wheaten Terrier, Spanish Water Dog, Staffordshire Bull Terrier, Standard Poodle, Standard Schnauzer, Whippet, Airedale Terrier", "l": "Afghan Hound, Akita, Alaskan Malamute, American Bulldog, Belgian Shepherd (Malinois), Borzoi, Boxer, Chesapeake Bay Retriever, Czechoslovakian Wolfdog, Dalmatian, Dobermann, Dogo Argentino, Dutch Shepherd, East European Shepherd, English Setter, Flat-coated Retriever, German Shepherd, German Shorthaired Pointer, German Wirehaired Pointer, Giant Schnauzer, Golden Retriever, Gordon Setter, Greyhound, Hovawart, Irish Setter, Labrador Retriever, Maremma Sheepdog, Old English Sheepdog, Pointer, Rhodesian Ridgeback, Rottweiler, Rough Collie, Saluki, Vizsla, Weimaraner, White Swiss Shepherd", "g": "Anatolian Shepherd (Kangal), Bernese Mountain Dog, Black Russian Terrier, Boerboel, Bullmastiff, Cane Corso, Caucasian Shepherd, Central Asian Shepherd (Alabai), Dogue de Bordeaux, Great Dane, Great Pyrenees (Pyrenean Mountain Dog), Greater Swiss Mountain Dog, Irish Wolfhound, Komondor, Kuvasz, Landseer, Leonberger, Mastiff, Moscow Watchdog, Neapolitan Mastiff, Newfoundland, Saint Bernard, Scottish Deerhound, Tibetan Mastiff"};
   var SIZE_WORD = { s: "small", m: "medium", l: "large", g: "giant" };
-  var breedSize = {};
   var breedList = document.getElementById("breedList");
-  Object.keys(BREED_SIZES).forEach(function (sz) {
-    BREED_SIZES[sz].split(", ").forEach(function (b) { breedSize[b.toLowerCase()] = sz; });
-  });
-  var names = [];
-  Object.keys(BREED_SIZES).forEach(function (sz) { names = names.concat(BREED_SIZES[sz].split(", ")); });
-  names.sort().concat(["Mixed breed", "Not sure"]).forEach(function (v) { var o = document.createElement("option"); o.value = v; breedList.appendChild(o); });
+  BREEDS.filter(function (b) { return b[3]; }).map(function (b) { return b[BREED_LANG]; }).sort(function (a, b) { return a.localeCompare(b); })
+    .concat([breedById.mixed[BREED_LANG], breedById.unsure[BREED_LANG]]).forEach(function (v) { var o = document.createElement("option"); o.value = v; breedList.appendChild(o); });
 
   function saveProfile(changes) {
     var dog = store.get(KEYS.dog, {}), now = Date.now();
@@ -3002,11 +3151,11 @@ Ksenija, who loved Mosjka</p>
     setups.forEach(function (card) {
       var name = (dog.name || card.querySelector(".s-nick").value || "").trim() || "your dog";
       var breedIn = card.querySelector(".s-breed");
-      if (document.activeElement !== breedIn) breedIn.value = dog.breed || "";
+      if (document.activeElement !== breedIn) breedIn.value = breedLabel(dog.breed);
       card.querySelectorAll(".s-size button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.size === dog.size)); });
       var hint = card.querySelector(".s-size-hint");
       hint.textContent = dog.size && dog.sizeFromBreed
-        ? "The usual size for a " + dog.breed + ". Change it if " + name + " is bigger or smaller."
+        ? "The usual size for a " + breedLabel(dog.breed) + ". Change it if " + name + " is bigger or smaller."
         : dog.size ? "" : "Choose the size closest to " + name + " when fully grown. It helps the site understand what their age means.";
     });
     renderAge(); renderSince(); renderRemember(); renderLight(); renderStages();
@@ -3014,9 +3163,9 @@ Ksenija, who loved Mosjka</p>
   setups.forEach(function (card) {
     var breedIn = card.querySelector(".s-breed");
     breedIn.addEventListener("change", function () {
-      var v = breedIn.value.trim(), sz = breedSize[v.toLowerCase()];
-      var changes = { breed: v };
-      if (sz) { changes.size = sz; changes.sizeFromBreed = true; }
+      var v = breedIn.value.trim(), b = breedOf(v);
+      var changes = { breed: b ? b[0] : v };
+      if (b && b[3]) { changes.size = b[3]; changes.sizeFromBreed = true; }
       else changes.sizeFromBreed = false;
       saveProfile(changes);
     });
@@ -3231,7 +3380,7 @@ Ksenija, who loved Mosjka</p>
     var dog = store.get(KEYS.dog, {}), c = syncConn(), pt = portrait();
     var dob = dog.dob || (c && c.dob);
     return {
-      name: rmName() || "My dog", photo: dog.photo || null, breed: dog.breed && !/^(not sure|mixed breed)$/i.test(dog.breed) ? dog.breed : "",
+      name: rmName() || "My dog", photo: dog.photo || null, breed: breedOf(dog.breed) && !breedOf(dog.breed)[3] ? "" : breedLabel(dog.breed),
       dates: dob && dog.goodbye ? longDate(dob) + " – " + longDate(dog.goodbye) : dob ? "Born " + longDate(dob) : dog.goodbye ? "Said goodbye " + longDate(dog.goodbye) : "",
       parts: RM.filter(function (q) { return pt.answers[q[0]]; }).map(function (q) { return [q[3], pt.answers[q[0]]]; })
     };
@@ -3684,7 +3833,7 @@ Ksenija, who loved Mosjka</p>
       prof.classList.toggle("s-profile-on", ready);
       card.querySelector(".s-sync-now").hidden = !syncEnabled;
       card.querySelector(".s-have-pin").hidden = !syncEnabled;
-      card.querySelector(".s-label").textContent = name + (dog.breed ? " \u00b7 " + dog.breed : "") + (dob ? " \u00b7 born " + niceDate(dob) : "") +
+      card.querySelector(".s-label").textContent = name + (dog.breed ? " \u00b7 " + breedLabel(dog.breed) : "") + (dob ? " \u00b7 born " + niceDate(dob) : "") +
         (syncEnabled ? " \u00b7 saved online" : " \u00b7 saved on this device");
       var nick = card.querySelector(".s-nick"), dobIn = card.querySelector(".s-dob");
       if (!nick.value && dog.name) nick.value = dog.name;
