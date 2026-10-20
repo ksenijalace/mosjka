@@ -572,8 +572,8 @@
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
       <nav class="site-nav" id="siteNav" aria-label="Main">
-        <a href="#before">Deciding</a>
-        <a href="#prepare">The decision is made</a>
+        <a href="#before">Not sure yet</a>
+        <a href="#prepare">When the day is near</a>
         <a href="#since">After the goodbye</a>
         <a href="#letter" data-named="Write to {name}">Write to them</a>
         <a href="ru/" class="lang-link" lang="ru" hreflang="ru" aria-label="Русская версия">RU</a>
@@ -587,9 +587,9 @@
           <p>A calm guide for deciding whether it is time to say goodbye to your dog, for the day itself, and for the guilt and grief afterwards. <a href="#story">Written by someone who has been there.</a></p>
           <p class="moment" id="nightNote" hidden><svg class="moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 1 1 9.4 4a6.9 6.9 0 0 0 10.6 10.6z" fill="#b4c0dd"/></svg><span>Still up? Nights are the hardest. You're not the only one awake.</span></p>
           <div class="actions">
-            <a class="btn primary" href="#before" data-set-stage="deciding">Wondering if it's time</a>
-            <a class="btn" href="#prepare" data-set-stage="decided">The decision is made</a>
-            <a class="btn" href="#since" data-set-stage="after">I've already said goodbye</a>
+            <a class="btn primary" href="#before" data-set-stage="deciding">Not sure yet</a>
+            <a class="btn" href="#prepare" data-set-stage="decided">The day is near</a>
+            <a class="btn" href="#since" data-set-stage="after">We've said goodbye</a>
           </div>
         </div>
       </div>
@@ -614,20 +614,20 @@
 <section aria-label="Where are you right now?">
   <div class="wrap paths">
     <a class="path" href="#before" data-set-stage="deciding">
-      <span class="path-step">Deciding</span>
-      <span class="path-title">Wondering if it's time</span>
+      <span class="path-step">Before</span>
+      <span class="path-title">Not sure yet</span>
       <span class="path-text">A daily tracker with notes and the quality-of-life scale vets use, so you can see the pattern over time and bring something clear to your vet.</span>
       <span class="path-more">The daily tracker &#8594;</span>
     </a>
     <a class="path" href="#prepare" data-set-stage="decided">
-      <span class="path-step">The decision is made</span>
-      <span class="path-title">The day is coming</span>
+      <span class="path-step">The day</span>
+      <span class="path-title">The day is near</span>
       <span class="path-text">What happens during the appointment, what I wish I'd known, and a checklist for the day itself, so you can be with your dog instead of managing everything.</span>
       <span class="path-more">Preparing for the day &#8594;</span>
     </a>
     <a class="path" href="#since" data-set-stage="after">
-      <span class="path-step">After the goodbye</span>
-      <span class="path-title">I've already said goodbye</span>
+      <span class="path-step">After</span>
+      <span class="path-title">We've said goodbye</span>
       <span class="path-text">The thoughts that come back most often and what is true about them, a gentle 30-day journey for the first month, and a private place to write to your dog.</span>
       <span class="path-more">For the days after &#8594;</span>
     </a>
@@ -815,8 +815,8 @@
 
       <div class="card stack no-print stage-next" id="decidedCard" style="gap: 10px">
         <span class="card-title">When you've decided</span>
-        <p class="small muted">There's no right moment to press this. When you have made the decision, the site will turn to what comes next: preparing for the appointment, and the day itself. Your days here stay safe.</p>
-        <div class="row"><button type="button" class="btn" id="decidedBtn">I've made the decision</button></div>
+        <p class="small muted">There's no right moment to press this, and no hurry. When you know, the site will gently turn to what comes next: preparing, and the day itself. Your days here stay safe.</p>
+        <div class="row"><button type="button" class="btn" id="decidedBtn">We've chosen the day</button></div>
       </div>
     </div>
   </div>
@@ -825,7 +825,7 @@
 <section id="prepare" aria-labelledby="prepareTitle">
   <div class="wrap split">
     <div class="side">
-      <h2 id="prepareTitle">Preparing for the appointment</h2>
+      <h2 id="prepareTitle">Preparing for the day</h2>
       <p>Knowing what to expect makes the moment less frightening, and protects you from being shocked by things that are normal.</p>
     </div>
     <div class="main prose">
@@ -866,8 +866,8 @@
 <section id="day" class="band">
   <div class="wrap split">
     <div class="side">
-      <h2>The day of the appointment</h2>
-      <p>If you have made the decision and the day is coming, this is a list to lean on, so you don't have to remember everything yourself. Tick whatever feels done; it's kept with your dog's history.</p>
+      <h2>The day itself</h2>
+      <p>If the day is near, this is a list to lean on, so you don't have to remember everything yourself. Tick whatever feels done; it's kept with your dog's history.</p>
       <p class="small">Nothing here is a rule. Skip what doesn't fit you.</p>
     </div>
     <div class="main stack">
@@ -3656,7 +3656,7 @@ Ksenija, who loved Mosjka</p>
     }
     if (g === "decided") return st === "after"
       ? ["The day itself", "The preparation and the checklist for the day are still here.", "Open"]
-      : ["When you've made the decision", "How to prepare for the appointment, what I wish I'd known, and a checklist for the day itself.", "Open"];
+      : ["When the day is near", "How to prepare for the day, what I wish I'd known, and a checklist for the day itself.", "Open"];
     return ["After the goodbye", "For when it's needed: the thoughts that come back, 30 days of gentle company, a keepsake page and a place to write to them.", "Open"];
   }
   function renderStages() {

@@ -572,8 +572,8 @@
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
       <nav class="site-nav" id="siteNav" aria-label="Основное меню">
-        <a href="#before">Решение</a>
-        <a href="#prepare">Решение принято</a>
+        <a href="#before">Пока не уверены</a>
+        <a href="#prepare">Когда день близко</a>
         <a href="#since">После прощания</a>
         <a href="#letter" data-named="Письмо: {name}">Написать письмо</a>
         <a href="../" class="lang-link" lang="en" hreflang="en" aria-label="English version">EN</a>
@@ -587,8 +587,8 @@
           <p>Спокойный путеводитель: как понять, пора ли прощаться с собакой, как пройти сам этот день и как жить с чувством вины и горем после. <a href="#story">Его написала та, кто сама через это прошла.</a></p>
           <p class="moment" id="nightNote" hidden><svg class="moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 1 1 9.4 4a6.9 6.9 0 0 0 10.6 10.6z" fill="#b4c0dd"/></svg><span>Не спится? Ночью тяжелее всего. Вы не одни не спите сейчас.</span></p>
           <div class="actions">
-            <a class="btn primary" href="#before" data-set-stage="deciding">Пока не знаю, пора ли</a>
-            <a class="btn" href="#prepare" data-set-stage="decided">Решение принято</a>
+            <a class="btn primary" href="#before" data-set-stage="deciding">Пока не уверены</a>
+            <a class="btn" href="#prepare" data-set-stage="decided">День уже близко</a>
             <a class="btn" href="#since" data-set-stage="after">Мы уже попрощались</a>
           </div>
         </div>
@@ -614,19 +614,19 @@
 <section aria-label="Где вы сейчас?">
   <div class="wrap paths">
     <a class="path" href="#before" data-set-stage="deciding">
-      <span class="path-step">Решение</span>
-      <span class="path-title">Пока не знаю, пора ли</span>
+      <span class="path-step">До</span>
+      <span class="path-title">Пока не уверены</span>
       <span class="path-text">Дневник на каждый день — с заметками и шкалой качества жизни, которой пользуются ветеринары. Так со временем видна общая картина, и вам будет что ясно показать врачу.</span>
       <span class="path-more">Дневник дней &#8594;</span>
     </a>
     <a class="path" href="#prepare" data-set-stage="decided">
-      <span class="path-step">Решение принято</span>
-      <span class="path-title">Этот день приближается</span>
+      <span class="path-step">Тот день</span>
+      <span class="path-title">День уже близко</span>
       <span class="path-text">Что происходит на приёме, что я хотела бы знать заранее, и список дел на сам этот день — чтобы вы могли быть рядом с собакой, а не думать обо всём сразу.</span>
       <span class="path-more">Подготовка к этому дню &#8594;</span>
     </a>
     <a class="path" href="#since" data-set-stage="after">
-      <span class="path-step">После прощания</span>
+      <span class="path-step">После</span>
       <span class="path-title">Мы уже попрощались</span>
       <span class="path-text">Мысли, которые возвращаются чаще всего, и что в них правда. Бережный 30-дневный путь на первый месяц. И личное место, где можно написать письмо своей собаке.</span>
       <span class="path-more">Для дней после &#8594;</span>
@@ -815,8 +815,8 @@
 
       <div class="card stack no-print stage-next" id="decidedCard" style="gap: 10px">
         <span class="card-title">Когда вы решите</span>
-        <p class="small muted">Правильного момента, чтобы нажать эту кнопку, нет. Когда решение будет принято, сайт перейдёт к тому, что дальше: подготовке к приёму и самому этому дню. Ваши записи здесь никуда не денутся.</p>
-        <div class="row"><button type="button" class="btn" id="decidedBtn">Решение принято</button></div>
+        <p class="small muted">Правильного момента, чтобы нажать эту кнопку, нет, и спешить некуда. Когда вы будете знать, сайт бережно перейдёт к тому, что дальше: к подготовке и к самому этому дню. Ваши записи здесь никуда не денутся.</p>
+        <div class="row"><button type="button" class="btn" id="decidedBtn">Мы выбрали день</button></div>
       </div>
     </div>
   </div>
@@ -825,7 +825,7 @@
 <section id="prepare" aria-labelledby="prepareTitle">
   <div class="wrap split">
     <div class="side">
-      <h2 id="prepareTitle">Как подготовиться к визиту врача</h2>
+      <h2 id="prepareTitle">Как подготовиться к этому дню</h2>
       <p>Когда знаешь, чего ждать, этот момент пугает меньше. И то, что нормально, не застанет вас врасплох.</p>
     </div>
     <div class="main prose">
@@ -866,8 +866,8 @@
 <section id="day" class="band">
   <div class="wrap split">
     <div class="side">
-      <h2>День процедуры</h2>
-      <p>Если решение принято и день приближается, вот список, на который можно опереться, чтобы не держать всё в голове. Отмечайте то, что уже сделано; отметки сохраняются вместе с историей вашей собаки.</p>
+      <h2>Сам этот день</h2>
+      <p>Если день уже близко, вот список, на который можно опереться, чтобы не держать всё в голове. Отмечайте то, что уже сделано; отметки сохраняются вместе с историей вашей собаки.</p>
       <p class="small">Здесь нет правил. Пропускайте то, что вам не подходит.</p>
     </div>
     <div class="main stack">
@@ -3659,7 +3659,7 @@
     }
     if (g === "decided") return st === "after"
       ? ["Сам день", "Подготовка и список дел на этот день по-прежнему здесь.", "Открыть"]
-      : ["Когда решение принято", "Как подготовиться к визиту, что я хотела бы знать заранее, и список дел на сам день.", "Открыть"];
+      : ["Когда день близко", "Как подготовиться к этому дню, что я хотела бы знать заранее, и список дел на сам день.", "Открыть"];
     return ["После прощания", "На то время, когда это понадобится: мысли, которые возвращаются, 30 дней тихой поддержки, памятная страница и место, где можно написать письмо.", "Открыть"];
   }
   function renderStages() {
