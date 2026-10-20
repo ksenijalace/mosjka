@@ -967,7 +967,7 @@
   <div class="wrap split">
     <div class="side">
       <h2 data-named="Tell me about {name}">Tell me about them</h2>
-      <p>Nine gentle questions, one at a time. Skip any you like, and stop whenever you need to; your answers wait for you.</p>
+      <p>Twelve gentle questions, one at a time. Skip any you like, and stop whenever you need to; your answers wait for you.</p>
       <p class="small">At the end they become a keepsake page with their name and dates, to save, print, or come back to.</p>
     </div>
     <div class="main">
@@ -1411,10 +1411,12 @@ Ksenija, who loved Mosjka</p>
           <h3>Mosjka</h3>
           <p class="ks-dates">22 March 2011 &ndash; 21 September 2026</p>
           <div class="ks-part"><h4>Known as</h4><p>Mosjka, from the very first day.</p></div>
-          <div class="ks-part"><h4>Her character</h4><p>Kind.</p></div>
-          <div class="ks-part"><h4>Known for</h4><p>Eating a whole cake once, box and all. &ldquo;Reading&rdquo; books and any paper she could find. Pulling the hair out of dolls, carefully, one strand at a time.</p></div>
-          <div class="ks-part"><h4>Loved</h4><p>The sea: walking in the water, collecting stones. Sweets. Her food, always. A drink of water at every caf&eacute; on the way, even with a full bowl at home.</p></div>
           <div class="ks-part"><h4>Her family</h4><p>Our family, and my mother in Riga, who looked after her in her last weeks.</p></div>
+          <div class="ks-part"><h4>Her character</h4><p>Kind.</p></div>
+          <div class="ks-part"><h4>Loved</h4><p>Sweets. Her food, always. A drink of water at every caf&eacute; on the way, even with a full bowl at home.</p></div>
+          <div class="ks-part"><h4>Her place</h4><p>The sea: walking in the water, collecting stones.</p></div>
+          <div class="ks-part"><h4>Known for</h4><p>&ldquo;Reading&rdquo; books and any paper she could find. Pulling the hair out of dolls, carefully, one strand at a time.</p></div>
+          <div class="ks-part"><h4>A story to tell</h4><p>Once, when nobody was looking, she ate a whole cake. Box and all.</p></div>
           <div class="ks-part"><h4>Remembered for</h4><p>Fifteen years of kindness, and being brave for a long time.</p></div>
           <div class="ks-part"><h4>In her honour</h4><p>Her name tag, worn as a brooch. Free weekends filled with plans, so that it was never for nothing.</p></div>
           <p class="ks-foot">Remembered with love &middot; hardestkindness.org</p>
@@ -2606,7 +2608,7 @@ Ksenija, who loved Mosjka</p>
   };
   function memoryFor(day) {
     var a = (store.get(KEYS.portrait, { answers: {} }).answers) || {}, n = dogWord();
-    if (day === 15) return Object.keys(a).length ? "You've already begun telling " + n + "\u2019s story. You could add to it today: [Tell me about them](#remember)." : "If you'd like, nine gentle questions can help you write it down: [Tell me about them](#remember).";
+    if (day === 15) return Object.keys(a).length ? "You've already begun telling " + n + "\u2019s story. You could add to it today: [Tell me about them](#remember)." : "If you'd like, a few gentle questions can help you write it down: [Tell me about them](#remember).";
     if (day === 16 && a.favourite) return "You told me what " + n + " loved: \u201c" + clip(a.favourite) + "\u201d Maybe one small piece of it today.";
     if (day === 20 && a.keep) return "You wrote how you'd like " + n + " to be remembered: \u201c" + clip(a.keep) + "\u201d";
     if (day === 24 && a.miss) return "You said you miss " + n + " most: \u201c" + clip(a.miss) + "\u201d If that time comes tonight, let it be gentle.";
@@ -3186,14 +3188,17 @@ Ksenija, who loved Mosjka</p>
   // In memoriam: the questions celebrate the life they lived.
   var RM = [
     ["names", "What was their name, and what else did you call them?", "Every one of those names was love.", "Known as"],
-    ["arrival", "How did {name} come into your life?", "So that's how it began.", "Came into our lives"],
-    ["character", "How would you describe {name} in a few words?", "That sounds just like them.", "Their character"],
-    ["unique", "What was {name} known for? The habits only they had.", "That's the kind of thing only you would know.", "Known for"],
-    ["favourite", "What did they love? Places, food, games, people.", "Those are worth remembering.", "Loved"],
-    ["memory", "Which day with them will you always remember?", "What a day to keep.", "A day to remember"],
-    ["taught", "What did {name} teach you?", "In a way, they're still teaching you.", "Taught us"],
+    ["arrival", "Where and how did {name} come into your life?", "So that's how it began.", "Came into our lives"],
     ["family", "Who were their people, and their animal friends?", "They were well loved.", "Their family"],
-    ["keep", "How would you like {name} to be remembered?", "That's how they stay with you.", "Remembered for"]
+    ["character", "Three words that describe {name}.", "That sounds just like them.", "Their character"],
+    ["favourite", "What did they love doing?", "Those are worth remembering.", "Loved"],
+    ["place", "Where were they happiest?", "Somewhere that will always be theirs.", "Their place"],
+    ["unique", "What was {name} known for? The habits only they had.", "That's the kind of thing only you would know.", "Known for"],
+    ["story", "A story you'll always tell about {name}.", "That's a story worth telling again.", "A story to tell"],
+    ["gave", "How did they make you feel, or change your life?", "That's what they leave with you.", "What they gave us"],
+    ["taught", "What did {name} teach you?", "In a way, they're still teaching you.", "Taught us"],
+    ["keep", "How would you like {name} to be remembered?", "That's how they stay with you.", "Remembered for"],
+    ["honour", "Something you'll do in their honour.", "They would like that.", "In their honour"]
   ];
   var rmStep = 0;
   function rmName() { var d = store.get(KEYS.dog, {}), c = syncConn(); return (d.name || (c && c.label) || "").trim(); }
