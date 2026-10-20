@@ -2472,7 +2472,9 @@ Ksenija, who loved Mosjka</p>
       ]
   ];
   var MOODS = [[1, "Very hard"], [2, "Hard"], [3, "Up and down"], [4, "A little lighter"], [5, "Steady"]];
-  var jView = null, jMood = null;
+  // jDraft: the day whose check-in is being filled in, so a background sync doesn't clear it.
+  var jView = null, jMood = null, jDraft = null, jLastView = null;
+  document.getElementById("jWord").addEventListener("input", function () { jDraft = jView; });
 
   function journeyState() { return store.get(KEYS.journey, { reached: 0, days: {} }); }
   function dogWord() { var n = (store.get(KEYS.dog, {}).name || "").trim(); return n || "your dog"; }
@@ -2493,7 +2495,7 @@ Ksenija, who loved Mosjka</p>
     var b = el("button", null, mo[1]);
     b.type = "button"; b.dataset.mood = mo[0]; b.setAttribute("aria-pressed", "false");
     b.addEventListener("click", function () {
-      jMood = mo[0];
+      jMood = mo[0]; jDraft = jView;
       moodBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
       document.getElementById("jBreathe").hidden = jMood !== 1;
       renderNear();
@@ -2870,14 +2872,17 @@ Ksenija, who loved Mosjka</p>
     } else {
       fillText(document.getElementById("jAction"), d[2]);
     }
-    jMood = entry ? entry.mood : null;
+    if (jLastView !== jView) jDraft = null; // moving to another day lets the draft go
+    jLastView = jView;
+    var keepDraft = jDraft === jView;
+    if (!keepDraft) jMood = entry ? entry.mood : null;
     moodBox.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(+x.dataset.mood === jMood)); });
     document.getElementById("jBreathe").hidden = jMood !== 1;
     renderNear();
     var ms = MILESTONES[jView], msBox = document.getElementById("jMilestone");
     msBox.hidden = !(ms && entry);
     if (ms && entry) moment("jMilestone", ms.replace(/\{dog\}/g, dogWord()));
-    document.getElementById("jWord").value = entry ? entry.word || "" : "";
+    if (!keepDraft) document.getElementById("jWord").value = entry ? entry.word || "" : "";
     document.getElementById("jPrev").disabled = jView <= 1;
     document.getElementById("jNext").disabled = jView >= 30;
 
@@ -2940,6 +2945,7 @@ Ksenija, who loved Mosjka</p>
     var st = journeyState();
     if (jView === 30 && !st.days[30]) finalePlay = true;
     st.days[jView] = { mood: jMood, word: document.getElementById("jWord").value.trim(), date: today(), t: Date.now() };
+    jDraft = null;
     st.reached = Math.max(st.reached, Math.min(jView + 1, 30));
     st.t = Date.now();
     flash("jMsg", store.set(KEYS.journey, st) ? (jView >= 30 ? "Saved. You've walked all 30 days." : st.start ? "Saved. Day " + (jView + 1) + " will be waiting tomorrow." : "Saved. Day " + (jView + 1) + " is there whenever you're ready.") : unsaved);
@@ -3768,6 +3774,11 @@ Ksenija, who loved Mosjka</p>
   });
   renderSync();
   if (syncEnabled) syncNow(true);
+  // Pick up changes from other devices when the page comes back to the screen, and now and then while it's open.
+  if (syncEnabled) {
+    document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible" && syncConn()) syncNow(true); });
+    setInterval(function () { if (document.visibilityState === "visible" && syncConn()) syncNow(true); }, 5 * 60 * 1000);
+  }
 
   // ---- Copy a link to the family section ----
   document.getElementById("copyFamily").addEventListener("click", function () {
