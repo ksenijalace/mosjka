@@ -8,6 +8,8 @@
 <meta name="description" content="Help with the hardest decision, and with what comes after: support for dog owners before and after euthanasia.">
 <meta name="theme-color" content="#1d2130">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11.26 2.02 L14.97 7.85 L21.46 8.78 L17.43 13.95 L18.36 20.18 L12.39 18.19 L6.59 21.25 L6.81 14.70 L2.10 10.13 L8.40 8.31Z' fill='%23b4c0dd' stroke='%23b4c0dd' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="alternate" hreflang="en" href="https://hardestkindness.org/">
+<link rel="alternate" hreflang="ru" href="https://hardestkindness.org/ru/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&display=swap">
@@ -89,6 +91,7 @@
   .site-nav { display: flex; flex-wrap: wrap; gap: 8px 30px; align-items: center; font-size: 16px; font-weight: 600; }
   .site-nav a { color: var(--text); text-decoration: none; }
   .site-nav a:hover { color: var(--accent-hover); }
+  .site-nav a.lang-link { font-size: 14px; letter-spacing: .06em; color: var(--muted); }
   .menu-btn { display: none; }
   @media (max-width: 860px) {
     .brand-tag { display: none; }
@@ -573,6 +576,7 @@
         <a href="#prepare">The decision is made</a>
         <a href="#since">After the goodbye</a>
         <a href="#letter" data-named="Write to {name}">Write to them</a>
+        <a href="ru/" class="lang-link" lang="ru" hreflang="ru" aria-label="Русская версия">RU</a>
       </nav>
     </header>
 
