@@ -1410,12 +1410,13 @@ Ksenija, who loved Mosjka</p>
           <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><use href="#starShape" fill="#b4c0dd" stroke="#b4c0dd" stroke-width="2.2" stroke-linejoin="round"/></svg>
           <h3>Mosjka</h3>
           <p class="ks-dates">22 March 2011 &ndash; 21 September 2026</p>
-          <div class="ks-part"><h4>What we called her</h4><p>Mosjka. She was Mosjka from the very first day.</p></div>
-          <div class="ks-part"><h4>Only she did this</h4><p>She ate a whole cake once, box and all. She &ldquo;read&rdquo; books and any paper she could find, and pulled the hair out of dolls, carefully, one strand at a time.</p></div>
-          <div class="ks-part"><h4>Her favourite things</h4><p>The sea: walking in the water, collecting stones. Sweets. Her food, to the very end. A drink of water at a caf&eacute; on our walks, even when her bowl at home was full.</p></div>
-          <div class="ks-part"><h4>When I miss her most</h4><p>On the streets where we used to walk. In the routines, the walks above all.</p></div>
-          <div class="ks-part"><h4>What I&rsquo;d still like to say</h4><p>Forgive me, for everything.</p></div>
-          <div class="ks-part"><h4>What I&rsquo;ll keep doing</h4><p>Keeping her collar in the car. Wearing her name tag as a brooch. Filling the free mornings and weekends with plans, for her, so that it wasn&rsquo;t all for nothing.</p></div>
+          <div class="ks-part"><h4>Known as</h4><p>Mosjka, from the very first day.</p></div>
+          <div class="ks-part"><h4>Her character</h4><p>Kind.</p></div>
+          <div class="ks-part"><h4>Known for</h4><p>Eating a whole cake once, box and all. &ldquo;Reading&rdquo; books and any paper she could find. Pulling the hair out of dolls, carefully, one strand at a time.</p></div>
+          <div class="ks-part"><h4>Loved</h4><p>The sea: walking in the water, collecting stones. Sweets. Her food, always. A drink of water at every caf&eacute; on the way, even with a full bowl at home.</p></div>
+          <div class="ks-part"><h4>Her family</h4><p>Our family, and my mother in Riga, who looked after her in her last weeks.</p></div>
+          <div class="ks-part"><h4>Remembered for</h4><p>Fifteen years of kindness, and being brave for a long time.</p></div>
+          <div class="ks-part"><h4>In her honour</h4><p>Her name tag, worn as a brooch. Free weekends filled with plans, so that it was never for nothing.</p></div>
           <p class="ks-foot">Remembered with love &middot; hardestkindness.org</p>
         </article>
       </div>
@@ -2607,7 +2608,7 @@ Ksenija, who loved Mosjka</p>
     var a = (store.get(KEYS.portrait, { answers: {} }).answers) || {}, n = dogWord();
     if (day === 15) return Object.keys(a).length ? "You've already begun telling " + n + "\u2019s story. You could add to it today: [Tell me about them](#remember)." : "If you'd like, nine gentle questions can help you write it down: [Tell me about them](#remember).";
     if (day === 16 && a.favourite) return "You told me what " + n + " loved: \u201c" + clip(a.favourite) + "\u201d Maybe one small piece of it today.";
-    if (day === 20 && a.keep) return "You wrote that you'd like to keep this: \u201c" + clip(a.keep) + "\u201d";
+    if (day === 20 && a.keep) return "You wrote how you'd like " + n + " to be remembered: \u201c" + clip(a.keep) + "\u201d";
     if (day === 24 && a.miss) return "You said you miss " + n + " most: \u201c" + clip(a.miss) + "\u201d If that time comes tonight, let it be gentle.";
     if (day === 27 && a.names) return "All the names you called them: \u201c" + clip(a.names) + "\u201d Say one of them out loud today.";
     return "";
@@ -3182,16 +3183,17 @@ Ksenija, who loved Mosjka</p>
   });
 
   // ---- Tell me about them ----
+  // In memoriam: the questions celebrate the life they lived.
   var RM = [
-    ["names", "What did you call {name}? All the names, even the silly ones.", "Every one of those names was love.", "What we called them"],
-    ["arrival", "How did {name} come into your life?", "So that's how it began.", "How they came to us"],
-    ["unique", "What did {name} do that no other dog did?", "That's the kind of thing only you would know.", "Only they did this"],
-    ["favourite", "What were their favourite things? A place, a food, a smell, a person.", "Those are worth remembering.", "Their favourite things"],
-    ["sound", "What did they sound like? Their bark, their sigh, their nails on the floor.", "You can probably still hear it.", "Their sound"],
-    ["taught", "What did {name} teach you?", "In a way, they're still teaching you.", "What they taught me"],
-    ["miss", "When do you miss them most?", "That time may stay tender for a while. That's all right.", "When I miss them most"],
-    ["unsaid", "Is there something you'd still like to say to {name}?", "Thank you for saying it.", "What I'd still like to say"],
-    ["keep", "What would you like to keep doing, for them or because of them?", "That's how they stay with you.", "What I'll keep doing"]
+    ["names", "What was their name, and what else did you call them?", "Every one of those names was love.", "Known as"],
+    ["arrival", "How did {name} come into your life?", "So that's how it began.", "Came into our lives"],
+    ["character", "How would you describe {name} in a few words?", "That sounds just like them.", "Their character"],
+    ["unique", "What was {name} known for? The habits only they had.", "That's the kind of thing only you would know.", "Known for"],
+    ["favourite", "What did they love? Places, food, games, people.", "Those are worth remembering.", "Loved"],
+    ["memory", "Which day with them will you always remember?", "What a day to keep.", "A day to remember"],
+    ["taught", "What did {name} teach you?", "In a way, they're still teaching you.", "Taught us"],
+    ["family", "Who were their people, and their animal friends?", "They were well loved.", "Their family"],
+    ["keep", "How would you like {name} to be remembered?", "That's how they stay with you.", "Remembered for"]
   ];
   var rmStep = 0;
   function rmName() { var d = store.get(KEYS.dog, {}), c = syncConn(); return (d.name || (c && c.label) || "").trim(); }
@@ -3207,7 +3209,7 @@ Ksenija, who loved Mosjka</p>
     var bar = document.getElementById("rmProgress"); bar.innerHTML = "";
     RM.forEach(function (_, i) { bar.appendChild(el("span", i <= rmStep ? "on" : "")); });
     document.getElementById("rmA").value = pt.answers[q[0]] || "";
-    document.getElementById("rmA").placeholder = q[0] === "unique" ? "Mosjka stopped at caf\u00e9s for a drink of water, even when her bowl at home was full." : "";
+    document.getElementById("rmA").placeholder = q[0] === "unique" ? "Mosjka stopped at every caf\u00e9 for a drink of water, even when her bowl at home was full." : "";
     document.getElementById("rmAck").innerHTML = "";
     document.getElementById("rmBack").disabled = rmStep === 0;
     document.getElementById("rmNext").textContent = rmStep === RM.length - 1 ? "Finish" : "Next";
