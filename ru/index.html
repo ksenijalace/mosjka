@@ -537,6 +537,36 @@
   .foot nav a { color: var(--text); text-decoration: none; }
   .foot .disclaimer { flex-basis: 100%; max-width: 46em; }
 
+  /* Gentle arrival: a greeting, a way back to where you were, and one calm minute */
+  .greet { margin: 0 0 18px; }
+  .resume { position: fixed; left: 16px; right: 16px; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 40; max-width: 420px; display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 2px 8px;
+    padding: 14px 6px 6px 16px; background: var(--bg-raise); border: 1px solid var(--line-strong); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+  .resume[hidden] { display: none; }
+  .resume-text { padding-top: 8px; font-family: var(--font-quote); font-style: italic; color: var(--text); }
+  .resume .btn.quiet { min-height: 40px; grid-column: 1; justify-self: start; padding-inline: 0; }
+  .resume .resume-x { grid-column: 2; grid-row: 1; }
+  .resume-x { background: none; border: 0; color: var(--muted); font-size: 22px; line-height: 1; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
+  .resume-x:hover { color: var(--text); }
+  .calm-btn { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 40; display: inline-flex; align-items: center; gap: 8px;
+    min-height: 44px; padding: 0 16px; border-radius: 999px; background: var(--bg-raise); border: 1px solid var(--line-strong); color: var(--muted);
+    font: 600 14px/1 var(--font-body); cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.3); }
+  .calm-btn:hover { color: var(--text); border-color: var(--accent); }
+  .calm { position: fixed; inset: 0; z-index: 60; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 24px 16px; overflow-y: auto; }
+  .calm[hidden] { display: none; }
+  .calm-inner { max-width: 30em; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+  .calm-title { font-family: var(--font-display); font-size: clamp(26px, 5vw, 34px); margin: 0; }
+  .calm-orb { width: 132px; height: 132px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle, rgba(180,192,221,.22) 0%, rgba(180,192,221,.06) 55%, rgba(180,192,221,0) 72%); }
+  .calm-orb svg { width: 54px; height: 54px; transform: scale(.7); }
+  .calm-orb.go svg { animation: breatheCycle 10s ease-in-out infinite; }
+  .calm-word { font-family: var(--font-quote); font-size: 21px; min-height: 1.5em; margin: 0; }
+  .calm-line { font-family: var(--font-quote); font-style: italic; font-size: 19px; color: var(--muted); min-height: 3em; margin: 0; }
+  .calm-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .calm-x { position: absolute; top: 12px; right: 12px; }
+  body.calm-open { overflow: hidden; }
+  body { padding-bottom: 72px; }
+  @media (prefers-reduced-motion: reduce) { .calm-orb.go svg { animation: none; transform: scale(1); } }
+  @media print { .calm-btn, .resume, .calm { display: none !important; } }
   @media print {
     body { background: #fff; color: #000; padding: 0; }
     html:not(.print-keepsake) body > *:not(main), html:not(.print-keepsake) main > *:not(#before), html:not(.print-keepsake) #before .side, html:not(.print-keepsake) #before .no-print { display: none !important; }
@@ -578,6 +608,25 @@
   </defs>
 </svg>
 
+<button type="button" class="calm-btn" id="calmBtn" aria-haspopup="dialog"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><use href="#starShape" fill="#b4c0dd" stroke="#b4c0dd" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Сейчас слишком тяжело</span></button>
+<div class="calm" id="calm" role="dialog" aria-modal="true" aria-labelledby="calmTitle" hidden>
+  <button type="button" class="resume-x calm-x" id="calmClose" aria-label="Закрыть">&times;</button>
+  <div class="calm-inner">
+    <h2 class="calm-title" id="calmTitle">Только эта минута.</h2>
+    <div class="calm-orb" id="calmOrb" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#starShape" fill="#b4c0dd" stroke="#b4c0dd" stroke-width="2.2" stroke-linejoin="round"/></svg></div>
+    <p class="calm-word" id="calmWord" aria-live="polite"></p>
+    <p class="calm-line" id="calmLine"></p>
+    <div class="calm-actions" id="calmEnd" hidden>
+      <button type="button" class="btn" id="calmAgain">Ещё минуту</button>
+      <button type="button" class="btn primary" id="calmDone">Мне немного легче</button>
+    </div>
+  </div>
+</div>
+<div class="resume" id="resume" role="status" hidden>
+  <span class="resume-text" id="resumeText"></span>
+  <a class="btn quiet" id="resumeGo" href="#top">Вернуться туда</a>
+  <button type="button" class="resume-x" id="resumeClose" aria-label="Не сейчас">&times;</button>
+</div>
 <datalist id="breedList"></datalist>
 <div class="top" id="top">
   <div class="wrap">
@@ -599,6 +648,7 @@
     </header>
 
     <div class="hero">
+      <p class="moment greet" id="greet"></p>
       <div class="hero-head">
         <h1>Помощь с самым трудным решением — и с тем, что будет после.</h1>
         <div class="hero-side">
@@ -1592,6 +1642,120 @@
   // Late at night, say so.
   var hour = new Date().getHours();
   document.getElementById("nightNote").hidden = !(hour >= 21 || hour < 5);
+
+  // ---- Gentle arrival ----
+  // A greeting that knows whether you've been here before, a way back to where you were reading, and one calm minute.
+  var ARRIVE = {
+    first: "Что бы ни привело вас сюда, оставайтесь столько, сколько нужно.",
+    back: "С возвращением. Не торопитесь, здесь некуда спешить.",
+    backAfter: "С возвращением. {name} по-прежнему с вами.",
+    backJourney: "С возвращением. Сегодня день {d} из 30. {name} по-прежнему с вами.",
+    backDecided: "С возвращением. Что бы ни принёс этот день, вы не одни.",
+    backDays: "С возвращением. {name} — под вашей заботой уже {n} {days}. Сначала просто выдохните, спешить некуда.",
+    days: function (n) { return ruPlural(n, "день", "дня", "дней"); },
+    resume: "В прошлый раз вы читали «{title}».",
+    breatheIn: "Вдох\u2026", breatheOut: "\u2026и медленный выдох",
+    lines: [
+      "Сейчас не нужно ничего решать.",
+      "В эту минуту не нужно держаться.",
+      "Всё, что вы чувствуете, — можно.",
+      "Эта волна пройдёт, даже если сейчас так не кажется.",
+      "Вы любили свою собаку. Поэтому так больно.",
+      "Многие чувствовали ровно то же самое. Вы не одни."
+    ],
+    calmAfter: "Не торопитесь. Оставайтесь столько, сколько нужно."
+  };
+  var visit = store.get("hk.visit", null), visitNow = Date.now();
+  // A new visit is one that starts more than 20 minutes after the last.
+  var newVisit = !visit || visitNow - (visit.last || 0) > 20 * 60 * 1000;
+  store.set("hk.visit", { first: visit ? visit.first : visitNow, last: visitNow });
+  function fillName(s, map) { return s.replace(/\{(\w+)\}/g, function (m, k) { return map[k] != null ? map[k] : m; }); }
+  function renderGreet() {
+    var dog = store.get(KEYS.dog, {}), name = (dog.name || "").trim(), st = currentStage(), text;
+    if (!visit) text = ARRIVE.first;
+    else if (!name) text = ARRIVE.back;
+    else if (st === "after") {
+      var js = journeyState();
+      text = js.reached ? fillName(ARRIVE.backJourney, { d: hereDay(js), name: name }) : fillName(ARRIVE.backAfter, { name: name });
+    } else if (st === "decided") text = ARRIVE.backDecided;
+    else {
+      var n = Object.keys(store.get(KEYS.days, {})).length;
+      text = n ? fillName(ARRIVE.backDays, { n: n, days: ARRIVE.days(n), name: name }) : ARRIVE.back;
+    }
+    moment("greet", text);
+  }
+
+  // Remember the part of the page you were in, and offer it next time.
+  var place = store.get("hk.place", null), placeTimer = null;
+  function sectionNow() {
+    var mid = window.innerHeight / 2, found = null;
+    document.querySelectorAll("main section[id]").forEach(function (s) {
+      if (found || s.hidden || s.classList.contains("stage-hidden")) return;
+      var r = s.getBoundingClientRect();
+      if (r.top <= mid && r.bottom >= mid && s.querySelector("h2")) found = s;
+    });
+    return found;
+  }
+  window.addEventListener("scroll", function () {
+    clearTimeout(placeTimer);
+    placeTimer = setTimeout(function () {
+      var s = sectionNow();
+      if (s) store.set("hk.place", { id: s.id, t: Date.now() });
+      if (window.scrollY > 600) hideResume();
+    }, 800);
+  }, { passive: true });
+  function hideResume() { document.getElementById("resume").hidden = true; }
+  (function () {
+    if (!newVisit || !place || location.hash || visitNow - place.t > 30 * 24 * 3600 * 1000) return;
+    var sec = document.getElementById(place.id), h = sec && sec.querySelector("h2");
+    if (!h) return;
+    setTimeout(function () {
+      if (window.scrollY > 300) return;
+      document.getElementById("resumeText").textContent = fillName(ARRIVE.resume, { title: h.textContent.trim() });
+      document.getElementById("resumeGo").setAttribute("href", "#" + place.id);
+      document.getElementById("resume").hidden = false;
+    }, 1200);
+  })();
+  document.getElementById("resumeGo").addEventListener("click", function () {
+    // The section may be folded away, and parts above it may still be drawing; land on it, then settle there once more.
+    var t = document.getElementById(this.getAttribute("href").slice(1));
+    setTimeout(function () { hideResume(); if (t) t.scrollIntoView({ block: "start" }); }, 0);
+    setTimeout(function () { if (t) t.scrollIntoView({ block: "start" }); }, 400);
+  });
+  document.getElementById("resumeClose").addEventListener("click", hideResume);
+
+  // "Right now is too much": one quiet minute, breathing with the star.
+  var calm = document.getElementById("calm"), calmTimers = [];
+  function calmStop() { calmTimers.forEach(clearTimeout); calmTimers = []; }
+  function calmRun() {
+    calmStop();
+    var orb = document.getElementById("calmOrb"), word = document.getElementById("calmWord"), line = document.getElementById("calmLine");
+    document.getElementById("calmEnd").hidden = true;
+    orb.classList.remove("go"); void orb.offsetWidth; orb.classList.add("go");
+    for (var i = 0; i < 6; i++) (function (i) {
+      calmTimers.push(setTimeout(function () { word.textContent = ARRIVE.breatheIn; line.textContent = ARRIVE.lines[i]; }, i * 10000));
+      calmTimers.push(setTimeout(function () { word.textContent = ARRIVE.breatheOut; }, i * 10000 + 4000));
+    })(i);
+    calmTimers.push(setTimeout(function () {
+      orb.classList.remove("go"); word.textContent = ""; line.textContent = ARRIVE.calmAfter;
+      document.getElementById("calmEnd").hidden = false;
+      document.getElementById("calmDone").focus();
+    }, 60000));
+  }
+  function calmOpen() {
+    calm.hidden = false; document.body.classList.add("calm-open");
+    calmRun();
+    document.getElementById("calmClose").focus();
+  }
+  function calmClose() {
+    calmStop(); calm.hidden = true; document.body.classList.remove("calm-open");
+    document.getElementById("calmBtn").focus();
+  }
+  document.getElementById("calmBtn").addEventListener("click", calmOpen);
+  document.getElementById("calmClose").addEventListener("click", calmClose);
+  document.getElementById("calmDone").addEventListener("click", calmClose);
+  document.getElementById("calmAgain").addEventListener("click", function () { calmRun(); document.getElementById("calmClose").focus(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !calm.hidden) calmClose(); });
 
   // Things people rarely say out loud; one each visit.
   var KNOWS = [
@@ -3177,7 +3341,7 @@
         ? "Обычный размер для породы «" + breedLabel(dog.breed) + "». Если " + name + " крупнее или мельче, поменяйте его."
         : dog.size ? "" : "Какого размера " + name + " во взрослом возрасте? Выберите самый близкий вариант — так сайт поймёт, что значит её возраст.";
     });
-    renderAge(); renderSince(); renderRemember(); renderLight(); renderStages();
+    renderAge(); renderSince(); renderRemember(); renderLight(); renderStages(); renderGreet();
   }
   setups.forEach(function (card) {
     var breedIn = card.querySelector(".s-breed");
