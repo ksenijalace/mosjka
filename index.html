@@ -311,14 +311,41 @@
   .rm-progress span.on { background: var(--accent); }
   #rmText { font-family: var(--font-display); font-size: clamp(22px, 3vw, 28px); line-height: 1.3; margin: 0; }
   #rmA { font-family: var(--font-quote); font-size: 18px; min-height: 130px; }
-  .keepsake { background: #1a1e2c; border: 1px solid var(--line-strong); border-radius: 10px; padding: 36px 28px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
-  .keepsake img { width: 180px; height: 180px; object-fit: cover; border-radius: 50%; border: 1px solid var(--line-strong); filter: saturate(.75); margin: 6px 0; }
-  .keepsake h3 { font-family: var(--font-display); font-size: 34px; margin: 4px 0 0; }
-  .keepsake .ks-dates { color: var(--muted); font-family: var(--font-quote); }
-  .keepsake .ks-part { max-width: 34em; margin-top: 14px; }
-  .keepsake .ks-part h4 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; font-weight: 700; }
-  .keepsake .ks-part p { font-family: var(--font-quote); font-size: 18px; line-height: 1.6; white-space: pre-wrap; }
-  .keepsake .ks-foot { margin-top: 18px; font-size: 13px; color: var(--muted); }
+  /* The keepsake: an In Memoriam card under a quiet night sky */
+  .keepsake { position: relative; overflow: hidden; border-radius: 14px; border: 1px solid var(--line-strong); padding: 48px 28px 40px;
+    background: radial-gradient(120% 70% at 50% 0%, rgba(180,192,221,.13), rgba(180,192,221,0) 60%), linear-gradient(180deg, #1c2133, #151925);
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0; }
+  .keepsake::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .7;
+    background-image: radial-gradient(1.2px 1.2px at 8% 12%, #fff, transparent), radial-gradient(1px 1px at 22% 30%, #cfd7ec, transparent), radial-gradient(1.4px 1.4px at 85% 9%, #fff, transparent),
+      radial-gradient(1px 1px at 70% 22%, #cfd7ec, transparent), radial-gradient(1px 1px at 93% 38%, #fff, transparent), radial-gradient(1.2px 1.2px at 5% 55%, #cfd7ec, transparent),
+      radial-gradient(1px 1px at 96% 70%, #cfd7ec, transparent), radial-gradient(1px 1px at 12% 86%, #fff, transparent), radial-gradient(1.3px 1.3px at 88% 92%, #fff, transparent), radial-gradient(1px 1px at 40% 6%, #cfd7ec, transparent); }
+  .keepsake > * { position: relative; }
+  .keepsake .ks-top { color: #b4c0dd; }
+  .keepsake .ks-portrait { margin: 18px 0 8px; }
+  .keepsake .ks-portrait img.ks-photo { width: 190px; height: 190px; object-fit: cover; border-radius: 50%; border: 1px solid rgba(180,192,221,.35); filter: saturate(.8); box-shadow: 0 0 0 10px rgba(180,192,221,.05); }
+  .keepsake .ks-portrait img.ks-cutout { width: min(260px, 70vw); height: auto; opacity: .92;
+    -webkit-mask-image: radial-gradient(closest-side, #000 70%, transparent 100%); mask-image: radial-gradient(closest-side, #000 70%, transparent 100%); }
+  .keepsake .ks-portrait svg { display: block; }
+  .keepsake .ks-name { font-family: var(--font-display); font-size: clamp(38px, 7vw, 54px); line-height: 1.05; margin: 10px 0 0; color: #f2ece2; }
+  .keepsake .ks-known { font-family: var(--font-quote); font-style: italic; color: var(--muted); margin: 8px 0 0; max-width: 28em; }
+  .keepsake .ks-dates { font-family: var(--font-quote); color: #d9d2c5; margin: 14px 0 0; letter-spacing: .02em; }
+  .keepsake .ks-dates .ks-date { white-space: nowrap; }
+  .keepsake .ks-dates .ks-sep { color: var(--honey); margin: 0 .6em; }
+  .keepsake .ks-years { font-family: var(--font-body); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 6px 0 0; }
+  .keepsake .ks-rule { display: flex; align-items: center; gap: 14px; width: min(300px, 76%); margin: 26px 0; color: var(--honey); }
+  .keepsake .ks-rule::before, .keepsake .ks-rule::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(215,180,140,0), rgba(215,180,140,.55), rgba(215,180,140,0)); }
+  .keepsake .ks-words { font-family: var(--font-body); font-size: 14px; font-weight: 700; letter-spacing: .26em; text-transform: uppercase; color: #e8dcc6; margin: 0 0 22px; }
+  .keepsake .ks-lead { font-family: var(--font-quote); font-style: italic; font-size: clamp(21px, 3.4vw, 26px); line-height: 1.45; color: #f2ece2; max-width: 24em; margin: 0; white-space: pre-wrap; }
+  .keepsake .ks-part { max-width: 32em; margin-top: 26px; }
+  .keepsake .ks-part h4 { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; font-weight: 700; }
+  .keepsake .ks-part p { font-family: var(--font-quote); font-size: 18px; line-height: 1.6; white-space: pre-wrap; color: #ebe4d8; margin: 0; }
+  .keepsake .ks-story { max-width: 30em; margin: 34px 0 6px; padding: 24px 26px; border-radius: 12px; background: rgba(180,192,221,.06); border: 1px solid rgba(180,192,221,.14); }
+  .keepsake .ks-story p { font-style: italic; font-size: 19px; }
+  .keepsake .ks-honour p { font-size: 19px; }
+  .keepsake .ks-foot { font-family: var(--font-body); margin-top: 34px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #8b93a8; }
+  .keepsake .ks-empty { color: var(--muted); margin-top: 18px; }
+  .story-keepsake { margin-top: 40px; }
+  .story-keepsake .keepsake { margin-top: 16px; }
   /* Field of stars */
   .sky { background: radial-gradient(80% 60% at 50% 0%, rgba(180,192,221,.10), rgba(180,192,221,0) 70%), radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.35), transparent), radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,.25), transparent), radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,.3), transparent), radial-gradient(1px 1px at 85% 20%, rgba(255,255,255,.3), transparent), #161a26; }
   .star-field { position: relative; width: 100%; margin-top: 24px; overflow: hidden; }
@@ -570,10 +597,14 @@
   @media print {
     body { background: #fff; color: #000; padding: 0; }
     html:not(.print-keepsake) body > *:not(main), html:not(.print-keepsake) main > *:not(#before), html:not(.print-keepsake) #before .side, html:not(.print-keepsake) #before .no-print { display: none !important; }
-    html.print-keepsake body > *:not(main), html.print-keepsake main > *:not(#remember), html.print-keepsake #remember .side, html.print-keepsake #rmCard > *:not(#rmEnd), html.print-keepsake #rmEnd > *:not(#keepsake) { display: none !important; }
-    html.print-keepsake #rmCard { border: 0; padding: 0; }
-    .keepsake { background: #fff; color: #000; border: 0; }
-    .keepsake .ks-dates, .keepsake .ks-part h4, .keepsake .ks-foot { color: #555; }
+    html.print-keepsake body * { visibility: hidden !important; }
+    html.print-keepsake .ks-printing, html.print-keepsake .ks-printing * { visibility: visible !important; }
+    html.print-keepsake .ks-printing { position: absolute; left: 0; top: 0; width: 100%; }
+    .keepsake { background: #fff !important; color: #000; border: 0; }
+    .keepsake::before { display: none; }
+    .ks-name, .ks-lead, .ks-part p, .ks-dates, .ks-words { color: #111 !important; }
+    .ks-known, .ks-years, .ks-part h4, .ks-foot { color: #555 !important; }
+    .ks-story { background: #f6f3ee; border-color: #ddd; }
     .card { border-color: #999; background: #fff; }
   }
 </style>
@@ -1473,6 +1504,12 @@ Ksenija, who loved Mosjka</p>
       <p>What came after, nobody had prepared me for: the papers, the questions, taking the collar off, helping to put her into the bag. I cried for two days without stopping. I couldn't work. I still can't look at her ashes; my husband keeps them. Her collar is in our car, and I don't want to throw it away, because the car still smells of her.</p>
       <p>I don't know if I did the right thing. I regret it, and I feel relief, both at the same time. When I went looking for help, I found almost nothing for people like me. So I made this, in her memory.</p>
       <p class="signature">Written by Ksenija, who loved Mosjka.</p>
+      <div class="story-keepsake">
+        <h3 style="margin-bottom: 4px">Mosjka's keepsake</h3>
+        <p class="small muted">This is what <a href="#remember">&ldquo;Tell me about them&rdquo;</a> becomes at the end. This one is mine, for her.</p>
+        <article class="keepsake" id="mosjkaKeepsake" aria-label="Mosjka's keepsake"></article>
+        <div class="row" style="margin-top: 14px"><button type="button" class="btn" id="mosjkaImage">Save as image</button><span class="status" id="mosjkaMsg" aria-live="polite"></span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -3558,28 +3595,96 @@ Ksenija, who loved Mosjka</p>
     renderKeepsake();
   }
   function longDate(iso) { return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); }
+  var KS = {
+    q: ["“", "”"],
+    myDog: "My dog", photoOf: "Photo of", born: "Born", goodbye: "Said goodbye",
+    years: function (y) { return y + (y === 1 ? " year" : " years") + " of love"; },
+    empty: "Answer a question or two, and it will appear here.",
+    foot: "Always loved \u00b7 hardestkindness.org",
+    displayFont: '"DM Serif Display"', fileSuffix: " - keepsake.png",
+    imgFail: "This browser couldn't make the image. \u201cPrint or save as PDF\u201d should work instead.",
+    saved: "Saved. You'll find it with your downloads.",
+    mosjka: {
+      name: "Mosjka", photo: "images/mosjka-silhouette.webp",
+      heads: { family: "Her family", character: "Her character", place: "Her place", honour: "In her honour" },
+      answers: {
+        names: "Mosjka, from the very first day.",
+        family: "Our family, and my mother in Riga, who looked after her in her last weeks.",
+        character: "Kind",
+        favourite: "Sweets. Her food, always. A drink of water at every caf\u00e9 on the way, even with a full bowl at home.",
+        place: "The sea: walking in the water, collecting stones.",
+        unique: "\u201cReading\u201d books and any paper she could find. Pulling the hair out of dolls, carefully, one strand at a time.",
+        story: "Once, when nobody was looking, she ate a whole cake. Box and all.",
+        keep: "Fifteen years of kindness, and being brave for a long time.",
+        honour: "Her name tag, worn as a brooch. Free weekends filled with plans, so that it was never for nothing."
+      }
+    }
+  };
   function keepsakeData() {
     var dog = store.get(KEYS.dog, {}), c = syncConn(), pt = portrait();
-    var dob = dog.dob || (c && c.dob);
     return {
-      name: rmName() || "My dog", photo: dog.photo || null, breed: breedOf(dog.breed) && !breedOf(dog.breed)[3] ? "" : breedLabel(dog.breed),
-      dates: dob && dog.goodbye ? longDate(dob) + " – " + longDate(dog.goodbye) : dob ? "Born " + longDate(dob) : dog.goodbye ? "Said goodbye " + longDate(dog.goodbye) : "",
-      parts: RM.filter(function (q) { return pt.answers[q[0]]; }).map(function (q) { return [q[3], pt.answers[q[0]]]; })
+      name: rmName() || KS.myDog, photo: dog.photo || null, dog: dog,
+      dob: dog.dob || (c && c.dob) || null, goodbye: dog.goodbye || null, answers: pt.answers || {}
     };
   }
-  function renderKeepsake() {
-    var k = keepsakeData(), box = document.getElementById("keepsake");
-    box.innerHTML = STAR_SVG.replace('width="14" height="14"', 'width="26" height="26"');
-    if (k.photo) { var img = el("img"); img.src = k.photo; img.alt = "Photo of " + k.name; box.appendChild(img); }
-    box.appendChild(el("h3", null, k.name));
-    if (k.dates) box.appendChild(el("p", "ks-dates", k.dates));
-    if (k.breed) box.appendChild(el("p", "small muted", k.breed));
-    k.parts.forEach(function (pr) {
-      var part = el("div", "ks-part"); part.appendChild(el("h4", null, pr[0])); part.appendChild(el("p", null, pr[1])); box.appendChild(part);
-    });
-    if (!k.parts.length) box.appendChild(el("p", "small muted", "Answer a question or two, and it will appear here."));
-    box.appendChild(el("p", "ks-foot", "Remembered with love · hardestkindness.org"));
+  // One composition for the page, the print and the image: the name and dates, how they'd like to be remembered,
+  // their character, the rest of what was told, the story, and what will be done in their honour.
+  function keepsakeLayout(k) {
+    var a = k.answers || {}, head = {}, heads = k.heads || {};
+    RM.forEach(function (q) { head[q[0]] = heads[q[0]] || q[3]; });
+    function txt(key) { return (a[key] || "").trim(); }
+    var years = null;
+    if (k.dob && k.goodbye) { var y = ageYears(k.dob, k.goodbye); if (y >= 1) years = KS.years(y); }
+    var words = txt("character"), short = words && words.length <= 48 && !/[.!?].+/.test(words.replace(/[.!?]+$/, ""));
+    var parts = function (keys) { return keys.filter(txt).map(function (key) { return [head[key], txt(key)]; }); };
+    return {
+      name: k.name, known: txt("names"),
+      dates: k.dob && k.goodbye ? [longDate(k.dob), longDate(k.goodbye)] : k.dob ? [KS.born + " " + longDate(k.dob)] : k.goodbye ? [KS.goodbye + " " + longDate(k.goodbye)] : [],
+      years: years,
+      words: short ? words.replace(/[.!?]+$/, "").split(/\s*[,·;]\s*|\s+(?:and|и)\s+/).filter(Boolean).join("  ·  ") : "",
+      lead: txt("keep"),
+      first: parts(short ? ["arrival", "family", "favourite", "place", "unique"] : ["arrival", "family", "character", "favourite", "place", "unique"]),
+      story: txt("story") ? [head.story, txt("story")] : null,
+      then: parts(["gave", "taught"]),
+      honour: txt("honour") ? [head.honour, txt("honour")] : null,
+      empty: !Object.keys(a).some(txt)
+    };
   }
+  function ksPortrait(k) {
+    if (k.photo) { var img = el("img", k.cutout ? "ks-cutout" : "ks-photo"); img.src = k.photo; img.alt = k.cutout ? "" : KS.photoOf + " " + k.name; return img; }
+    var dog = k.dog || {};
+    if (dog.breed || dog.size) { var s = el("div"); s.innerHTML = dogSilhouette(dog, 220); return s; }
+    return null;
+  }
+  function renderKeepsakeInto(box, k) {
+    var L = keepsakeLayout(k);
+    box.innerHTML = "";
+    var top = el("div", "ks-top"); top.innerHTML = STAR_SVG.replace('width="14" height="14"', 'width="26" height="26"'); box.appendChild(top);
+    var pic = ksPortrait(k);
+    if (pic) { var pw = el("div", "ks-portrait"); pw.appendChild(pic); box.appendChild(pw); }
+    box.appendChild(el("h3", "ks-name", L.name));
+    if (L.known && L.known.toLowerCase() !== L.name.toLowerCase()) box.appendChild(el("p", "ks-known", L.known));
+    if (L.dates.length) {
+      var d = el("p", "ks-dates"); d.appendChild(el("span", "ks-date", L.dates[0]));
+      if (L.dates[1]) { d.appendChild(el("span", "ks-sep", "✦")); d.appendChild(el("span", "ks-date", L.dates[1])); }
+      box.appendChild(d);
+    }
+    if (L.years) box.appendChild(el("p", "ks-years", L.years));
+    function rule() { var r = el("div", "ks-rule"); r.setAttribute("aria-hidden", "true"); r.appendChild(el("span", null, "✦")); box.appendChild(r); }
+    function part(pr, cls) { var p = el("div", "ks-part" + (cls ? " " + cls : "")); p.appendChild(el("h4", null, pr[0])); p.appendChild(el("p", null, pr[1])); box.appendChild(p); }
+    if (L.empty) { box.appendChild(el("p", "ks-empty", KS.empty)); }
+    else {
+      rule();
+      if (L.words) box.appendChild(el("p", "ks-words", L.words));
+      if (L.lead) box.appendChild(el("p", "ks-lead", KS.q[0] + L.lead + KS.q[1]));
+      L.first.forEach(function (pr) { part(pr); });
+      if (L.story) part(L.story, "ks-story");
+      L.then.forEach(function (pr) { part(pr); });
+      if (L.honour) { rule(); part(L.honour, "ks-honour"); }
+    }
+    box.appendChild(el("p", "ks-foot", KS.foot));
+  }
+  function renderKeepsake() { renderKeepsakeInto(document.getElementById("keepsake"), keepsakeData()); }
   function renderRemember() {
     var pt = portrait(), n = Object.keys(pt.answers || {}).length, name = rmName();
     document.getElementById("rmIntroText").textContent = n
@@ -3600,14 +3705,10 @@ Ksenija, who loved Mosjka</p>
   document.getElementById("rmNext").addEventListener("click", function () { var v = rmStore(); rmGo(1, v ? RM[rmStep][2] : null); });
   document.getElementById("rmSkip").addEventListener("click", function () { rmGo(1, null); });
   document.getElementById("rmBack").addEventListener("click", function () { rmStore(); rmGo(-1, null); });
-  document.getElementById("ksPrint").addEventListener("click", function () {
-    document.documentElement.classList.add("print-keepsake");
-    window.print();
-    setTimeout(function () { document.documentElement.classList.remove("print-keepsake"); }, 500);
-  });
-  // Draw the keepsake as one image the owner can keep.
-  document.getElementById("ksImage").addEventListener("click", function () {
-    var k = keepsakeData(), W = 1080, pad = 110, c = document.createElement("canvas"), x = c.getContext("2d");
+  // Draw the keepsake as one image the owner can keep: the same card, under the same sky.
+  function keepsakeImage(k, msgId) {
+    var L = keepsakeLayout(k), W = 1080, pad = 120, c = document.createElement("canvas"), x = c.getContext("2d");
+    var serif = '"Source Serif 4", Georgia, serif', display = KS.displayFont + ', Georgia, serif', sans = '"Source Sans 3", Arial, sans-serif';
     function wrap(text, font, maxW) {
       x.font = font; var out = [];
       String(text).split("\n").forEach(function (para) {
@@ -3620,49 +3721,142 @@ Ksenija, who loved Mosjka</p>
       });
       return out;
     }
-    function draw(img) {
-      var serif = '"Source Serif 4", Georgia, serif', display = '"DM Serif Display", Georgia, serif', sans = '"Source Sans 3", Arial, sans-serif';
-      var blocks = k.parts.map(function (pr) { return [pr[0].toUpperCase(), wrap(pr[1], "34px " + serif, W - pad * 2)]; });
-      var H = 200 + (img ? 400 : 0) + 120 + (k.dates ? 60 : 0) + (k.breed ? 46 : 0) + 40;
-      blocks.forEach(function (b) { H += 70 + b[1].length * 52; });
-      H += 140;
-      c.width = W; c.height = H;
-      x.fillStyle = "#1a1e2c"; x.fillRect(0, 0, W, H);
-      var g = x.createRadialGradient(W / 2, 0, 0, W / 2, 0, H * 0.6); g.addColorStop(0, "rgba(180,192,221,.14)"); g.addColorStop(1, "rgba(180,192,221,0)");
-      x.fillStyle = g; x.fillRect(0, 0, W, H);
-      x.textAlign = "center"; var y = 120;
-      x.fillStyle = "#b4c0dd"; x.font = "64px " + display; x.fillText("★", W / 2, y); y += 60;
-      if (img) {
-        var r = 180, cx = W / 2, cy = y + r;
-        x.save(); x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.clip();
-        var s = Math.max(2 * r / img.width, 2 * r / img.height);
-        x.drawImage(img, cx - img.width * s / 2, cy - img.height * s / 2, img.width * s, img.height * s); x.restore();
-        y += 2 * r + 40;
-      }
-      x.fillStyle = "#f2ece2"; x.font = "84px " + display; y += 70; x.fillText(k.name, W / 2, y);
-      if (k.dates) { y += 60; x.fillStyle = "#aab0c2"; x.font = "italic 34px " + serif; x.fillText(k.dates, W / 2, y); }
-      if (k.breed) { y += 46; x.font = "28px " + sans; x.fillText(k.breed, W / 2, y); }
+    function spaced(text, font, track) { x.font = font; var w = 0; for (var i = 0; i < text.length; i++) w += x.measureText(text[i]).width + track; return w - track; }
+    function fillSpaced(text, cx, y, track) {
+      var w = 0, i; for (i = 0; i < text.length; i++) w += x.measureText(text[i]).width + track; w -= track;
+      var px = cx - w / 2; x.textAlign = "left";
+      for (i = 0; i < text.length; i++) { x.fillText(text[i], px, y); px += x.measureText(text[i]).width + track; }
+      x.textAlign = "center";
+    }
+    // Lay everything out once to measure, then once more to draw.
+    function layout(draw, pic) {
+      var y = 130, cx = W / 2, T = function (fill, font, s, yy) { if (draw) { x.fillStyle = fill; x.font = font; x.fillText(s, cx, yy); } };
+      if (draw) { x.fillStyle = "#b4c0dd"; x.font = "56px " + display; x.fillText("✦", cx, y); }
       y += 40;
-      blocks.forEach(function (b) {
-        y += 70; x.fillStyle = "#aab0c2"; x.font = "bold 22px " + sans; x.fillText(b[0], W / 2, y);
-        x.fillStyle = "#f2ece2"; x.font = "34px " + serif;
-        b[1].forEach(function (ln) { y += 52; x.fillText(ln, W / 2, y); });
-      });
-      x.fillStyle = "#8b93a8"; x.font = "24px " + sans; x.fillText("Remembered with love · hardestkindness.org", W / 2, H - 70);
+      if (pic) {
+        if (k.photo && !k.cutout) {
+          var r = 170, cy = y + r;
+          if (draw) {
+            x.save(); x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.clip();
+            var s = Math.max(2 * r / pic.width, 2 * r / pic.height);
+            x.drawImage(pic, cx - pic.width * s / 2, cy - pic.height * s / 2, pic.width * s, pic.height * s); x.restore();
+            x.strokeStyle = "rgba(180,192,221,.35)"; x.lineWidth = 2; x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
+          }
+          y += 2 * r + 30;
+        } else {
+          var pw = k.cutout ? 460 : 420, ph = pw * pic.height / pic.width;
+          if (draw) {
+            // A cut-out photo fades softly into the sky at its edges.
+            var off = document.createElement("canvas"); off.width = pw; off.height = ph; var o = off.getContext("2d");
+            o.drawImage(pic, 0, 0, pw, ph);
+            if (k.cutout) {
+              var m = o.createRadialGradient(pw / 2, ph / 2, 0, pw / 2, ph / 2, Math.min(pw, ph) / 2);
+              m.addColorStop(.7, "rgba(0,0,0,1)"); m.addColorStop(1, "rgba(0,0,0,0)");
+              o.globalCompositeOperation = "destination-in"; o.fillStyle = m; o.fillRect(0, 0, pw, ph);
+            }
+            x.globalAlpha = .92; x.drawImage(off, cx - pw / 2, y); x.globalAlpha = 1;
+          }
+          y += ph + 20;
+        }
+      }
+      wrap(L.name, "92px " + display, W - pad * 2).forEach(function (ln) { y += 96; T("#f2ece2", "92px " + display, ln, y); });
+      if (L.known && L.known.toLowerCase() !== L.name.toLowerCase()) wrap(L.known, "italic 32px " + serif, W - pad * 2).forEach(function (ln, i) { y += i ? 44 : 56; T("#bdb7c8", "italic 32px " + serif, ln, y); });
+      if (L.dates.length) { y += 64; T("#d9d2c5", "34px " + serif, L.dates.join("   ✦   "), y); }
+      if (L.years) { y += 48; if (draw) { x.fillStyle = "#bdb7c8"; x.font = "bold 22px " + sans; fillSpaced(L.years.toUpperCase(), cx, y, 4); } }
+      function rule() {
+        y += 70;
+        if (draw) {
+          var g = x.createLinearGradient(cx - 170, 0, cx + 170, 0); g.addColorStop(0, "rgba(215,180,140,0)"); g.addColorStop(.5, "rgba(215,180,140,.6)"); g.addColorStop(1, "rgba(215,180,140,0)");
+          x.fillStyle = g; x.fillRect(cx - 170, y - 10, 140, 1.5); x.fillRect(cx + 30, y - 10, 140, 1.5);
+          x.fillStyle = "#d7b48c"; x.font = "26px " + serif; x.fillText("✦", cx, y);
+        }
+        y += 20;
+      }
+      function part(pr, opt) {
+        opt = opt || {};
+        var font = (opt.italic ? "italic " : "") + (opt.size || 34) + "px " + serif, lines = wrap(pr[1], font, W - pad * 2 - (opt.box ? 80 : 0));
+        var top = y + 40, h = 50 + lines.length * 52;
+        if (opt.box && draw) {
+          x.fillStyle = "rgba(180,192,221,.07)"; x.strokeStyle = "rgba(180,192,221,.16)"; x.lineWidth = 1.5;
+          var bx = pad - 10, bw = W - 2 * (pad - 10), by = top - 10, bh = h + 46;
+          x.beginPath(); if (x.roundRect) x.roundRect(bx, by, bw, bh, 20); else x.rect(bx, by, bw, bh); x.fill(); x.stroke();
+        }
+        y = top + (opt.box ? 34 : 24);
+        if (draw) { x.fillStyle = "#bdb7c8"; x.font = "bold 20px " + sans; fillSpaced(pr[0].toUpperCase(), cx, y, 4); }
+        lines.forEach(function (ln) { y += 52; T("#ebe4d8", font, ln, y); });
+        if (opt.box) y += 34;
+      }
+      if (!L.empty) {
+        rule();
+        if (L.words) { y += 40; if (draw) { x.fillStyle = "#e8dcc6"; x.font = "bold 26px " + sans; fillSpaced(L.words.replace(/\s+·\s+/g, "  ·  ").toUpperCase(), cx, y, 7); } y += 10; }
+        if (L.lead) { y += 20; wrap(KS.q[0] + L.lead + KS.q[1], "italic 44px " + serif, W - pad * 2).forEach(function (ln) { y += 62; T("#f2ece2", "italic 44px " + serif, ln, y); }); y += 10; }
+        L.first.forEach(function (pr) { part(pr); y += 14; });
+        if (L.story) { y += 20; part(L.story, { box: true, italic: true, size: 36 }); }
+        L.then.forEach(function (pr) { part(pr); y += 14; });
+        if (L.honour) { rule(); part(L.honour, { size: 36 }); }
+      }
+      y += 110;
+      if (draw) { x.fillStyle = "#8b93a8"; x.font = "bold 20px " + sans; fillSpaced(KS.foot.toUpperCase(), cx, y, 4); }
+      return y + 90;
+    }
+    function sky(H) {
+      x.fillStyle = "#151925"; x.fillRect(0, 0, W, H);
+      var g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#1c2133"); g.addColorStop(1, "#141823"); x.fillStyle = g; x.fillRect(0, 0, W, H);
+      var r = x.createRadialGradient(W / 2, 0, 0, W / 2, 0, Math.min(H, 1400) * 0.8); r.addColorStop(0, "rgba(180,192,221,.16)"); r.addColorStop(1, "rgba(180,192,221,0)");
+      x.fillStyle = r; x.fillRect(0, 0, W, H);
+      // A sky of its own for every name.
+      var seed = Math.floor(hashOf(k.name) * 4294967296) || 1;
+      function rnd() { seed = (seed + 0x6D2B79F5) | 0; var t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }
+      for (var i = 0; i < 110; i++) {
+        var px = rnd() * W, py = rnd() * H, a = rnd(), rr = rnd(), keep = rnd(), edge = Math.min(px, W - px) < 140 || py < 200 || py > H - 160;
+        if (!edge && keep > .2) continue;
+        x.globalAlpha = .2 + a * .6; x.fillStyle = "#e4e9f6";
+        x.beginPath(); x.arc(px, py, .7 + rr * 1.7, 0, Math.PI * 2); x.fill();
+      }
+      x.globalAlpha = 1;
+    }
+    function finish(pic) {
+      x.textAlign = "center";
+      var H = Math.max(1350, layout(false, pic));
+      c.width = W; c.height = H; x.textAlign = "center";
+      sky(H);
+      layout(true, pic);
       c.toBlob(function (blob) {
-        if (!blob) { flash("ksMsg", "This browser couldn't make the image. “Print or save as PDF” should work instead."); return; }
+        if (!blob) { flash(msgId, KS.imgFail); return; }
         var a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-        a.download = k.name.replace(/[^\wÀ-ɏЀ-ӿ -]/g, "").trim() + " - keepsake.png";
+        a.download = k.name.replace(/[^\wÀ-ɏЀ-ӿ -]/g, "").trim() + KS.fileSuffix;
         document.body.appendChild(a); a.click(); a.remove();
         setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
-        flash("ksMsg", "Saved. You'll find it with your downloads.");
+        flash(msgId, KS.saved);
       }, "image/png");
     }
+    function load(src, cb) { var im = new Image(); im.onload = function () { cb(im); }; im.onerror = function () { cb(null); }; im.src = src; }
     (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () {
-      if (k.photo) { var im = new Image(); im.onload = function () { draw(im); }; im.onerror = function () { draw(null); }; im.src = k.photo; }
-      else draw(null);
+      var dog = k.dog || {};
+      if (k.photo) load(k.photo, finish);
+      else if (dog.breed || dog.size) {
+        // The breed silhouette, drawn on its own with the shapes it is made from.
+        var svg = dogSilhouette(dog, 420).replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ').replace(/<svg([^>]*)>/, "<svg$1><defs>" + document.querySelector("svg defs").innerHTML + "</defs>");
+        load("data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg), finish);
+      } else finish(null);
     });
+  }
+  document.getElementById("ksImage").addEventListener("click", function () { keepsakeImage(keepsakeData(), "ksMsg"); });
+  document.getElementById("ksPrint").addEventListener("click", function () {
+    var box = document.getElementById("keepsake");
+    box.classList.add("ks-printing"); document.documentElement.classList.add("print-keepsake");
+    window.print();
+    setTimeout(function () { document.documentElement.classList.remove("print-keepsake"); box.classList.remove("ks-printing"); }, 500);
   });
+
+  // Mosjka's keepsake, as an example of what the questions become.
+  (function () {
+    var box = document.getElementById("mosjkaKeepsake");
+    if (!box) return;
+    var k = { name: KS.mosjka.name, photo: KS.mosjka.photo, cutout: true, dob: "2011-03-22", goodbye: "2026-09-21", answers: KS.mosjka.answers, heads: KS.mosjka.heads };
+    renderKeepsakeInto(box, k);
+    document.getElementById("mosjkaImage").addEventListener("click", function () { keepsakeImage(k, "mosjkaMsg"); });
+  })();
 
   // ---- Field of stars ----
   var starsAll = [], starsShown = 60;
