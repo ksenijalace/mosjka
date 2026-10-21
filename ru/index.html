@@ -3089,7 +3089,8 @@
   function renderTrail(st) {
     var box = document.getElementById("jDots"), n = 30, parts = [], dog = store.get(KEYS.dog, {});
     var latest = Object.keys(st.days).map(Number).sort(function (a, b) { return b - a; })[0] || null;
-    var here = hereDay(st), hereT = (here - 0.5) / n;
+    // The prints reach as far as you have come; you and your dog stand on the day that is open now.
+    var here = hereDay(st), walk = Math.min(jView || here, here), hereT = (here - 0.5) / n, walkT = (walk - 0.5) / n;
     function at(t) { var u = 1 - Math.pow(1 - t, 1.3); var P = trailAt(u); P.s = 1 - 0.66 * u; return P; }
     // The way ahead.
     var pts = [];
@@ -3109,7 +3110,7 @@
     // The walked days: your step, and two of theirs.
     for (var i = 1; i <= n; i++) {
       // Checked-in days are bright; days already lived without a check-in are quieter, but still there.
-      if (!st.days[i] && i >= here) continue;
+      if (!st.days[i] && (i > here || i === walk)) continue;
       var t = (i - 0.5) / n, half = 0.5 / n, left = i % 2 === 1;
       var foot = trailPrint(t, left ? 12 : 30, 0, "foot", left);
       var p1 = trailPrint(t - half * 0.55, i % 2 ? -30 : -21, 0, "paw");
@@ -3124,8 +3125,8 @@
     }
     lastLit = latest;
     // Where you are: the next day to walk, with them beside you.
-    var allDone = !!st.days[30], H = at(hereT), hx = H.x, hy = H.y;
-    var hereLabel = allDone ? "Вы прошли месяц" : "День " + here;
+    var allDone = !!st.days[30], H = at(walkT), hx = H.x, hy = H.y;
+    var hereLabel = allDone ? "Вы прошли месяц" : "День " + walk;
     var W = (dog.breed || dog.size) ? backSilhouette(dog) : null;
     var companion = W
       ? '<svg x="' + (hx - W.w - 8).toFixed(1) + '" y="' + (hy - W.h - 6).toFixed(1) + '" width="' + W.w + '" height="' + W.h + '" viewBox="' + W.vb + '" overflow="visible">' + W.svg + '</svg>'
@@ -3134,7 +3135,7 @@
     var end0 = trailAt(1), starX = end0.x + 18, starY = end0.y - 22, dogName = (dog.name || "").trim();
     var hereG = allDone ? (play && W
       ? '<g class="finale"><g class="finale-dog" style="--fx: ' + (starX - hx + W.w / 2).toFixed(1) + 'px; --fy: ' + (starY - hy + W.h).toFixed(1) + 'px"><svg x="' + (hx - W.w - 8).toFixed(1) + '" y="' + (hy - W.h - 6).toFixed(1) + '" width="' + W.w + '" height="' + W.h + '" viewBox="' + W.vb + '" overflow="visible">' + W.svg + '</svg></g></g>'
-      : "") : '<g class="j-step here' + (here === jView && !st.days[here] ? " current" : "") + '" data-day="' + here + '" role="button" tabindex="0" aria-label="' + hereLabel + '">' +
+      : "") : '<g class="j-step here' + (!st.days[walk] ? " current" : "") + '" data-day="' + walk + '" role="button" tabindex="0" aria-label="' + hereLabel + '">' +
       '<ellipse class="glow" cx="' + hx.toFixed(1) + '" cy="' + hy.toFixed(1) + '" rx="34" ry="22"/>' +
       '<ellipse class="hit" cx="' + hx.toFixed(1) + '" cy="' + (hy - 10).toFixed(1) + '" rx="40" ry="22"/>' +
       (allDone ? "" : '<circle class="here-dot" cx="' + hx.toFixed(1) + '" cy="' + hy.toFixed(1) + '" r="4.5"/>') +
@@ -3225,9 +3226,10 @@
   // Where you are today: from the journey's start date if there is one.
   function addDays(iso, n) { var d = new Date(iso + "T00:00:00"); d.setDate(d.getDate() + n); return iso2(d); }
   function iso2(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  // How far along the path you are: by the calendar, or as far as you've already opened, whichever is further.
   function hereDay(st) {
-    if (st.start) return Math.max(1, Math.min(30, daysBetween(st.start, today()) + 1));
-    return Math.max(1, Math.min(st.reached || 1, 30));
+    if (st.start) return Math.max(1, Math.min(30, Math.max(daysBetween(st.start, today()) + 1, st.seen || 1)));
+    return Math.max(1, Math.min(Math.max(st.reached || 1, st.seen || 1), 30));
   }
   function renderStart() {
     var dog = store.get(KEYS.dog, {}), gb = dog.goodbye, name = (dog.name || "").trim() || "ваша собака";
@@ -3281,6 +3283,8 @@
     if (st.start && here > st.reached) { st.reached = here; store.set(KEYS.journey, st); }
     if (jView == null) jView = here;
     jView = Math.min(Math.max(jView, 1), 30);
+    // Opening a day further along counts as walking there, filled in or not.
+    if (jView > (st.seen || 0)) { st.seen = jView; store.set(KEYS.journey, st); scheduleSync(); here = hereDay(st); }
     var d = JOURNEY[jView - 1], entry = st.days[jView];
     document.getElementById("jCounter").textContent = "День " + jView + " из 30";
     document.getElementById("jTitle").textContent = d[0];
@@ -4437,7 +4441,7 @@
     var newer = (b.t || 0) > (a.t || 0) ? b : a, older = newer === a ? b : a;
     out.start = ((newer.reset || 0) === reset && newer.start) || ((older.reset || 0) === reset && older.start) || undefined;
     [a, b].forEach(function (src) {
-      if ((src.reset || 0) === reset) out.reached = Math.max(out.reached, src.reached || 0);
+      if ((src.reset || 0) === reset) { out.reached = Math.max(out.reached, src.reached || 0); if (src.seen) out.seen = Math.max(out.seen || 0, src.seen); }
       Object.keys(src.days || {}).forEach(function (n) {
         var e = src.days[n];
         if ((e.t || 0) < reset) return;
