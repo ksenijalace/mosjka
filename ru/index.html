@@ -365,6 +365,13 @@
     border: 1px solid rgba(180,192,221,.12); box-shadow: 0 0 60px rgba(180,192,221,.08) inset; pointer-events: none; }
   .story-more { margin-top: 36px; }
   .story-more h3 { margin-bottom: 8px; }
+  .ks-tools { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 999px; padding: 3px; gap: 2px; align-self: flex-start; }
+  .ks-theme { background: none; border: 0; color: var(--muted); font: 600 14px/1 var(--font-body); padding: 9px 16px; border-radius: 999px; cursor: pointer; min-height: 36px; }
+  .ks-theme[aria-pressed="true"] { background: var(--bg-raise); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-strong); }
+  .ks-sheet { margin: 0; }
+  .ks-sheet img { display: block; width: 100%; height: auto; aspect-ratio: 1240 / 1754; border-radius: 6px; background: #171b28;
+    box-shadow: 0 18px 50px rgba(0,0,0,.45), 0 0 0 1px rgba(180,192,221,.14); }
+  .ks-text summary { cursor: pointer; color: var(--muted); font-weight: 600; margin: 4px 0 10px; }
   .story-keepsake { margin-top: 40px; }
   .ks-modal { position: fixed; inset: 0; z-index: 60; background: rgba(17,20,31,.94); overflow-y: auto; padding: 56px 16px 32px; }
   .ks-modal[hidden] { display: none; }
@@ -686,8 +693,11 @@
 <div class="ks-modal" id="ksModal" role="dialog" aria-modal="true" aria-label="Памятная страница Моськи" hidden>
   <button type="button" class="resume-x calm-x" id="ksModalClose" aria-label="Закрыть">&times;</button>
   <div class="ks-modal-inner">
-    <article class="keepsake" id="ksModalCard"></article>
-    <div class="row" style="margin-top: 14px"><button type="button" class="btn" id="ksModalImage">Сохранить как изображение</button><span class="status" id="ksModalMsg" aria-live="polite"></span></div>
+    <div class="stack" style="gap: 14px">
+      <div class="ks-tools" role="group" aria-label="Вид страницы"><button type="button" class="ks-theme" data-theme="night" aria-pressed="true">Ночь</button><button type="button" class="ks-theme" data-theme="paper" aria-pressed="false">Бумага</button></div>
+      <figure class="ks-sheet"><img id="ksModalSheet" alt="" width="1240" height="1754"></figure>
+      <div class="row"><button type="button" class="btn" id="ksModalImage">Сохранить как изображение</button><button type="button" class="btn" id="ksModalPrint">Распечатать или сохранить в PDF</button><span class="status" id="ksModalMsg" aria-live="polite"></span></div>
+    </div>
   </div>
 </div>
 <div class="resume" id="resume" role="status" hidden>
@@ -1128,13 +1138,15 @@
         </div>
         <div id="rmEnd" class="stack" style="gap: 18px" hidden>
           <p class="moment" id="rmThanks"></p>
-          <article class="keepsake" id="keepsake" aria-label="Памятная страница"></article>
+          <div class="ks-tools" role="group" aria-label="Вид страницы"><button type="button" class="ks-theme" data-theme="night" aria-pressed="true">Ночь</button><button type="button" class="ks-theme" data-theme="paper" aria-pressed="false">Бумага</button></div>
+          <figure class="ks-sheet"><img id="ksSheet" alt="" width="1240" height="1754"></figure>
           <div class="row">
             <button type="button" class="btn primary" id="ksImage">Сохранить как картинку</button>
             <button type="button" class="btn" id="ksPrint">Распечатать или сохранить в PDF</button>
             <button type="button" class="btn quiet" id="rmEdit">Дополнить или изменить ответы</button>
           </div>
           <span class="status" id="ksMsg" aria-live="polite"></span>
+          <details class="ks-text"><summary>Прочитать текстом</summary><article class="keepsake" id="keepsake" aria-label="Памятная страница"></article></details>
           <p><a href="#stars" style="font-weight: 700" data-named="Зажечь звезду: {name} &#8594;">Зажечь звезду в её память &#8594;</a></p>
         </div>
       </div>
@@ -1552,8 +1564,12 @@
       <div class="story-keepsake">
         <h3 style="margin-bottom: 4px">Памятная страница Моськи</h3>
         <p class="small muted">Вот чем в конце становятся ответы в разделе <a href="#remember">«Расскажите о своей собаке»</a>. Эта — моя, для неё.</p>
-        <article class="keepsake" id="mosjkaKeepsake" aria-label="Памятная страница Моськи"></article>
-        <div class="row" style="margin-top: 14px"><button type="button" class="btn" id="mosjkaImage">Сохранить как изображение</button><span class="status" id="mosjkaMsg" aria-live="polite"></span></div>
+        <div class="stack" style="gap: 14px; margin-top: 16px">
+          <div class="ks-tools" role="group" aria-label="Вид страницы"><button type="button" class="ks-theme" data-theme="night" aria-pressed="true">Ночь</button><button type="button" class="ks-theme" data-theme="paper" aria-pressed="false">Бумага</button></div>
+          <figure class="ks-sheet"><img id="mosjkaSheet" alt="" width="1240" height="1754" loading="lazy"></figure>
+          <div class="row"><button type="button" class="btn" id="mosjkaImage">Сохранить как изображение</button><button type="button" class="btn" id="mosjkaPrint">Распечатать или сохранить в PDF</button><span class="status" id="mosjkaMsg" aria-live="polite"></span></div>
+          <details class="ks-text"><summary>Прочитать текстом</summary><article class="keepsake" id="mosjkaKeepsake" aria-label="Памятная страница Моськи"></article></details>
+        </div>
       </div>
     </div>
   </div>
@@ -3644,6 +3660,10 @@
   var KS = {
     q: ["«", "»"],
     character: "Характер",
+    constellation: function (n) { return "Созвездие: " + n; },
+    moonTitle: "Луна в ночь прощания",
+    moonName: function (i) { return ["Новолуние", "Растущий серп", "Первая четверть", "Растущая луна", "Полнолуние", "Убывающая луна", "Последняя четверть", "Убывающий серп"][i]; },
+    sheetAlt: function (n) { return "Памятная страница формата A4: " + n; },
     myDog: "Моя собака", photoOf: "Фото:", born: "Дата рождения:", goodbye: "Прощание:",
     years: function (y) { return y + " " + ruPlural(y, "год", "года", "лет") + " любви"; },
     empty: "Ответьте на один-два вопроса, и ответы появятся здесь.",
@@ -3772,7 +3792,10 @@
     box.appendChild(paws);
     box.appendChild(el("p", "ks-foot", KS.foot));
   }
-  function renderKeepsake() { renderKeepsakeInto(document.getElementById("keepsake"), keepsakeData()); }
+  function renderKeepsake() {
+    renderKeepsakeInto(document.getElementById("keepsake"), keepsakeData());
+    if (typeof a4Preview === "function" && typeof ksTheme !== "undefined") a4Preview(document.getElementById("ksSheet"), keepsakeData(), ksTheme);
+  }
   function renderRemember() {
     var pt = portrait(), n = Object.keys(pt.answers || {}).length, name = rmName();
     document.getElementById("rmIntroText").textContent = n
@@ -3793,170 +3816,259 @@
   document.getElementById("rmNext").addEventListener("click", function () { var v = rmStore(); rmGo(1, v ? RM[rmStep][2] : null); });
   document.getElementById("rmSkip").addEventListener("click", function () { rmGo(1, null); });
   document.getElementById("rmBack").addEventListener("click", function () { rmStore(); rmGo(-1, null); });
-  // Draw the keepsake as one image the owner can keep: the same card, under the same sky.
-  function keepsakeImage(k, msgId) {
-    var L = keepsakeLayout(k), W = 1080, pad = 120, c = document.createElement("canvas"), x = c.getContext("2d");
+  // ---- The keepsake as one A4 page ----
+  // Everything is drawn on one canvas, so the page on screen, the saved image and the print are the same.
+  // The owner's own words, as they wrote them. Only an answer too long for one page loses its last sentences there.
+  function ksShort(text, max) {
+    var t = String(text || "").replace(/\s+/g, " ").trim();
+    if (t.length <= max) return t;
+    // Whole sentences while they fit; otherwise the first sentence, cut at a natural pause.
+    var sentences = t.match(/[^.!?…]+[.!?…]+["»”]?|[^.!?…]+$/g) || [t], out = "";
+    for (var i = 0; i < sentences.length; i++) {
+      var s = sentences[i].trim(), next = out ? out + " " + s : s;
+      if (next.length > max) break;
+      out = next;
+    }
+    if (out) return out;
+    var cut = t.slice(0, max), pause = Math.max(cut.lastIndexOf(", "), cut.lastIndexOf(" — "), cut.lastIndexOf("; "), cut.lastIndexOf(": "));
+    if (pause > max * 0.5) return cut.slice(0, pause).replace(/[,;:—\s]+$/, "") + ".";
+    return cut.slice(0, cut.lastIndexOf(" ")).replace(/[,;:—\s]+$/, "") + "…";
+  }
+  function moonPhase(iso) {
+    var d = Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10), 20), syn = 29.530588853;
+    var age = ((d - Date.UTC(2000, 0, 6, 18, 14)) / 864e5) % syn;
+    return (age < 0 ? age + syn : age) / syn;
+  }
+  var KS_THEMES = {
+    night: { bg1: "#1b2032", bg2: "#131722", band: null, text: "#f2ece2", body: "#e6dfd2", muted: "#aab0c4", accent: "#b4c0dd", gold: "#d7b48c",
+      line: "rgba(180,192,221,.28)", box: "rgba(180,192,221,.07)", boxLine: "rgba(180,192,221,.18)", chip: "rgba(215,180,140,.08)", chipLine: "rgba(215,180,140,.5)", moonDark: "rgba(180,192,221,.16)", moonLit: "#e9ecf6" },
+    paper: { bg1: "#f8f3ea", bg2: "#f1eadd", band: ["#1f2538", "#2c3550"], text: "#1f2433", body: "#33384a", muted: "#6c7085", accent: "#4f5d86", gold: "#a5794a",
+      line: "rgba(79,93,134,.25)", box: "rgba(79,93,134,.06)", boxLine: "rgba(79,93,134,.16)", chip: "rgba(165,121,74,.07)", chipLine: "rgba(165,121,74,.45)", moonDark: "rgba(79,93,134,.14)", moonLit: "#4f5d86" }
+  };
+  function ksFonts() {
+    if (!document.fonts || !document.fonts.load) return Promise.resolve();
+    return Promise.all(['84px ' + KS.displayFont, '23px "Source Serif 4"', 'italic 23px "Source Serif 4"', 'bold 15px "Source Sans 3"'].map(function (f) { return document.fonts.load(f).catch(function () {}); }));
+  }
+  function ksLoad(src) {
+    return new Promise(function (res) { if (!src) return res(null); var im = new Image(); im.onload = function () { res(im); }; im.onerror = function () { res(null); }; im.src = src; });
+  }
+  function ksPicture(k) {
+    if (k.photo) return ksLoad(k.photo);
+    var dog = k.dog || {};
+    if (!dog.breed && !dog.size) return Promise.resolve(null);
+    var svg = dogSilhouette(dog, 420).replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ').replace(/<svg([^>]*)>/, "<svg$1><defs>" + document.querySelector("svg defs").innerHTML + "</defs>");
+    return ksLoad("data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg));
+  }
+  // Draw the page at 150 dpi × scale (scale 2 gives a 300 dpi print).
+  function drawA4(k, theme, scale, pic) {
+    var W = 1240, H = 1754, pad = 112, C = KS_THEMES[theme] || KS_THEMES.night;
+    var c = document.createElement("canvas"); c.width = W * scale; c.height = H * scale;
+    var x = c.getContext("2d"); x.scale(scale, scale); x.textBaseline = "alphabetic";
     var serif = '"Source Serif 4", Georgia, serif', display = KS.displayFont + ', Georgia, serif', sans = '"Source Sans 3", Arial, sans-serif';
+    var ans = {}; Object.keys(k.answers || {}).forEach(function (key) { ans[key] = (k.answers[key] || "").replace(/\s+/g, " ").trim(); });
+    function relayout() { return keepsakeLayout({ name: k.name, dob: k.dob, goodbye: k.goodbye, answers: ans, heads: k.heads }); }
+    var L = relayout();
+    var seed = Math.floor(hashOf(k.name + "|" + (k.dob || "")) * 4294967296) || 7;
+    function rnd() { seed = (seed + 0x6D2B79F5) | 0; var t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }
     function wrap(text, font, maxW) {
       x.font = font; var out = [];
       String(text).split("\n").forEach(function (para) {
         var line = "";
-        para.split(/\s+/).forEach(function (w) {
-          var t = line ? line + " " + w : w;
-          if (x.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t;
-        });
+        para.split(/\s+/).forEach(function (w) { var t = line ? line + " " + w : w; if (x.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t; });
         out.push(line);
       });
       return out;
     }
-    function spaced(text, font, track) { x.font = font; var w = 0; for (var i = 0; i < text.length; i++) w += x.measureText(text[i]).width + track; return w - track; }
-    function fillSpaced(text, cx, y, track) {
-      var w = 0, i; for (i = 0; i < text.length; i++) w += x.measureText(text[i]).width + track; w -= track;
-      var px = cx - w / 2; x.textAlign = "left";
-      for (i = 0; i < text.length; i++) { x.fillText(text[i], px, y); px += x.measureText(text[i]).width + track; }
-      x.textAlign = "center";
+    function spacedW(s, track) { var w = 0; for (var i = 0; i < s.length; i++) w += x.measureText(s[i]).width + track; return w - track; }
+    function spaced(s, cx, y, track, align) {
+      var w = spacedW(s, track), px = align === "left" ? cx : cx - w / 2; x.textAlign = "left";
+      for (var i = 0; i < s.length; i++) { x.fillText(s[i], px, y); px += x.measureText(s[i]).width + track; }
+      x.textAlign = "center"; return w;
     }
-    // Lay everything out once to measure, then once more to draw.
-    function layout(draw, pic) {
-      var y = 130, cx = W / 2, T = function (fill, font, s, yy) { if (draw) { x.fillStyle = fill; x.font = font; x.fillText(s, cx, yy); } };
-      if (draw) { x.fillStyle = "#b4c0dd"; x.font = "56px " + display; x.fillText("✦", cx, y); }
-      y += 40;
-      if (pic) {
-        if (k.photo && !k.cutout) {
-          var r = 170, cy = y + r;
-          if (draw) {
-            x.save(); x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.clip();
-            var s = Math.max(2 * r / pic.width, 2 * r / pic.height);
-            x.drawImage(pic, cx - pic.width * s / 2, cy - pic.height * s / 2, pic.width * s, pic.height * s); x.restore();
-            x.strokeStyle = "rgba(180,192,221,.35)"; x.lineWidth = 2; x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
-          }
-          y += 2 * r + 30;
-        } else {
-          var pw = k.cutout ? 460 : 420, ph = pw * pic.height / pic.width;
-          if (draw) {
-            // A cut-out photo fades softly into the sky at its edges.
-            var off = document.createElement("canvas"); off.width = pw; off.height = ph; var o = off.getContext("2d");
-            o.drawImage(pic, 0, 0, pw, ph);
-            if (k.cutout) {
-              var m = o.createRadialGradient(pw / 2, ph / 2, 0, pw / 2, ph / 2, Math.min(pw, ph) / 2);
-              m.addColorStop(.7, "rgba(0,0,0,1)"); m.addColorStop(1, "rgba(0,0,0,0)");
-              o.globalCompositeOperation = "destination-in"; o.fillStyle = m; o.fillRect(0, 0, pw, ph);
-            }
-            x.globalAlpha = .92; x.drawImage(off, cx - pw / 2, y); x.globalAlpha = 1;
-          }
-          y += ph + 20;
-        }
+    function sparkle(cx, cy, r, color, glow) {
+      if (glow) { var g = x.createRadialGradient(cx, cy, 0, cx, cy, r * 4); g.addColorStop(0, glow); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.beginPath(); x.arc(cx, cy, r * 4, 0, Math.PI * 2); x.fill(); }
+      x.fillStyle = color; x.beginPath();
+      x.moveTo(cx, cy - r); x.quadraticCurveTo(cx + r * .18, cy - r * .18, cx + r, cy); x.quadraticCurveTo(cx + r * .18, cy + r * .18, cx, cy + r);
+      x.quadraticCurveTo(cx - r * .18, cy + r * .18, cx - r, cy); x.quadraticCurveTo(cx - r * .18, cy - r * .18, cx, cy - r); x.fill();
+    }
+    function icon(key, cx, cy, size, color) {
+      x.save(); x.translate(cx - size / 2, cy - size / 2); x.scale(size / 24, size / 24);
+      x.strokeStyle = color; x.lineWidth = 1.35; x.lineCap = "round"; x.lineJoin = "round"; x.stroke(new Path2D(KS_ICONS[key] || KS_ICONS.keep)); x.restore();
+    }
+    function rule(y, w) {
+      var g = x.createLinearGradient(W / 2 - w, 0, W / 2 + w, 0); g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(.5, C.gold); g.addColorStop(1, "rgba(0,0,0,0)");
+      x.globalAlpha = .6; x.fillStyle = g; x.fillRect(W / 2 - w, y, w - 26, 1.4); x.fillRect(W / 2 + 26, y, w - 26, 1.4); x.globalAlpha = 1;
+      sparkle(W / 2, y + .7, 9, C.gold);
+    }
+
+    // ---- The sky: a page of its own for every dog ----
+    var bandH = 380, g0 = x.createLinearGradient(0, 0, 0, H); g0.addColorStop(0, C.bg1); g0.addColorStop(1, C.bg2); x.fillStyle = g0; x.fillRect(0, 0, W, H);
+    if (C.band) { var gb = x.createLinearGradient(0, 0, 0, bandH); gb.addColorStop(0, C.band[0]); gb.addColorStop(1, C.band[1]); x.fillStyle = gb; x.fillRect(0, 0, W, bandH); }
+    var nebula = ["rgba(140,160,220,", "rgba(190,150,210,", "rgba(215,180,140,", "rgba(120,170,200,"];
+    for (var n = 0; n < 4; n++) {
+      var nx = 120 + rnd() * (W - 240), ny = 60 + rnd() * (bandH - 120), nr = 180 + rnd() * 220, ng = x.createRadialGradient(nx, ny, 0, nx, ny, nr);
+      ng.addColorStop(0, nebula[n] + (n === 2 ? ".10)" : ".16)")); ng.addColorStop(1, nebula[n] + "0)"); x.fillStyle = ng; x.fillRect(0, 0, W, C.band ? bandH : H);
+    }
+    for (var s = 0; s < 150; s++) {
+      var sx = rnd() * W, sy = rnd() * (C.band ? bandH : H), sr = .5 + rnd() * 1.5, sa = .2 + rnd() * .6;
+      if (!C.band && sy > bandH && Math.min(sx, W - sx) > 90 && sy < H - 120 && rnd() > .15) continue;
+      x.globalAlpha = sa; x.fillStyle = "#eef1fa"; x.beginPath(); x.arc(sx, sy, sr, 0, Math.PI * 2); x.fill();
+    }
+    x.globalAlpha = 1;
+    if (C.band) { var fade = x.createLinearGradient(0, bandH - 60, 0, bandH); fade.addColorStop(0, "rgba(0,0,0,0)"); fade.addColorStop(1, "rgba(0,0,0,.12)"); x.fillStyle = fade; x.fillRect(0, bandH - 60, W, 60); }
+
+    // Their own constellation, from their name: a few stars joined by fine lines, and its name beneath.
+    var cs = [], cn = 7 + Math.floor(rnd() * 3);
+    for (var i2 = 0; i2 < cn; i2++) {
+      var side = i2 % 2 ? 1 : -1, ox = W / 2 + side * (220 + rnd() * 300), oy = 60 + rnd() * 210;
+      cs.push([Math.max(70, Math.min(W - 70, ox)), oy, 3 + rnd() * 4]);
+    }
+    var left = cs.filter(function (p) { return p[0] < W / 2; }).sort(function (a, b) { return a[0] - b[0]; }), right = cs.filter(function (p) { return p[0] >= W / 2; }).sort(function (a, b) { return a[0] - b[0]; });
+    x.strokeStyle = "rgba(200,210,236,.35)"; x.lineWidth = 1.3;
+    [left, right].forEach(function (grp) { if (grp.length < 2) return; x.beginPath(); x.moveTo(grp[0][0], grp[0][1]); grp.slice(1).forEach(function (p) { x.lineTo(p[0], p[1]); }); if (grp.length > 3) x.lineTo(grp[1][0], grp[1][1]); x.stroke(); });
+    cs.forEach(function (p) { sparkle(p[0], p[1], p[2] * 2.2, "#f4f6fd", "rgba(200,212,240,.35)"); });
+    x.font = "bold 14px " + sans; x.fillStyle = "rgba(220,226,242,.7)";
+    var lab = KS.constellation(k.name).toUpperCase(), lx = right.length ? right[right.length - 1][0] : W - pad;
+    x.textAlign = "left"; spaced(lab, Math.min(W - 40 - spacedW(lab, 3), lx - spacedW(lab, 3) + 20), Math.min(bandH - 30, (right.length ? Math.max.apply(null, right.map(function (p) { return p[1]; })) : 260) + 44), 3, "left");
+    x.textAlign = "center";
+    sparkle(W / 2, 70, 14, "#dfe5f6", "rgba(200,212,240,.4)");
+
+    // ---- The portrait, sitting on the edge of the sky ----
+    var py = bandH - 30, pr = 128;
+    var halo = x.createRadialGradient(W / 2, py, pr * .8, W / 2, py, pr * 1.5); halo.addColorStop(0, "rgba(180,192,221,.22)"); halo.addColorStop(1, "rgba(180,192,221,0)");
+    x.fillStyle = halo; x.beginPath(); x.arc(W / 2, py, pr * 1.5, 0, Math.PI * 2); x.fill();
+    x.fillStyle = C.band ? "#2a3248" : "#1d2335"; x.beginPath(); x.arc(W / 2, py, pr, 0, Math.PI * 2); x.fill();
+    if (pic) {
+      x.save(); x.beginPath(); x.arc(W / 2, py, pr - 4, 0, Math.PI * 2); x.clip();
+      if (k.photo && !k.cutout) { var sc = Math.max(2 * pr / pic.width, 2 * pr / pic.height); x.drawImage(pic, W / 2 - pic.width * sc / 2, py - pic.height * sc / 2, pic.width * sc, pic.height * sc); }
+      else {
+        var pw = pr * (k.cutout ? 1.8 : 1.85), ph = pw * pic.height / pic.width; if (ph > pr * 1.8) { ph = pr * 1.8; pw = ph * pic.width / pic.height; }
+        var off = document.createElement("canvas"); off.width = pw; off.height = ph; var o = off.getContext("2d"); o.drawImage(pic, 0, 0, pw, ph);
+        if (k.cutout) { var m = o.createRadialGradient(pw / 2, ph / 2, 0, pw / 2, ph / 2, Math.min(pw, ph) / 2); m.addColorStop(.72, "#000"); m.addColorStop(1, "rgba(0,0,0,0)"); o.globalCompositeOperation = "destination-in"; o.fillStyle = m; o.fillRect(0, 0, pw, ph); }
+        x.globalAlpha = .95; x.drawImage(off, W / 2 - pw / 2, py - ph / 2 + (k.cutout ? 0 : 20)); x.globalAlpha = 1;
       }
-      wrap(L.name, "92px " + display, W - pad * 2).forEach(function (ln) { y += 96; T("#f2ece2", "92px " + display, ln, y); });
-      if (L.known && L.known.toLowerCase() !== L.name.toLowerCase()) wrap(L.known, "italic 32px " + serif, W - pad * 2).forEach(function (ln, i) { y += i ? 44 : 56; T("#bdb7c8", "italic 32px " + serif, ln, y); });
-      if (L.dates.length) { y += 64; T("#d9d2c5", "34px " + serif, L.dates.join("   ✦   "), y); }
+      x.restore();
+    } else sparkle(W / 2, py, 46, "#b4c0dd", "rgba(180,192,221,.3)");
+    x.strokeStyle = "rgba(200,210,236,.55)"; x.lineWidth = 2; x.beginPath(); x.arc(W / 2, py, pr, 0, Math.PI * 2); x.stroke();
+    x.strokeStyle = "rgba(200,210,236,.18)"; x.lineWidth = 1; x.beginPath(); x.arc(W / 2, py, pr + 14, 0, Math.PI * 2); x.stroke();
+
+    // ---- The words, made to fit the page: smaller type before anything is left out ----
+    var top0 = py + pr + 20, limit = H - 236;
+    function body(f, draw) {
+      var y = top0;
+      function T(color, font, s, yy) { if (draw) { x.fillStyle = color; x.font = font; x.fillText(s, W / 2, yy); } }
+      wrap(L.name, Math.round(86 * f) + "px " + display, W - pad * 2).forEach(function (ln) { y += 88 * f; T(C.text, Math.round(86 * f) + "px " + display, ln, y); });
+      if (L.known && L.known.toLowerCase() !== L.name.toLowerCase()) wrap(L.known, "italic " + Math.round(24 * f) + "px " + serif, W - pad * 2 - 120).forEach(function (ln, i) { y += (i ? 32 : 42) * f; T(C.muted, "italic " + Math.round(24 * f) + "px " + serif, ln, y); });
+      if (L.dates.length) { y += 48 * f; T(C.body, Math.round(25 * f) + "px " + serif, L.dates.join("     "), y); if (draw && L.dates[1]) { x.font = Math.round(25 * f) + "px " + serif; var dw = x.measureText(L.dates.join("     ")).width, d0 = x.measureText(L.dates[0]).width; sparkle(W / 2 - dw / 2 + d0 + x.measureText("     ").width / 2, y - 8 * f, 7 * f, C.gold); } }
       if (L.years) {
-        y += 56;
-        if (draw) {
-          x.font = "bold 22px " + sans; var yt = L.years.toUpperCase(), tw = spaced(yt, x.font, 4), half = 210;
-          x.fillStyle = "#bdb7c8"; fillSpaced(yt, cx, y, 4);
-          var ly = y - 8, g1 = x.createLinearGradient(cx - half, 0, cx - tw / 2 - 18, 0); g1.addColorStop(0, "rgba(180,192,221,.15)"); g1.addColorStop(1, "rgba(180,192,221,.55)");
-          x.fillStyle = g1; x.fillRect(cx - half, ly, half - tw / 2 - 18, 1.5);
-          var g2 = x.createLinearGradient(cx + tw / 2 + 18, 0, cx + half, 0); g2.addColorStop(0, "rgba(180,192,221,.55)"); g2.addColorStop(1, "rgba(215,180,140,.7)");
-          x.fillStyle = g2; x.fillRect(cx + tw / 2 + 18, ly, half - tw / 2 - 18, 1.5);
-          x.fillStyle = "#b4c0dd"; x.beginPath(); x.arc(cx - half - 8, ly + .75, 5, 0, Math.PI * 2); x.fill();
-          x.fillStyle = "#d7b48c"; x.font = "24px " + serif; x.fillText("\u2726", cx + half + 12, ly + 9);
-        }
+        // One small star for every year of their life; the last one gold.
+        var yrs = Math.max(1, Math.min(30, parseInt(L.years, 10) || 1)), gap = Math.min(30, (W - pad * 2 - 200) / yrs);
+        y += 40 * f;
+        if (draw) for (var j = 0; j < yrs; j++) { var sxx = W / 2 - (yrs - 1) * gap / 2 + j * gap; if (j === yrs - 1) sparkle(sxx, y - 6 * f, 9 * f, C.gold, "rgba(215,180,140,.35)"); else { x.globalAlpha = .45 + .5 * j / yrs; sparkle(sxx, y - 6 * f, 4.5 * f, C.accent); x.globalAlpha = 1; } }
+        y += 32 * f; if (draw) { x.font = "bold " + Math.round(14 * f) + "px " + sans; x.fillStyle = C.muted; spaced(L.years.toUpperCase(), W / 2, y, 3); }
       }
-      function rule() {
-        y += 70;
-        if (draw) {
-          var g = x.createLinearGradient(cx - 170, 0, cx + 170, 0); g.addColorStop(0, "rgba(215,180,140,0)"); g.addColorStop(.5, "rgba(215,180,140,.6)"); g.addColorStop(1, "rgba(215,180,140,0)");
-          x.fillStyle = g; x.fillRect(cx - 170, y - 10, 140, 1.5); x.fillRect(cx + 30, y - 10, 140, 1.5);
-          x.fillStyle = "#d7b48c"; x.font = "26px " + serif; x.fillText("✦", cx, y);
-        }
-        y += 20;
-      }
-      function part(pr, opt) {
-        opt = opt || {};
-        var font = (opt.italic ? "italic " : "") + (opt.size || 34) + "px " + serif, lines = wrap(pr[1], font, W - pad * 2 - (opt.box ? 80 : 0));
-        var top = y + 62, h = 72 + lines.length * 52;
-        if (opt.box && draw) {
-          x.fillStyle = "rgba(180,192,221,.07)"; x.strokeStyle = "rgba(180,192,221,.16)"; x.lineWidth = 1.5;
-          var bx = pad - 10, bw = W - 2 * (pad - 10), by = top - 10, bh = h + 46;
-          x.beginPath(); if (x.roundRect) x.roundRect(bx, by, bw, bh, 20); else x.rect(bx, by, bw, bh); x.fill(); x.stroke();
-        }
-        y = top + (opt.box ? 34 : 24);
-        if (draw) {
-          x.save(); x.translate(cx - 16, y - 44); x.scale(32 / 24, 32 / 24);
-          x.strokeStyle = "rgba(180,192,221,.75)"; x.lineWidth = 1.3; x.lineCap = "round"; x.lineJoin = "round";
-          x.stroke(new Path2D(KS_ICONS[pr[2]] || KS_ICONS.keep)); x.restore();
-        }
-        y += 22;
-        if (draw) { x.fillStyle = "#bdb7c8"; x.font = "bold 20px " + sans; fillSpaced(pr[0].toUpperCase(), cx, y, 4); }
-        lines.forEach(function (ln) { y += 52; T("#ebe4d8", font, ln, y); });
-        if (opt.box) y += 34;
-      }
-      if (!L.empty) {
-        rule();
-        if (L.wordList.length) {
-          // Their character as soft pills, in as many rows as they need.
-          x.font = "bold 24px " + sans;
-          var chips = L.wordList.map(function (w) { var t = w.toUpperCase(); return [t, spaced(t, x.font, 5) + 56]; }), rows = [[]], rw = [0];
-          chips.forEach(function (c2) { var r2 = rows.length - 1; if (rw[r2] && rw[r2] + c2[1] + 16 > W - pad * 2) { rows.push([]); rw.push(0); r2++; } rows[r2].push(c2); rw[r2] += (rw[r2] ? 16 : 0) + c2[1]; });
-          rows.forEach(function (row, ri) {
-            var cy2 = y + 30 + ri * 78, px2 = cx - rw[ri] / 2;
-            row.forEach(function (c2) {
-              if (draw) {
-                x.fillStyle = "rgba(215,180,140,.08)"; x.strokeStyle = "rgba(215,180,140,.45)"; x.lineWidth = 1.5;
-                x.beginPath(); if (x.roundRect) x.roundRect(px2, cy2, c2[1], 58, 29); else x.rect(px2, cy2, c2[1], 58); x.fill(); x.stroke();
-                x.fillStyle = "#e8dcc6"; x.font = "bold 24px " + sans; fillSpaced(c2[0], px2 + c2[1] / 2, cy2 + 37, 5);
-              }
-              px2 += c2[1] + 16;
-            });
-          });
-          y += 30 + rows.length * 78;
-        }
-        if (L.lead) { y += 20; wrap(KS.q[0] + L.lead + KS.q[1], "italic 44px " + serif, W - pad * 2).forEach(function (ln) { y += 62; T("#f2ece2", "italic 44px " + serif, ln, y); }); y += 10; }
-        L.first.forEach(function (pr) { part(pr); y += 14; });
-        if (L.story) { y += 20; part(L.story, { box: true, italic: true, size: 36 }); }
-        L.then.forEach(function (pr) { part(pr); y += 14; });
-        if (L.honour) { rule(); part(L.honour, { size: 36 }); }
-      }
-      // A short trail of paw prints, walking on towards a star.
-      y += 100;
-      if (draw) {
-        var toes = [[5.1, 10.4, 1.9, 2.4, -22], [9.2, 6, 2, 2.6, -8], [14.8, 6, 2, 2.6, 8], [18.9, 10.4, 1.9, 2.4, 22]];
-        var pad2 = new Path2D("M12 12.4c-2.7 0-5.7 3.3-5.7 5.8 0 1.8 1.4 2.7 2.9 2.7 1.1 0 1.9-.5 2.8-.5s1.7.5 2.8.5c1.5 0 2.9-.9 2.9-2.7 0-2.5-3-5.8-5.7-5.8z");
-        [.2, .3, .42, .55].forEach(function (op, i) {
-          x.save(); x.translate(cx - 150 + i * 62, y - 34 - (i % 2 ? 0 : 10)); x.rotate((i % 2 ? 8 : -8) * Math.PI / 180); x.scale(1.2, 1.2);
-          x.globalAlpha = op; x.fillStyle = "#b4c0dd"; x.fill(pad2);
-          toes.forEach(function (t) { x.beginPath(); x.ellipse(t[0], t[1], t[2], t[3], t[4] * Math.PI / 180, 0, Math.PI * 2); x.fill(); });
-          x.restore();
+      y += 40 * f; if (draw) rule(y, 200);
+      y += 16 * f;
+      if (L.wordList.length) {
+        x.font = "bold " + Math.round(16 * f) + "px " + sans;
+        var chips = L.wordList.map(function (w) { var t = w.toUpperCase(); return [t, spacedW(t, 4) + 44 * f]; }), tot = chips.reduce(function (a, c2) { return a + c2[1]; }, 0) + (chips.length - 1) * 14;
+        var cx2 = W / 2 - tot / 2; y += 22 * f;
+        chips.forEach(function (c2) {
+          if (draw) {
+            x.fillStyle = C.chip; x.strokeStyle = C.chipLine; x.lineWidth = 1.3; x.beginPath();
+            if (x.roundRect) x.roundRect(cx2, y, c2[1], 40 * f, 20 * f); else x.rect(cx2, y, c2[1], 40 * f); x.fill(); x.stroke();
+            x.fillStyle = C.text; x.font = "bold " + Math.round(16 * f) + "px " + sans; spaced(c2[0], cx2 + c2[1] / 2, y + 26 * f, 4);
+          }
+          cx2 += c2[1] + 14;
         });
-        x.globalAlpha = .95; x.fillStyle = "#d7b48c"; x.font = "34px " + serif; x.fillText("\u2726", cx + 112, y - 8); x.globalAlpha = 1;
+        y += 40 * f;
       }
-      y += 70;
-      if (draw) { x.fillStyle = "#8b93a8"; x.font = "bold 20px " + sans; fillSpaced(KS.foot.toUpperCase(), cx, y, 4); }
-      return y + 90;
-    }
-    function sky(H) {
-      x.fillStyle = "#151925"; x.fillRect(0, 0, W, H);
-      var g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#1c2133"); g.addColorStop(1, "#141823"); x.fillStyle = g; x.fillRect(0, 0, W, H);
-      var r = x.createRadialGradient(W / 2, 0, 0, W / 2, 0, Math.min(H, 1400) * 0.8); r.addColorStop(0, "rgba(180,192,221,.16)"); r.addColorStop(1, "rgba(180,192,221,0)");
-      x.fillStyle = r; x.fillRect(0, 0, W, H);
-      // A sky of its own for every name.
-      var seed = Math.floor(hashOf(k.name) * 4294967296) || 1;
-      function rnd() { seed = (seed + 0x6D2B79F5) | 0; var t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }
-      for (var i = 0; i < 110; i++) {
-        var px = rnd() * W, py = rnd() * H, a = rnd(), rr = rnd(), keep = rnd(), edge = Math.min(px, W - px) < 140 || py < 200 || py > H - 160;
-        if (!edge && keep > .2) continue;
-        x.globalAlpha = .2 + a * .6; x.fillStyle = "#e4e9f6";
-        x.beginPath(); x.arc(px, py, .7 + rr * 1.7, 0, Math.PI * 2); x.fill();
+      if (L.lead) { y += 12 * f; wrap(KS.q[0] + L.lead + KS.q[1], "italic " + Math.round(31 * f) + "px " + serif, W - pad * 2 - 80).forEach(function (ln) { y += 42 * f; T(C.text, "italic " + Math.round(31 * f) + "px " + serif, ln, y); }); }
+      // The rest in two columns, the story in its own frame beneath.
+      var cells = L.first.concat(L.then), colW = (W - pad * 2 - 64) / 2;
+      function cellH(pr2) { return 34 * f + 22 * f + wrap(pr2[1], Math.round(21 * f) + "px " + serif, colW).length * 29 * f; }
+      function cell(pr2, cx3, yy) {
+        if (!draw) return;
+        icon(pr2[2], cx3, yy + 12 * f, 24 * f, C.accent);
+        x.fillStyle = C.muted; x.font = "bold " + Math.round(13 * f) + "px " + sans; spaced(pr2[0].toUpperCase(), cx3, yy + 46 * f, 3);
+        var yl = yy + 46 * f; wrap(pr2[1], Math.round(21 * f) + "px " + serif, colW).forEach(function (ln) { yl += 29 * f; x.fillStyle = C.body; x.font = Math.round(21 * f) + "px " + serif; x.fillText(ln, cx3, yl); });
       }
-      x.globalAlpha = 1;
+      y += 34 * f;
+      for (var r = 0; r < cells.length; r += 2) {
+        var a = cells[r], b = cells[r + 1], h = Math.max(cellH(a), b ? cellH(b) : 0);
+        if (b) { cell(a, pad + colW / 2, y); cell(b, W - pad - colW / 2, y); } else cell(a, W / 2, y);
+        y += h + 26 * f;
+      }
+      if (L.story) {
+        var sl = wrap(L.story[1], "italic " + Math.round(22 * f) + "px " + serif, W - pad * 2 - 140), sh = 92 * f + sl.length * 31 * f;
+        if (draw) {
+          x.fillStyle = C.box; x.strokeStyle = C.boxLine; x.lineWidth = 1.3; x.beginPath();
+          if (x.roundRect) x.roundRect(pad + 30, y, W - pad * 2 - 60, sh, 18); else x.rect(pad + 30, y, W - pad * 2 - 60, sh); x.fill(); x.stroke();
+          icon("story", W / 2, y + 26 * f, 24 * f, C.accent);
+          x.fillStyle = C.muted; x.font = "bold " + Math.round(13 * f) + "px " + sans; spaced(L.story[0].toUpperCase(), W / 2, y + 58 * f, 3);
+          var ys = y + 58 * f; sl.forEach(function (ln) { ys += 31 * f; x.fillStyle = C.body; x.font = "italic " + Math.round(22 * f) + "px " + serif; x.fillText(ln, W / 2, ys); });
+        }
+        y += sh + 22 * f;
+      }
+      if (L.honour) {
+        y += 18 * f; if (draw) icon("honour", W / 2, y, 24 * f, C.gold);
+        y += 34 * f; if (draw) { x.fillStyle = C.muted; x.font = "bold " + Math.round(13 * f) + "px " + sans; spaced(L.honour[0].toUpperCase(), W / 2, y, 3); }
+        wrap(L.honour[1], Math.round(23 * f) + "px " + serif, W - pad * 2 - 120).forEach(function (ln) { y += 32 * f; T(C.text, Math.round(23 * f) + "px " + serif, ln, y); });
+      }
+      if (L.empty && draw) { y += 40; T(C.muted, "italic 24px " + serif, KS.empty, y); }
+      return y;
     }
-    function finish(pic) {
+    var f = 1, guard = 0;
+    while (body(f, false) > limit && guard++ < 60) {
+      if (f > .7) { f -= .03; continue; }
+      // Still too long at the smallest type: the longest answer keeps its first sentences.
+      var longest = Object.keys(ans).filter(function (key) { return key !== "names" && key !== "character"; }).sort(function (a, b) { return ans[b].length - ans[a].length; })[0];
+      if (!longest) break;
+      var shorter = ksShort(ans[longest], Math.floor(ans[longest].length * .75));
+      if (shorter === ans[longest]) break;
+      ans[longest] = shorter; L = relayout();
+    }
+    body(f, true);
+    c.fit = { f: Math.round(f * 100) / 100, trimmed: Object.keys(ans).filter(function (key) { return ans[key] !== (k.answers[key] || "").replace(/\s+/g, " ").trim(); }) };
+
+    // ---- The foot of the page: the moon on the night of the goodbye, and paw prints walking on ----
+    var by = H - 170;
+    x.globalAlpha = .5; x.fillStyle = C.line; x.fillRect(pad, by - 46, W - pad * 2, 1); x.globalAlpha = 1;
+    if (k.goodbye) {
+      var ph2 = moonPhase(k.goodbye), mr = 30, mx = pad + mr, my = by + 6, kk = Math.cos(2 * Math.PI * ph2);
+      x.fillStyle = C.moonDark; x.beginPath(); x.arc(mx, my, mr, 0, Math.PI * 2); x.fill();
+      x.fillStyle = C.moonLit; x.beginPath();
+      if (ph2 < .5) { x.arc(mx, my, mr, -Math.PI / 2, Math.PI / 2, false); x.ellipse(mx, my, Math.abs(kk) * mr, mr, 0, Math.PI / 2, -Math.PI / 2, kk > 0); }
+      else { x.arc(mx, my, mr, Math.PI / 2, -Math.PI / 2, false); x.ellipse(mx, my, Math.abs(kk) * mr, mr, 0, -Math.PI / 2, Math.PI / 2, kk > 0); }
+      x.fill();
+      x.textAlign = "left"; x.fillStyle = C.muted; x.font = "bold 13px " + sans; spaced(KS.moonTitle.toUpperCase(), mx + mr + 22, my - 6, 3, "left");
+      x.textAlign = "left"; x.fillStyle = C.body; x.font = "italic 20px " + serif; x.fillText(KS.moonName(Math.floor(ph2 * 8 + .5) % 8) + ", " + longDate(k.goodbye), mx + mr + 22, my + 22);
       x.textAlign = "center";
-      var H = Math.max(1350, layout(false, pic));
-      c.width = W; c.height = H; x.textAlign = "center";
-      sky(H);
-      layout(true, pic);
+    }
+    var toes = [[5.1, 10.4, 1.9, 2.4, -22], [9.2, 6, 2, 2.6, -8], [14.8, 6, 2, 2.6, 8], [18.9, 10.4, 1.9, 2.4, 22]];
+    var padPath = new Path2D("M12 12.4c-2.7 0-5.7 3.3-5.7 5.8 0 1.8 1.4 2.7 2.9 2.7 1.1 0 1.9-.5 2.8-.5s1.7.5 2.8.5c1.5 0 2.9-.9 2.9-2.7 0-2.5-3-5.8-5.7-5.8z");
+    for (var q = 0; q < 6; q++) {
+      x.save(); x.translate(W - pad - 330 + q * 50, by - 10 - q * 6 - (q % 2 ? 0 : 12)); x.rotate((q % 2 ? 14 : -2) * Math.PI / 180 + .5); x.scale(1.05, 1.05);
+      x.globalAlpha = .14 + q * .09; x.fillStyle = C.accent; x.fill(padPath);
+      toes.forEach(function (t) { x.beginPath(); x.ellipse(t[0], t[1], t[2], t[3], t[4] * Math.PI / 180, 0, Math.PI * 2); x.fill(); });
+      x.restore();
+    }
+    x.globalAlpha = 1; sparkle(W - pad - 10, by - 50, 14, C.gold, "rgba(215,180,140,.35)");
+    x.fillStyle = C.muted; x.font = "bold 13px " + sans; spaced(KS.foot.toUpperCase(), W / 2, H - 62, 4);
+    return c;
+  }
+  function makeA4(k, theme, scale) {
+    return Promise.all([ksFonts(), ksPicture(k)]).then(function (r) {
+      var c = drawA4(k, theme, scale, r[1]);
+      // A picture the browser won't let us read back would block saving; then the page is drawn without it.
+      try { c.getContext("2d").getImageData(0, 0, 1, 1); return c; } catch (e) { return drawA4(k, theme, scale, null); }
+    });
+  }
+  function a4Preview(img, k, theme) {
+    return makeA4(k, theme, 1).then(function (c) { img.src = c.toDataURL("image/jpeg", .9); img.alt = KS.sheetAlt(k.name); });
+  }
+  function a4Save(k, theme, msgId) {
+    makeA4(k, theme, 2).then(function (c) {
       c.toBlob(function (blob) {
         if (!blob) { flash(msgId, KS.imgFail); return; }
         var a = document.createElement("a"); a.href = URL.createObjectURL(blob);
@@ -3965,36 +4077,47 @@
         setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
         flash(msgId, KS.saved);
       }, "image/png");
-    }
-    function load(src, cb) { var im = new Image(); im.onload = function () { cb(im); }; im.onerror = function () { cb(null); }; im.src = src; }
-    (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () {
-      var dog = k.dog || {};
-      if (k.photo) load(k.photo, finish);
-      else if (dog.breed || dog.size) {
-        // The breed silhouette, drawn on its own with the shapes it is made from.
-        var svg = dogSilhouette(dog, 420).replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ').replace(/<svg([^>]*)>/, "<svg$1><defs>" + document.querySelector("svg defs").innerHTML + "</defs>");
-        load("data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg), finish);
-      } else finish(null);
     });
   }
-  document.getElementById("ksImage").addEventListener("click", function () { keepsakeImage(keepsakeData(), "ksMsg"); });
-  document.getElementById("ksPrint").addEventListener("click", function () {
-    var box = document.getElementById("keepsake");
-    box.classList.add("ks-printing"); document.documentElement.classList.add("print-keepsake");
-    window.print();
-    setTimeout(function () { document.documentElement.classList.remove("print-keepsake"); box.classList.remove("ks-printing"); }, 500);
+  // Print exactly one A4 page, from a frame of its own, so the rest of the site is untouched.
+  function a4Print(k, theme) {
+    makeA4(k, theme, 2).then(function (c) {
+      var f = document.createElement("iframe"); f.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0";
+      document.body.appendChild(f);
+      var d = f.contentWindow.document;
+      d.open(); d.write('<!doctype html><html><head><title>' + k.name.replace(/[<&]/g, "") + '</title><style>@page{size:A4;margin:0}html,body{margin:0}img{display:block;width:210mm;height:297mm}</style></head><body><img alt=""></body></html>'); d.close();
+      var im = d.querySelector("img");
+      im.onload = function () { f.contentWindow.focus(); f.contentWindow.print(); setTimeout(function () { f.remove(); }, 2000); };
+      im.src = c.toDataURL("image/png");
+    });
+  }
+
+  // The look of the page (night or paper) is remembered, and every page on screen follows it.
+  var ksTheme = store.get("hk.ksTheme", "night") === "paper" ? "paper" : "night";
+  function renderSheets() {
+    document.querySelectorAll(".ks-theme").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.theme === ksTheme)); });
+    if (!document.getElementById("rmEnd").hidden) a4Preview(document.getElementById("ksSheet"), keepsakeData(), ksTheme);
+    a4Preview(document.getElementById("mosjkaSheet"), MOSJKA_K, ksTheme);
+    if (!document.getElementById("ksModal").hidden) a4Preview(document.getElementById("ksModalSheet"), MOSJKA_K, ksTheme);
+  }
+  document.querySelectorAll(".ks-theme").forEach(function (b) {
+    b.addEventListener("click", function () { ksTheme = b.dataset.theme; store.set("hk.ksTheme", ksTheme); renderSheets(); });
   });
+  document.getElementById("ksImage").addEventListener("click", function () { a4Save(keepsakeData(), ksTheme, "ksMsg"); });
+  document.getElementById("ksPrint").addEventListener("click", function () { a4Print(keepsakeData(), ksTheme); });
 
   // Mosjka's keepsake, as an example of what the questions become: under her story,
   // and opened on its own from "Tell me about them" or from her star.
   var MOSJKA_K = { name: KS.mosjka.name, photo: KS.mosjka.photo, cutout: true, dob: "2011-03-22", goodbye: "2026-09-21", answers: KS.mosjka.answers, heads: KS.mosjka.heads };
   function isMosjkaStar(st) { return !!MOSJKA_K && st.born === MOSJKA_K.dob && st.died === MOSJKA_K.goodbye && /^(mosjka|моська)$/i.test((st.name || "").trim()); }
   renderKeepsakeInto(document.getElementById("mosjkaKeepsake"), MOSJKA_K);
-  document.getElementById("mosjkaImage").addEventListener("click", function () { keepsakeImage(MOSJKA_K, "mosjkaMsg"); });
+  document.getElementById("mosjkaImage").addEventListener("click", function () { a4Save(MOSJKA_K, ksTheme, "mosjkaMsg"); });
+  document.getElementById("mosjkaPrint").addEventListener("click", function () { a4Print(MOSJKA_K, ksTheme); });
+  a4Preview(document.getElementById("mosjkaSheet"), MOSJKA_K, ksTheme);
   var ksModal = document.getElementById("ksModal"), ksOpener = null;
   function openMosjka(from) {
     ksOpener = from || null;
-    renderKeepsakeInto(document.getElementById("ksModalCard"), MOSJKA_K);
+    a4Preview(document.getElementById("ksModalSheet"), MOSJKA_K, ksTheme);
     ksModal.hidden = false; ksModal.scrollTop = 0; document.body.classList.add("calm-open");
     document.getElementById("ksModalClose").focus();
   }
@@ -4003,7 +4126,8 @@
     if (ksOpener && ksOpener.focus) ksOpener.focus();
   }
   document.getElementById("ksModalClose").addEventListener("click", closeMosjka);
-  document.getElementById("ksModalImage").addEventListener("click", function () { keepsakeImage(MOSJKA_K, "ksModalMsg"); });
+  document.getElementById("ksModalImage").addEventListener("click", function () { a4Save(MOSJKA_K, ksTheme, "ksModalMsg"); });
+  document.getElementById("ksModalPrint").addEventListener("click", function () { a4Print(MOSJKA_K, ksTheme); });
   ksModal.addEventListener("click", function (e) { if (e.target === ksModal) closeMosjka(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !ksModal.hidden) closeMosjka(); });
   document.getElementById("rmExample").addEventListener("click", function (e) { e.preventDefault(); openMosjka(this); });
