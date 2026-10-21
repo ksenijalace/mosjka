@@ -344,6 +344,27 @@
   .keepsake .ks-honour p { font-size: 19px; }
   .keepsake .ks-foot { font-family: var(--font-body); margin-top: 34px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #8b93a8; }
   .keepsake .ks-empty { color: var(--muted); margin-top: 18px; }
+  .keepsake .ks-icon { display: block; margin: 0 auto 8px; color: #b4c0dd; opacity: .75; }
+  .keepsake .ks-life { display: flex; align-items: center; gap: 10px; width: min(340px, 86%); margin: 12px 0 0; color: var(--muted); }
+  .keepsake .ks-life .ks-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(180,192,221,.15), rgba(180,192,221,.5)); }
+  .keepsake .ks-life .ks-line + .ks-line, .keepsake .ks-life .ks-years + .ks-line { background: linear-gradient(90deg, rgba(180,192,221,.5), rgba(215,180,140,.6)); }
+  .keepsake .ks-life .ks-dot { width: 7px; height: 7px; border-radius: 50%; background: #b4c0dd; flex: none; box-shadow: 0 0 8px rgba(180,192,221,.6); }
+  .keepsake .ks-life .ks-end { color: var(--honey); flex: none; line-height: 1; }
+  .keepsake .ks-life .ks-years { margin: 0; flex: none; }
+  .keepsake .ks-chips { display: flex; flex-wrap: wrap; width: 100%; max-width: 34em; flex-direction: row; justify-content: center; gap: 8px; margin: 0 0 24px; padding: 0; list-style: none; }
+  .keepsake .ks-chip { font-family: var(--font-body); font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #e8dcc6;
+    padding: 8px 14px 8px 16px; border-radius: 999px; border: 1px solid rgba(215,180,140,.4); background: rgba(215,180,140,.07); }
+  .keepsake .ks-paws { display: flex; gap: 14px; align-items: flex-end; justify-content: center; margin-top: 30px; color: #b4c0dd; }
+  .keepsake .ks-paws svg { opacity: .5; }
+  .keepsake .ks-paws svg:nth-child(odd) { transform: translateY(-6px) rotate(-8deg); }
+  .keepsake .ks-paws svg:nth-child(even) { transform: rotate(8deg); }
+  .keepsake .ks-paws svg:nth-child(1) { opacity: .2; } .keepsake .ks-paws svg:nth-child(2) { opacity: .3; } .keepsake .ks-paws svg:nth-child(3) { opacity: .42; }
+  .keepsake .ks-paws .ks-paw-star { opacity: .9; transform: none; color: var(--honey); }
+  .keepsake .ks-portrait { position: relative; }
+  .keepsake .ks-portrait::before { content: ""; position: absolute; left: 50%; top: 50%; width: 118%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%;
+    border: 1px solid rgba(180,192,221,.12); box-shadow: 0 0 60px rgba(180,192,221,.08) inset; pointer-events: none; }
+  .story-more { margin-top: 36px; }
+  .story-more h3 { margin-bottom: 8px; }
   .story-keepsake { margin-top: 40px; }
   .ks-modal { position: fixed; inset: 0; z-index: 60; background: rgba(17,20,31,.94); overflow-y: auto; padding: 56px 16px 32px; }
   .ks-modal[hidden] { display: none; }
@@ -612,6 +633,8 @@
     .ks-name, .ks-lead, .ks-part p, .ks-dates, .ks-words { color: #111 !important; }
     .ks-known, .ks-years, .ks-part h4, .ks-foot { color: #555 !important; }
     .ks-story { background: #f6f3ee; border-color: #ddd; }
+    .ks-chip { color: #111 !important; border-color: #bbb !important; background: none !important; }
+    .ks-icon, .ks-paws, .ks-life { color: #777 !important; }
     .card { border-color: #999; background: #fff; }
   }
 </style>
@@ -1519,6 +1542,12 @@ Ksenija, who loved Mosjka</p>
       <p>What came after, nobody had prepared me for: the papers, the questions, taking the collar off, helping to put her into the bag. I cried for two days without stopping. I couldn't work. I still can't look at her ashes; my husband keeps them. Her collar is in our car, and I don't want to throw it away, because the car still smells of her.</p>
       <p>I don't know if I did the right thing. I regret it, and I feel relief, both at the same time. When I went looking for help, I found almost nothing for people like me. So I made this, in her memory.</p>
       <p class="signature">Written by Ksenija, who loved Mosjka.</p>
+      <div class="story-more">
+        <h3>More about her</h3>
+        <p>Her official name was Vetra, and my father only ever called her that. To the rest of us she was Mosjka from the very first day, when we brought her home as a three-month-old puppy.</p>
+        <p>The first time I saw her, she was at home with her mother. She was the calmest puppy, but she went to new people easily and trustingly, and she stayed like that all her life. We took her as soon as she'd had her first vaccinations, and life was never the same again. My daughter was born when Mosjka was two, and she couldn't imagine what it's like not to have a dog.</p>
+        <p>Mosjka lived with us and with my parents, and became someone for them to care for when all the children and grandchildren had moved away. For her last two years she lived with us, because it had become harder for my mother on her own, and Mosjka's health had begun to fail. She got on easily with cats: she was friends with one cat and then another at my parents', and later with our two. She especially liked eating their food, though one of the cats managed to eat hers.</p>
+      </div>
       <div class="story-keepsake">
         <h3 style="margin-bottom: 4px">Mosjka's keepsake</h3>
         <p class="small muted">This is what <a href="#remember">&ldquo;Tell me about them&rdquo;</a> becomes at the end. This one is mine, for her.</p>
@@ -3612,6 +3641,7 @@ Ksenija, who loved Mosjka</p>
   function longDate(iso) { return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); }
   var KS = {
     q: ["“", "”"],
+    character: "Their character",
     myDog: "My dog", photoOf: "Photo of", born: "Born", goodbye: "Said goodbye",
     years: function (y) { return y + (y === 1 ? " year" : " years") + " of love"; },
     empty: "Answer a question or two, and it will appear here.",
@@ -3623,9 +3653,9 @@ Ksenija, who loved Mosjka</p>
       name: "Mosjka", photo: "images/mosjka-silhouette.webp",
       heads: { family: "Her family", character: "Her character", place: "Her place", gave: "What she gave us", taught: "What she taught us", honour: "In her honour" },
       answers: {
-        names: "Vetra, officially, and my father only ever called her that. To the rest of us she was Mosjka from the very first day, when we brought her home as a three-month-old puppy.",
-        arrival: "The first time I saw her, she was at home with her mother. She was the calmest puppy, but she went to new people easily and trustingly, and she stayed like that all her life. We took her as soon as she'd had her first vaccinations, at three months, and life was never the same again. My daughter was born when Mosjka was two, and she couldn't imagine what it's like not to have a dog.",
-        family: "She lived with us and with my parents, and became someone for them to care for when all the children and grandchildren had moved away. For her last two years she lived with us, because it had become harder for my mother on her own, and Mosjka's health had begun to fail. My mother in Riga looked after her in her last weeks. She got on easily with cats: she was friends with one cat and then another at my parents', and later with our two. She especially liked eating their food, though one of the cats managed to eat hers.",
+        names: "Vetra, officially. To us, Mosjka, from the very first day.",
+        arrival: "A calm, trusting puppy of three months. Life was never the same again.",
+        family: "Our family and my parents, and four cat friends whose food she loved to steal.",
         character: "Kind, calm, well-mannered",
         favourite: "Walks, and above all trips to the sea and the forest. She loved riding in the car to new places, and when she was younger we travelled a lot. She could jump in and out of the boot by herself; in the last years we had to lift her. She liked to come and lie beside me when I worked from home, sometimes getting up to ask to be stroked. She even loved the vet's, because there were always treats there. And yes, treats were everything to her. Her food, always. And a drink of water at every café on the way, even with a full bowl at home.",
         place: "The forest, running over the moss and finding sticks. And the sea, digging in the sand and fishing stones out of the water.",
@@ -3647,6 +3677,24 @@ Ksenija, who loved Mosjka</p>
   }
   // One composition for the page, the print and the image: the name and dates, how they'd like to be remembered,
   // their character, the rest of what was told, the story, and what will be done in their honour.
+  // Small line drawings above each part of the keepsake (24×24, drawn with a stroke).
+  var KS_ICONS = {
+    names: "M4 7h16M4 12h10M4 17h13",
+    arrival: "M12 20v-8M12 12c0-4 3-6.5 7-6.5 0 4-3 6.5-7 6.5zM12 14.5c0-3-2.2-5-6-5 0 3 2.2 5 6 5z",
+    family: "M4 11l8-6.5 8 6.5M6 9.5V20h12V9.5M10 20v-5h4v5",
+    character: "M12 3l2.2 5.2 5.6.5-4.3 3.7 1.3 5.5L12 15l-4.8 2.9 1.3-5.5L4.2 8.7l5.6-.5z",
+    favourite: "M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM5.5 8.5c3.5 1 5 5 3 9.3M18.5 15.5c-3.5-1-5-5-3-9.3",
+    place: "M3 10c2 0 2.5-2 4.5-2S10 10 12 10s2.5-2 4.5-2S19 10 21 10M3 15c2 0 2.5-2 4.5-2s2.5 2 4.5 2 2.5-2 4.5-2 2.5 2 4.5 2M3 20c2 0 2.5-2 4.5-2s2.5 2 4.5 2 2.5-2 4.5-2 2.5 2 4.5 2",
+    unique: "M12 3v5M12 16v5M3 12h5M16 12h5M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18",
+    story: "M3.5 6.5c3-1.2 5.8-1 8.5 1 2.7-2 5.5-2.2 8.5-1v12c-3-1.2-5.8-1-8.5 1-2.7-2-5.5-2.2-8.5-1zM12 7.5v12",
+    gave: "M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z",
+    taught: "M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.4c.9.9 1 1.6 1 2.6h6c0-1 .1-1.7 1-2.6A6 6 0 0 0 12 3z",
+    keep: "M12 3l2.2 5.2 5.6.5-4.3 3.7 1.3 5.5L12 15l-4.8 2.9 1.3-5.5L4.2 8.7l5.6-.5z",
+    honour: "M12 3c1.8 2.2 2.2 3.6 0 5.6-2.2-2-1.8-3.4 0-5.6zM9 11h6v10H9zM7 21h10"
+  };
+  function ksIcon(key) {
+    return '<svg class="ks-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="' + (KS_ICONS[key] || KS_ICONS.keep) + '"/></svg>';
+  }
   function keepsakeLayout(k) {
     var a = k.answers || {}, head = {}, heads = k.heads || {};
     RM.forEach(function (q) { head[q[0]] = heads[q[0]] || q[3]; });
@@ -3654,17 +3702,17 @@ Ksenija, who loved Mosjka</p>
     var years = null;
     if (k.dob && k.goodbye) { var y = ageYears(k.dob, k.goodbye); if (y >= 1) years = KS.years(y); }
     var words = txt("character"), short = words && words.length <= 48 && !/[.!?].+/.test(words.replace(/[.!?]+$/, ""));
-    var parts = function (keys) { return keys.filter(txt).map(function (key) { return [head[key], txt(key)]; }); };
+    var parts = function (keys) { return keys.filter(txt).map(function (key) { return [head[key], txt(key), key]; }); };
     return {
       name: k.name, known: txt("names"),
       dates: k.dob && k.goodbye ? [longDate(k.dob), longDate(k.goodbye)] : k.dob ? [KS.born + " " + longDate(k.dob)] : k.goodbye ? [KS.goodbye + " " + longDate(k.goodbye)] : [],
       years: years,
-      words: short ? words.replace(/[.!?]+$/, "").split(/\s*[,·;]\s*|\s+(?:and|и)\s+/).filter(Boolean).join("  ·  ") : "",
+      wordList: short ? words.replace(/[.!?]+$/, "").split(/\s*[,·;]\s*|\s+(?:and|и)\s+/).filter(Boolean) : [],
       lead: txt("keep"),
       first: parts(short ? ["arrival", "family", "favourite", "place", "unique"] : ["arrival", "family", "character", "favourite", "place", "unique"]),
-      story: txt("story") ? [head.story, txt("story")] : null,
+      story: txt("story") ? [head.story, txt("story"), "story"] : null,
       then: parts(["gave", "taught"]),
-      honour: txt("honour") ? [head.honour, txt("honour")] : null,
+      honour: txt("honour") ? [head.honour, txt("honour"), "honour"] : null,
       empty: !Object.keys(a).some(txt)
     };
   }
@@ -3687,19 +3735,40 @@ Ksenija, who loved Mosjka</p>
       if (L.dates[1]) { d.appendChild(el("span", "ks-sep", "✦")); d.appendChild(el("span", "ks-date", L.dates[1])); }
       box.appendChild(d);
     }
-    if (L.years) box.appendChild(el("p", "ks-years", L.years));
+    if (L.years) {
+      // The line of a life: from the first day to the star.
+      var life = el("div", "ks-life");
+      life.appendChild(el("span", "ks-dot")); life.appendChild(el("span", "ks-line"));
+      life.appendChild(el("p", "ks-years", L.years));
+      life.appendChild(el("span", "ks-line"));
+      var end = el("span", "ks-end", "\u2726"); end.setAttribute("aria-hidden", "true"); life.appendChild(end);
+      box.appendChild(life);
+    }
     function rule() { var r = el("div", "ks-rule"); r.setAttribute("aria-hidden", "true"); r.appendChild(el("span", null, "✦")); box.appendChild(r); }
-    function part(pr, cls) { var p = el("div", "ks-part" + (cls ? " " + cls : "")); p.appendChild(el("h4", null, pr[0])); p.appendChild(el("p", null, pr[1])); box.appendChild(p); }
+    function part(pr, cls) {
+      var p = el("div", "ks-part" + (cls ? " " + cls : ""));
+      var ic = el("div"); ic.innerHTML = ksIcon(pr[2]); p.appendChild(ic.firstChild);
+      p.appendChild(el("h4", null, pr[0])); p.appendChild(el("p", null, pr[1])); box.appendChild(p);
+    }
     if (L.empty) { box.appendChild(el("p", "ks-empty", KS.empty)); }
     else {
       rule();
-      if (L.words) box.appendChild(el("p", "ks-words", L.words));
+      if (L.wordList.length) {
+        var chips = el("ul", "ks-chips"); chips.setAttribute("aria-label", KS.character);
+        L.wordList.forEach(function (w) { chips.appendChild(el("li", "ks-chip", w)); });
+        box.appendChild(chips);
+      }
       if (L.lead) box.appendChild(el("p", "ks-lead", KS.q[0] + L.lead + KS.q[1]));
       L.first.forEach(function (pr) { part(pr); });
       if (L.story) part(L.story, "ks-story");
       L.then.forEach(function (pr) { part(pr); });
       if (L.honour) { rule(); part(L.honour, "ks-honour"); }
     }
+    // A short trail of paw prints walking on, towards a star.
+    var paws = el("div", "ks-paws"); paws.setAttribute("aria-hidden", "true");
+    for (var i = 0; i < 4; i++) paws.innerHTML += '<svg viewBox="0 0 24 24" width="16" height="16"><g fill="currentColor"><use href="#pawToes"/><use href="#pawPad"/></g></svg>';
+    paws.innerHTML += '<svg class="ks-paw-star" viewBox="0 0 24 24" width="18" height="18"><use href="#starShape" fill="currentColor" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>';
+    box.appendChild(paws);
     box.appendChild(el("p", "ks-foot", KS.foot));
   }
   function renderKeepsake() { renderKeepsakeInto(document.getElementById("keepsake"), keepsakeData()); }
@@ -3780,7 +3849,19 @@ Ksenija, who loved Mosjka</p>
       wrap(L.name, "92px " + display, W - pad * 2).forEach(function (ln) { y += 96; T("#f2ece2", "92px " + display, ln, y); });
       if (L.known && L.known.toLowerCase() !== L.name.toLowerCase()) wrap(L.known, "italic 32px " + serif, W - pad * 2).forEach(function (ln, i) { y += i ? 44 : 56; T("#bdb7c8", "italic 32px " + serif, ln, y); });
       if (L.dates.length) { y += 64; T("#d9d2c5", "34px " + serif, L.dates.join("   ✦   "), y); }
-      if (L.years) { y += 48; if (draw) { x.fillStyle = "#bdb7c8"; x.font = "bold 22px " + sans; fillSpaced(L.years.toUpperCase(), cx, y, 4); } }
+      if (L.years) {
+        y += 56;
+        if (draw) {
+          x.font = "bold 22px " + sans; var yt = L.years.toUpperCase(), tw = spaced(yt, x.font, 4), half = 210;
+          x.fillStyle = "#bdb7c8"; fillSpaced(yt, cx, y, 4);
+          var ly = y - 8, g1 = x.createLinearGradient(cx - half, 0, cx - tw / 2 - 18, 0); g1.addColorStop(0, "rgba(180,192,221,.15)"); g1.addColorStop(1, "rgba(180,192,221,.55)");
+          x.fillStyle = g1; x.fillRect(cx - half, ly, half - tw / 2 - 18, 1.5);
+          var g2 = x.createLinearGradient(cx + tw / 2 + 18, 0, cx + half, 0); g2.addColorStop(0, "rgba(180,192,221,.55)"); g2.addColorStop(1, "rgba(215,180,140,.7)");
+          x.fillStyle = g2; x.fillRect(cx + tw / 2 + 18, ly, half - tw / 2 - 18, 1.5);
+          x.fillStyle = "#b4c0dd"; x.beginPath(); x.arc(cx - half - 8, ly + .75, 5, 0, Math.PI * 2); x.fill();
+          x.fillStyle = "#d7b48c"; x.font = "24px " + serif; x.fillText("\u2726", cx + half + 12, ly + 9);
+        }
+      }
       function rule() {
         y += 70;
         if (draw) {
@@ -3793,27 +3874,63 @@ Ksenija, who loved Mosjka</p>
       function part(pr, opt) {
         opt = opt || {};
         var font = (opt.italic ? "italic " : "") + (opt.size || 34) + "px " + serif, lines = wrap(pr[1], font, W - pad * 2 - (opt.box ? 80 : 0));
-        var top = y + 40, h = 50 + lines.length * 52;
+        var top = y + 62, h = 72 + lines.length * 52;
         if (opt.box && draw) {
           x.fillStyle = "rgba(180,192,221,.07)"; x.strokeStyle = "rgba(180,192,221,.16)"; x.lineWidth = 1.5;
           var bx = pad - 10, bw = W - 2 * (pad - 10), by = top - 10, bh = h + 46;
           x.beginPath(); if (x.roundRect) x.roundRect(bx, by, bw, bh, 20); else x.rect(bx, by, bw, bh); x.fill(); x.stroke();
         }
         y = top + (opt.box ? 34 : 24);
+        if (draw) {
+          x.save(); x.translate(cx - 16, y - 44); x.scale(32 / 24, 32 / 24);
+          x.strokeStyle = "rgba(180,192,221,.75)"; x.lineWidth = 1.3; x.lineCap = "round"; x.lineJoin = "round";
+          x.stroke(new Path2D(KS_ICONS[pr[2]] || KS_ICONS.keep)); x.restore();
+        }
+        y += 22;
         if (draw) { x.fillStyle = "#bdb7c8"; x.font = "bold 20px " + sans; fillSpaced(pr[0].toUpperCase(), cx, y, 4); }
         lines.forEach(function (ln) { y += 52; T("#ebe4d8", font, ln, y); });
         if (opt.box) y += 34;
       }
       if (!L.empty) {
         rule();
-        if (L.words) { y += 40; if (draw) { x.fillStyle = "#e8dcc6"; x.font = "bold 26px " + sans; fillSpaced(L.words.replace(/\s+·\s+/g, "  ·  ").toUpperCase(), cx, y, 7); } y += 10; }
+        if (L.wordList.length) {
+          // Their character as soft pills, in as many rows as they need.
+          x.font = "bold 24px " + sans;
+          var chips = L.wordList.map(function (w) { var t = w.toUpperCase(); return [t, spaced(t, x.font, 5) + 56]; }), rows = [[]], rw = [0];
+          chips.forEach(function (c2) { var r2 = rows.length - 1; if (rw[r2] && rw[r2] + c2[1] + 16 > W - pad * 2) { rows.push([]); rw.push(0); r2++; } rows[r2].push(c2); rw[r2] += (rw[r2] ? 16 : 0) + c2[1]; });
+          rows.forEach(function (row, ri) {
+            var cy2 = y + 30 + ri * 78, px2 = cx - rw[ri] / 2;
+            row.forEach(function (c2) {
+              if (draw) {
+                x.fillStyle = "rgba(215,180,140,.08)"; x.strokeStyle = "rgba(215,180,140,.45)"; x.lineWidth = 1.5;
+                x.beginPath(); if (x.roundRect) x.roundRect(px2, cy2, c2[1], 58, 29); else x.rect(px2, cy2, c2[1], 58); x.fill(); x.stroke();
+                x.fillStyle = "#e8dcc6"; x.font = "bold 24px " + sans; fillSpaced(c2[0], px2 + c2[1] / 2, cy2 + 37, 5);
+              }
+              px2 += c2[1] + 16;
+            });
+          });
+          y += 30 + rows.length * 78;
+        }
         if (L.lead) { y += 20; wrap(KS.q[0] + L.lead + KS.q[1], "italic 44px " + serif, W - pad * 2).forEach(function (ln) { y += 62; T("#f2ece2", "italic 44px " + serif, ln, y); }); y += 10; }
         L.first.forEach(function (pr) { part(pr); y += 14; });
         if (L.story) { y += 20; part(L.story, { box: true, italic: true, size: 36 }); }
         L.then.forEach(function (pr) { part(pr); y += 14; });
         if (L.honour) { rule(); part(L.honour, { size: 36 }); }
       }
-      y += 110;
+      // A short trail of paw prints, walking on towards a star.
+      y += 100;
+      if (draw) {
+        var toes = [[5.1, 10.4, 1.9, 2.4, -22], [9.2, 6, 2, 2.6, -8], [14.8, 6, 2, 2.6, 8], [18.9, 10.4, 1.9, 2.4, 22]];
+        var pad2 = new Path2D("M12 12.4c-2.7 0-5.7 3.3-5.7 5.8 0 1.8 1.4 2.7 2.9 2.7 1.1 0 1.9-.5 2.8-.5s1.7.5 2.8.5c1.5 0 2.9-.9 2.9-2.7 0-2.5-3-5.8-5.7-5.8z");
+        [.2, .3, .42, .55].forEach(function (op, i) {
+          x.save(); x.translate(cx - 150 + i * 62, y - 34 - (i % 2 ? 0 : 10)); x.rotate((i % 2 ? 8 : -8) * Math.PI / 180); x.scale(1.2, 1.2);
+          x.globalAlpha = op; x.fillStyle = "#b4c0dd"; x.fill(pad2);
+          toes.forEach(function (t) { x.beginPath(); x.ellipse(t[0], t[1], t[2], t[3], t[4] * Math.PI / 180, 0, Math.PI * 2); x.fill(); });
+          x.restore();
+        });
+        x.globalAlpha = .95; x.fillStyle = "#d7b48c"; x.font = "34px " + serif; x.fillText("\u2726", cx + 112, y - 8); x.globalAlpha = 1;
+      }
+      y += 70;
       if (draw) { x.fillStyle = "#8b93a8"; x.font = "bold 20px " + sans; fillSpaced(KS.foot.toUpperCase(), cx, y, 4); }
       return y + 90;
     }
