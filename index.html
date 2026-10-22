@@ -125,7 +125,7 @@
 
   /* Hero */
   .hero { padding-block: 56px 72px; }
-  .hero-head { display: flex; flex-wrap: wrap; gap: 28px 64px; align-items: end; padding-bottom: 48px; }
+  .hero-head { display: flex; flex-wrap: wrap; gap: 28px 64px; align-items: center; padding-bottom: 48px; }
   .hero h1 { flex: 1 1 560px; min-width: 0; font-size: clamp(28px, 5vw, 60px); line-height: 1.07; letter-spacing: -.01em; }
   .hero-side { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
   .hero-side p { font-size: 19px; line-height: 1.6; color: var(--muted); }
@@ -610,6 +610,21 @@
   .foot nav a { color: var(--text); text-decoration: none; }
   .foot .disclaimer { flex-basis: 100%; max-width: 46em; }
 
+  /* The first screen: three simple choices */
+  .choose-label { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 -8px; }
+  .choices { display: flex; flex-direction: column; gap: 10px; max-width: 380px; }
+  .choice { display: block; padding: 14px 18px; border: 1px solid var(--line-strong); border-radius: 12px; text-decoration: none; color: var(--text); background: rgba(180,192,221,.04); transition: border-color .2s, background .2s; }
+  .choice:hover, .choice:focus-visible { border-color: var(--accent); background: rgba(180,192,221,.08); }
+  .choice.primary { border-color: var(--honey); background: rgba(215,180,140,.08); }
+  .choice strong { display: block; font-size: 18px; font-weight: 700; }
+  .choice span { display: block; font-size: 15px; color: var(--muted); margin-top: 2px; }
+  .choice strong::after { content: " \2192"; color: var(--muted); font-weight: 400; }
+  .hero-side p.hero-lead { font-size: 18px; }
+  /* fields stay inside their cards on every screen */
+  input[type="file"] { max-width: 100%; }
+  .scale-item input[type="range"] { margin-inline: 0; }
+  .keepsake .ks-dates { max-width: 100%; }
+  @media (max-width: 400px) { .keepsake { padding-inline: 18px; } .keepsake .ks-dates .ks-date { white-space: normal; } }
   /* Gentle arrival: a greeting, a way back to where you were, and one calm minute */
   .greet { margin: 0 0 18px; }
   .resume { position: fixed; left: 16px; right: 16px; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 40; max-width: 420px; display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 2px 8px;
@@ -741,13 +756,14 @@
       <div class="hero-head">
         <h1>Help with the hardest decision, and with what comes after.</h1>
         <div class="hero-side">
-          <p>A calm guide for deciding whether it is time to say goodbye to your dog, for the day itself, and for the guilt and grief afterwards. <a href="#story">Written by someone who has been there.</a></p>
+          <p class="hero-lead">Gentle support for dog owners, before, on the day, and after. <a href="#story">Written by someone who has been there.</a></p>
           <p class="moment" id="nightNote" hidden><svg class="moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 1 1 9.4 4a6.9 6.9 0 0 0 10.6 10.6z" fill="#b4c0dd"/></svg><span>Still up? Nights are the hardest. You're not the only one awake.</span></p>
-          <div class="actions">
-            <a class="btn primary" href="#before" data-set-stage="deciding">Not sure yet</a>
-            <a class="btn" href="#prepare" data-set-stage="decided">The day is near</a>
-            <a class="btn" href="#since" data-set-stage="after">We've said goodbye</a>
-          </div>
+          <p class="choose-label" id="chooseLabel">Where are you right now?</p>
+          <nav class="choices" aria-labelledby="chooseLabel">
+            <a class="choice primary" href="#before" data-set-stage="deciding"><strong>Not sure yet</strong><span>A gentle daily diary, to see the pattern.</span></a>
+            <a class="choice" href="#prepare" data-set-stage="decided"><strong>The day is near</strong><span>What to expect, and a checklist for the day.</span></a>
+            <a class="choice" href="#since" data-set-stage="after"><strong>We've said goodbye</strong><span>For the guilt, the grief and the first month.</span></a>
+          </nav>
         </div>
       </div>
       <figure class="photo">
@@ -767,29 +783,6 @@
 </div>
 
 <main>
-
-<section aria-label="Where are you right now?">
-  <div class="wrap paths">
-    <a class="path" href="#before" data-set-stage="deciding">
-      <span class="path-step">Before</span>
-      <span class="path-title">Not sure yet</span>
-      <span class="path-text">A daily tracker with notes and the quality-of-life scale vets use, so you can see the pattern over time and bring something clear to your vet.</span>
-      <span class="path-more">The daily tracker &#8594;</span>
-    </a>
-    <a class="path" href="#prepare" data-set-stage="decided">
-      <span class="path-step">The day</span>
-      <span class="path-title">The day is near</span>
-      <span class="path-text">What happens during the appointment, what I wish I'd known, and a checklist for the day itself, so you can be with your dog instead of managing everything.</span>
-      <span class="path-more">Preparing for the day &#8594;</span>
-    </a>
-    <a class="path" href="#since" data-set-stage="after">
-      <span class="path-step">After</span>
-      <span class="path-title">We've said goodbye</span>
-      <span class="path-text">The thoughts that come back most often and what is true about them, a gentle 30-day journey for the first month, and a private place to write to your dog.</span>
-      <span class="path-more">For the days after &#8594;</span>
-    </a>
-  </div>
-</section>
 
 <section class="band" aria-label="From the person who made this guide" style="padding-block: 72px">
   <div class="wrap">

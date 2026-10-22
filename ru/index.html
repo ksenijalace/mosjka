@@ -125,7 +125,7 @@
 
   /* Hero */
   .hero { padding-block: 56px 72px; }
-  .hero-head { display: flex; flex-wrap: wrap; gap: 28px 64px; align-items: end; padding-bottom: 48px; }
+  .hero-head { display: flex; flex-wrap: wrap; gap: 28px 64px; align-items: center; padding-bottom: 48px; }
   .hero h1 { flex: 1 1 560px; min-width: 0; font-size: clamp(28px, 5vw, 60px); line-height: 1.07; letter-spacing: -.01em; }
   .hero-side { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
   .hero-side p { font-size: 19px; line-height: 1.6; color: var(--muted); }
@@ -610,6 +610,21 @@
   .foot nav a { color: var(--text); text-decoration: none; }
   .foot .disclaimer { flex-basis: 100%; max-width: 46em; }
 
+  /* The first screen: three simple choices */
+  .choose-label { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 -8px; }
+  .choices { display: flex; flex-direction: column; gap: 10px; max-width: 380px; }
+  .choice { display: block; padding: 14px 18px; border: 1px solid var(--line-strong); border-radius: 12px; text-decoration: none; color: var(--text); background: rgba(180,192,221,.04); transition: border-color .2s, background .2s; }
+  .choice:hover, .choice:focus-visible { border-color: var(--accent); background: rgba(180,192,221,.08); }
+  .choice.primary { border-color: var(--honey); background: rgba(215,180,140,.08); }
+  .choice strong { display: block; font-size: 18px; font-weight: 700; }
+  .choice span { display: block; font-size: 15px; color: var(--muted); margin-top: 2px; }
+  .choice strong::after { content: " \2192"; color: var(--muted); font-weight: 400; }
+  .hero-side p.hero-lead { font-size: 18px; }
+  /* fields stay inside their cards on every screen */
+  input[type="file"] { max-width: 100%; }
+  .scale-item input[type="range"] { margin-inline: 0; }
+  .keepsake .ks-dates { max-width: 100%; }
+  @media (max-width: 400px) { .keepsake { padding-inline: 18px; } .keepsake .ks-dates .ks-date { white-space: normal; } }
   /* Gentle arrival: a greeting, a way back to where you were, and one calm minute */
   .greet { margin: 0 0 18px; }
   .resume { position: fixed; left: 16px; right: 16px; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 40; max-width: 420px; display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 2px 8px;
@@ -741,13 +756,14 @@
       <div class="hero-head">
         <h1>Помощь с самым трудным решением — и с тем, что будет после.</h1>
         <div class="hero-side">
-          <p>Спокойный путеводитель: как понять, пора ли прощаться с собакой, как пройти сам этот день и как жить с чувством вины и горем после. <a href="#story">Его написала та, кто сама через это прошла.</a></p>
+          <p class="hero-lead">Бережная поддержка для хозяев собак: до, в сам этот день и после. <a href="#story">Это написала та, кто сама через это прошла.</a></p>
           <p class="moment" id="nightNote" hidden><svg class="moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 1 1 9.4 4a6.9 6.9 0 0 0 10.6 10.6z" fill="#b4c0dd"/></svg><span>Не спится? Ночью тяжелее всего. Вы не одни не спите сейчас.</span></p>
-          <div class="actions">
-            <a class="btn primary" href="#before" data-set-stage="deciding">Пока не уверены</a>
-            <a class="btn" href="#prepare" data-set-stage="decided">День уже близко</a>
-            <a class="btn" href="#since" data-set-stage="after">Мы уже попрощались</a>
-          </div>
+          <p class="choose-label" id="chooseLabel">Где вы сейчас?</p>
+          <nav class="choices" aria-labelledby="chooseLabel">
+            <a class="choice primary" href="#before" data-set-stage="deciding"><strong>Пока не уверены</strong><span>Бережный дневник, чтобы увидеть картину.</span></a>
+            <a class="choice" href="#prepare" data-set-stage="decided"><strong>День уже близко</strong><span>Чего ожидать, и список дел на этот день.</span></a>
+            <a class="choice" href="#since" data-set-stage="after"><strong>Мы уже попрощались</strong><span>Для вины, горя и первого месяца.</span></a>
+          </nav>
         </div>
       </div>
       <figure class="photo">
@@ -767,29 +783,6 @@
 </div>
 
 <main>
-
-<section aria-label="Где вы сейчас?">
-  <div class="wrap paths">
-    <a class="path" href="#before" data-set-stage="deciding">
-      <span class="path-step">До</span>
-      <span class="path-title">Пока не уверены</span>
-      <span class="path-text">Дневник на каждый день — с заметками и шкалой качества жизни, которой пользуются ветеринары. Так со временем видна общая картина, и вам будет что ясно показать врачу.</span>
-      <span class="path-more">Дневник дней &#8594;</span>
-    </a>
-    <a class="path" href="#prepare" data-set-stage="decided">
-      <span class="path-step">Тот день</span>
-      <span class="path-title">День уже близко</span>
-      <span class="path-text">Что происходит на приёме, что я хотела бы знать заранее, и список дел на сам этот день — чтобы вы могли быть рядом с собакой, а не думать обо всём сразу.</span>
-      <span class="path-more">Подготовка к этому дню &#8594;</span>
-    </a>
-    <a class="path" href="#since" data-set-stage="after">
-      <span class="path-step">После</span>
-      <span class="path-title">Мы уже попрощались</span>
-      <span class="path-text">Мысли, которые возвращаются чаще всего, и что в них правда. Бережный 30-дневный путь на первый месяц. И личное место, где можно написать письмо своей собаке.</span>
-      <span class="path-more">Для дней после &#8594;</span>
-    </a>
-  </div>
-</section>
 
 <section class="band" aria-label="От человека, который сделал этот путеводитель" style="padding-block: 72px">
   <div class="wrap">
