@@ -426,6 +426,11 @@
   /* Notes from Ksenija, where they belong */
   .from-me { margin: 14px 0 4px; padding: 4px 0 4px 14px; border-left: 2px solid rgba(233,214,170,.55); }
   .from-me .from-label { display: block; font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #d9c79c; margin-bottom: 4px; }
+  .note-fold > summary { list-style: none; cursor: pointer; display: inline-block; margin-bottom: 0; }
+  .note-fold > summary::-webkit-details-marker { display: none; }
+  .note-fold > summary::after { content: "  +"; color: #d9c79c; }
+  .note-fold[open] > summary::after { content: "  \2212"; }
+  .note-fold[open] > summary { margin-bottom: 4px; }
   .from-me p { font-family: var(--font-quote); font-style: italic; font-size: 17px; line-height: 1.6; color: var(--text); margin: 0; }
   .check-group .from-me { margin: 0 0 4px 36px; }
   .scale-item .from-me { margin-top: 8px; }
@@ -610,6 +615,26 @@
   .foot nav a { color: var(--text); text-decoration: none; }
   .foot .disclaimer { flex-basis: 100%; max-width: 46em; }
 
+  /* Simpler sections: longer reading folds away under its heading */
+  .fold { border-top: 1px solid var(--line); }
+  .fold:last-child, .fold + :not(.fold) { border-bottom: 0; }
+  .fold > summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 16px 0; }
+  .fold > summary::-webkit-details-marker { display: none; }
+  .fold > summary h3 { margin: 0 !important; }
+  .fold > summary::after { content: "+"; color: var(--accent); font-size: 24px; line-height: 1; flex: none; }
+  .fold[open] > summary::after { content: "\2212"; }
+  .fold > summary:hover h3 { color: var(--accent-hover); }
+  .fold-body { padding: 0 0 18px; }
+  .fold-body > :first-child { margin-top: 0; }
+  .side-more > summary, .card-fold > summary { list-style: none; cursor: pointer; color: var(--accent); font-weight: 600; }
+  .side-more > summary::-webkit-details-marker, .card-fold > summary::-webkit-details-marker { display: none; }
+  .side-more > summary::after { content: " \2193"; }
+  .side-more[open] > summary { display: none; }
+  .side-more > :not(summary) { margin-top: 18px; }
+  .card-fold > summary { display: flex; justify-content: space-between; align-items: center; color: var(--text); }
+  .card-fold > summary::after { content: "+"; color: var(--accent); font-size: 22px; line-height: 1; }
+  .card-fold[open] > summary::after { content: "\2212"; }
+  .card-fold[open] > summary { margin-bottom: 12px; }
   /* The first screen: three simple choices */
   .choose-label { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 -8px; }
   .choices { display: flex; flex-direction: column; gap: 10px; max-width: 380px; }
@@ -800,10 +825,12 @@
       <h2>Записывайте дни</h2>
       <p>Одного очевидного момента почти никогда не бывает. Одна запись в день помогает увидеть общую картину, и вам будет что ясно показать ветеринару. А ещё останется след, за который вы, возможно, будете благодарны потом, когда в голове зазвучит вопрос: «А не слишком ли рано?»</p>
       <aside class="from-me"><span class="from-label">От Ксении</span><p>Она угасала медленно — а потом вдруг быстро. Записи помогают заметить этот поворот, когда он наступает.</p></aside>
+      <p class="moment" id="knowsLine"></p>
+      <details class="side-more"><summary>Читать дальше</summary>
       <aside class="from-me"><span class="from-label">От Ксении</span><p>Я дважды записывалась на приём и дважды отменяла. Если вы мечетесь туда и обратно, вы не подводите свою собаку. Вы просто хотите быть уверены.</p></aside>
       <p>Многие ветеринары повторяют фразу, которая помогает людям: <em>«Лучше на неделю раньше, чем на день позже».</em> Это не значит, что существует идеальный день. Это значит, что если выбирать между тем, чтобы потерять немного хорошего времени, и тем, чтобы собака лишний раз страдала, большинство ветеринаров выберут первое.</p>
-      <p class="moment" id="knowsLine"></p>
       <p class="small">Ваши записи хранятся на этом устройстве, а также онлайн — под кличкой собаки, датой рождения и PIN-кодом, так что открыть их можно где угодно. Фотографии никогда не покидают это устройство.</p>
+      </details>
     </div>
     <div class="main stack">
       <div class="card stack no-print dog-setup" id="setup-tracker" data-setup="tracker" style="gap: 16px">
@@ -846,15 +873,15 @@
         <span class="status s-msg" id="setupMsg-tracker" aria-live="polite"></span>
       </div>
 
-      <div class="card stack" style="gap: 10px">
-        <span class="card-title">Мелочи, которые помогали Моське</span>
+      <details class="card stack card-fold" style="gap: 10px">
+        <summary class="card-title">Мелочи, которые помогали Моське</summary>
         <ul class="small" style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px">
           <li>У неё стёрлись подушечки на лапах, и она гуляла в маленьких ботиночках.</li>
           <li>Шлейка с ручкой помогала мне поднимать её, когда она не могла встать сама.</li>
           <li>Коврики на гладком полу, чтобы она не скользила.</li>
         </ul>
         <p class="small muted" style="margin: 0">От Ксении</p>
-      </div>
+      </details>
       <div class="card stack age-card" id="ageCard" hidden style="gap: 12px">
         <span class="card-title" id="ageTitle"></span>
         <p id="ageText"></p>
@@ -906,7 +933,7 @@
           <div>
             <span class="card-title" style="font-size: 17px">А вы?</span>
             <p class="small muted" style="margin-top: 4px">Ухаживать за собакой в конце её жизни — изматывает. То, как держитесь вы, — тоже часть картины.</p>
-            <aside class="from-me"><span class="from-label">От Ксении</span><p>Под конец мы гуляли четыре раза в день, первый раз — в пять утра. То, что я была без сил, не значило, что я любила её меньше. И у вас это не будет значить ничего такого.</p></aside>
+            <details class="from-me note-fold"><summary class="from-label">От Ксении</summary><p>Под конец мы гуляли четыре раза в день, первый раз — в пять утра. То, что я была без сил, не значило, что я любила её меньше. И у вас это не будет значить ничего такого.</p></details>
           </div>
           <div class="moods" role="group" aria-label="Как вы держитесь сегодня?" id="meMoods"></div>
           <div><label for="meNote" class="field-label">Пара слов о вас, если хотите: сон, усталость, тревога, вина, хороший момент рядом с собакой.</label><textarea id="meNote" maxlength="2000" style="min-height: 70px"></textarea></div>
@@ -944,8 +971,8 @@
         </details>
       </div>
 
-      <div class="card stack no-print" style="gap: 14px">
-        <span class="card-title">Сберегите свои записи</span>
+      <details class="card stack no-print card-fold" style="gap: 14px">
+        <summary class="card-title">Сберегите свои записи</summary>
         <p class="small muted">Записи могут пропасть, если очистить данные браузера, открыть сайт в режиме инкогнито или сменить телефон. Время от времени скачивайте резервную копию — её можно восстановить на любом устройстве и продолжить.</p>
         <div class="row">
           <button type="button" class="btn" id="backupBtn">Скачать резервную копию</button>
@@ -961,7 +988,7 @@
           <p class="small">Удалить с этого устройства дни, оценки, письма, кличку и фото вашей собаки? Отменить это будет нельзя. Если когда-нибудь они могут вам понадобиться, резервная копия их сохранит.</p>
           <div class="row"><button type="button" class="btn danger" id="clearYes">Да, удалить</button><button type="button" class="btn" id="clearNo">Нет, оставить всё</button></div>
         </div>
-      </div>
+      </details>
 
       <div class="card stack no-print stage-next" id="decidedCard" style="gap: 10px">
         <span class="card-title">Когда вы решите</span>
@@ -995,7 +1022,7 @@
         <p class="small muted"><a href="#story">Из истории, с которой началось это руководство</a></p>
       </div>
 
-      <h3>Что происходит во время процедуры</h3>
+      <details class="fold"><summary><h3>Что происходит во время процедуры</h3></summary><div class="fold-body">
       <ol>
         <li><strong>Седация.</strong> Обычно врач сначала делает успокоительный укол. За несколько минут собака глубоко расслабляется и засыпает. В это время хорошо держать её на руках и говорить с ней.</li>
         <li><strong>Последний укол.</strong> Врач вводит большую дозу анестетика, обычно в вену. Собака теряет сознание за несколько секунд, потом останавливается сердце — как правило, в течение минуты или двух. Она этого не осознаёт.</li>
@@ -1003,11 +1030,14 @@
         <li><strong>Время после.</strong> Обычно можно остаться с ней столько, сколько вам нужно. Торопиться не надо.</li>
       </ol>
 
-      <h3>Нужно ли быть рядом?</h3>
+      </div></details>
+      <details class="fold"><summary><h3>Нужно ли быть рядом?</h3></summary><div class="fold-body">
       <p>Неправильного ответа нет. Многие потом благодарны себе за то, что были рядом: рука на собаке, и последнее, что она слышит, — ваш голос. Другие знают, что не выдержат или что их волнение напугает собаку. И то и другое — любовь. Если вы не можете быть рядом во время последнего укола, можно остаться на седацию и попрощаться, пока она засыпает.</p>
 
-      <h3>Дети и другие животные</h3>
+      </div></details>
+      <details class="fold"><summary><h3>Дети и другие животные</h3></summary><div class="fold-body">
       <p>С детьми говорите прямо: «умерла», а не «уснула» — иначе сон может начать их пугать. Позвольте им попрощаться по-своему, например нарисовать рисунок или написать письмо. Другим собакам и кошкам в доме иногда помогает увидеть или понюхать тело своего друга: похоже, так некоторым из них легче понять, почему его больше нет.</p>
+      </div></details>
     </div>
   </div>
 </section>
@@ -1028,10 +1058,10 @@
           <fieldset class="check-group"><legend>Заранее</legend>
             <label class="check"><input type="checkbox" data-check="where"><span>Решите, где это будет. Спросите своего ветеринара или ветеринара, который работает с крематорием для животных, может ли он приехать к вам домой.</span></label>
             <label class="check"><input type="checkbox" data-check="papers"><span>Попросите врача подготовить документы заранее и держите паспорт собаки под рукой, чтобы последний час был только для неё.</span></label>
-            <aside class="from-me"><span class="from-label">От Ксении</span><p>Бумаги оформляли сразу после, когда она ещё лежала рядом со мной. Жаль, что я не сделала этого накануне — тогда эти минуты принадлежали бы только ей.</p></aside>
+            <details class="from-me note-fold"><summary class="from-label">От Ксении</summary><p>Бумаги оформляли сразу после, когда она ещё лежала рядом со мной. Жаль, что я не сделала этого накануне — тогда эти минуты принадлежали бы только ей.</p></details>
             <label class="check"><input type="checkbox" data-check="aftercare"><span>Решите, что будет потом: индивидуальная или общая кремация, или захоронение. Можно решить и позже, но лучше знать заранее.</span></label>
             <label class="check"><input type="checkbox" data-check="crematorium"><span>Заранее скажите крематорию, что не будете помогать переносить или заворачивать собаку.</span></label>
-            <aside class="from-me"><span class="from-label">От Ксении</span><p>Мне пришлось помогать класть её в мешок. Никто не сказал, что можно отказаться. Вы можете отказаться.</p></aside>
+            <details class="from-me note-fold"><summary class="from-label">От Ксении</summary><p>Мне пришлось помогать класть её в мешок. Никто не сказал, что можно отказаться. Вы можете отказаться.</p></details>
             <label class="check"><input type="checkbox" data-check="dayoff"><span>Возьмите выходной на следующий день, а лучше на два. Отмените всё, что можно.</span><em class="whisper">Горю нужно место. Дайте ему его.</em></label>
             <label class="check"><input type="checkbox" data-check="someone"><span>Попросите кого-то побыть с вами: открыть двери, поговорить с врачом и крематорием, остаться с вами после.</span><em class="whisper">Не нужно всё нести самой или самому.</em></label>
             <label class="check"><input type="checkbox" data-check="family"><span>Обсудите с семьёй, кто будет в комнате. Дети могут попрощаться по-своему — до или после.</span></label>
@@ -1046,30 +1076,36 @@
           </fieldset>
           <fieldset class="check-group"><legend>После</legend>
             <label class="check"><input type="checkbox" data-check="noRush"><span>Пока оставьте ошейник, миску и лежанку на местах. Решать, что сохранить, можно не спеша.</span><em class="whisper">Её вещи подождут. И вы тоже можете подождать.</em></label>
-            <aside class="from-me"><span class="from-label">От Ксении</span><p>Ошейник Моськи до сих пор лежит у нас в машине. Я не могу его выбросить. В машине всё ещё пахнет ею.</p></aside>
+            <details class="from-me note-fold"><summary class="from-label">От Ксении</summary><p>Ошейник Моськи до сих пор лежит у нас в машине. Я не могу его выбросить. В машине всё ещё пахнет ею.</p></details>
             <label class="check"><input type="checkbox" data-check="eat"><span>Постарайтесь что-нибудь съесть и выпить немного воды, даже если не хочется.</span><em class="whisper">Хотя бы чуть-чуть. Ваше тело тоже горюет.</em></label>
             <label class="check"><input type="checkbox" data-check="tonight"><span>Сделайте так, чтобы этой ночью вы не были одни — или чтобы было кому позвонить.</span><em class="whisper">Первые ночи — самые тяжёлые.</em></label>
-            <aside class="from-me"><span class="from-label">От Ксении</span><p>Будьте готовы к сообщениям, которые придут потом. Стандартное СМС из крематория о том, что прах можно забрать. Письмо из государственного реестра о том, что для вашей собаки зарегистрирована эвтаназия. Они автоматические, и от них больно. Если можете, попросите кого-то прочитать их первым или забрать прах вместо вас.</p></aside>
+            <details class="from-me note-fold"><summary class="from-label">От Ксении</summary><p>Будьте готовы к сообщениям, которые придут потом. Стандартное СМС из крематория о том, что прах можно забрать. Письмо из государственного реестра о том, что для вашей собаки зарегистрирована эвтаназия. Они автоматические, и от них больно. Если можете, попросите кого-то прочитать их первым или забрать прах вместо вас.</p></details>
           </fieldset>
         <p class="moment fade-in" id="checkDone" hidden><svg class="tiny-star" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><use href="#starShape" fill="#b4c0dd" stroke="#b4c0dd" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Вы подумали обо всём, о чём могли. Теперь просто будьте с ней.</span></p>
         <div class="row"><button type="button" class="btn quiet" id="checkReset">Снять отметки</button></div>
       </div>
 
       <div class="prose day-steps">
-        <h3 style="margin-top: 0">Утро</h3>
+        <details class="fold"><summary><h3>Утро</h3></summary><div class="fold-body">
         <p>Можно проснуться с надеждой, что вы передумали, или со странным спокойствием. И то и другое нормально. Пусть для собаки этот день будет как можно более обычным: привычная прогулка, если она в силах, её еда, её место на солнце.</p>
-        <h3>Последние часы</h3>
+        </div></details>
+        <details class="fold"><summary><h3>Последние часы</h3></summary><div class="fold-body">
         <p>Будьте рядом. Лягте возле неё, гладьте её, говорите с ней. Если хотите фотографии, сделайте их сейчас, но не отдавайте эти часы камере. Ничего страшного, если время проходит тихо и обыденно: именно такой она и знала жизнь с вами.</p>
-        <h3>Когда приходит врач</h3>
+        </div></details>
+        <details class="fold"><summary><h3>Когда приходит врач</h3></summary><div class="fold-body">
         <p>Можно попросить врача объяснять каждый шаг перед тем, как его сделать, — или делать всё без объяснений. В любой момент можно попросить ещё несколько минут. Обычно сначала делают успокоительный укол, чтобы собака крепко уснула у вас на руках, и только потом — последний.</p>
-        <h3>Этот момент</h3>
+        </div></details>
+        <details class="fold"><summary><h3>Этот момент</h3></summary><div class="fold-body">
         <p>Обнимите её, и пусть последним, что она услышит, будет ваш голос. Глаза могут остаться открытыми, а после остановки сердца может быть последний вдох или подёргивание. Это рефлексы; ваша собака уже ничего не чувствует. Потом побудьте с ней столько, сколько нужно. Не обязательно сразу выходить из комнаты или отпускать её.</p>
         <aside class="from-me"><span class="from-label">От Ксении</span><p>Когда я вошла, она задрожала от радости, увидев меня. Я села рядом и гладила её всё время. Я держала её голову, когда та стала тяжёлой. Она была ещё тёплой, когда врач сказал, что всё закончилось.</p></aside>
-        <h3>Первый вечер</h3>
+        </div></details>
+        <details class="fold"><summary><h3>Первый вечер</h3></summary><div class="fold-body">
         <p>В доме будет очень тихо. Многие плачут часами, или чувствуют оцепенение, или и то и другое. С этим ничего не нужно делать. Поешьте хоть немного, пейте воду, пусть кто-то будет рядом или на связи. Если хочется, <a href="#letter">напишите ей письмо</a>.</p>
         <aside class="from-me"><span class="from-label">От Ксении</span><p>Я плакала два дня не переставая. Не могла работать. Если с вами сейчас так же — это не слабость. Это то, как много она для вас значила.</p></aside>
-        <h3>Следующие дни</h3>
+        </div></details>
+        <details class="fold"><summary><h3>Следующие дни</h3></summary><div class="fold-body">
         <p>Горе приходит волнами, а не идёт по прямой. Тяжелее всего часто бывают мелкие привычки: время прогулки, миска, дверь. Когда придёт чувство вины, загляните в раздел <a href="#after">«Мысли, которые не отпускают»</a>.</p>
+        </div></details>
       </div>
       <div class="card stack no-print stage-next" id="saidCard" style="gap: 10px">
         <span class="card-title">После процедуры</span>
@@ -1409,7 +1445,7 @@
       <p class="voice">«Я до сих пор не могу смотреть на её прах, он у мужа. Я хочу сделать брошь из её медальона. Боюсь, что буду плакать, когда посмотрю на неё, но я её сделаю».</p>
     </div>
     <div class="main prose">
-      <h3 style="margin-top: 0">Идеи</h3>
+      <details class="fold" open><summary><h3>Идеи</h3></summary><div class="fold-body">
       <ul>
         <li><strong>Её собственные вещи.</strong> Ошейник, жетон или медальон можно превратить в брошь, браслет или брелок. Кто-то оставляет ошейник как есть — в машине или у двери.</li>
         <li><strong>Шерсть.</strong> Немного шерсти, срезанной заранее или оставшейся на щётке, можно запаять в медальон, кольцо или маленькую вещицу из стекла или смолы.</li>
@@ -1418,15 +1454,18 @@
         <li><strong>Фотографии и звуки.</strong> Маленькая напечатанная книжка с фотографиями или запись её лая или дыхания могут значить больше, чем вы ожидаете.</li>
         <li><strong>Что-то живое.</strong> Дерево или растение в саду, иногда с щепоткой её праха.</li>
       </ul>
-      <h3>Если вы выбираете украшение</h3>
+      </div></details>
+      <details class="fold"><summary><h3>Если вы выбираете украшение</h3></summary><div class="fold-body">
       <ul>
         <li>Если вы хотите получить именно её прах, попросите в крематории <strong>индивидуальную</strong> кремацию.</li>
         <li>Спросите мастера, сколько праха или шерсти нужно и вернут ли то, что не пригодится.</li>
         <li>Спросите, как изделие запечатано и можно ли носить его каждый день и в воде.</li>
         <li>Посмотрите фотографии настоящих работ и почитайте отзывы других владельцев. Не спешите: хорошие мастера не торопят.</li>
       </ul>
-      <h3>Если вы не готовы</h3>
+      </div></details>
+      <details class="fold"><summary><h3>Если вы не готовы</h3></summary><div class="fold-body">
       <p>Это совершенно нормально. Прах может хранить кто-то другой — столько, сколько вам нужно. Многие ждут месяцами, прежде чем что-то сделать, а кто-то не делает никогда. Любовь не зависит от вещи.</p>
+      </div></details>
     </div>
   </div>
 </section>
@@ -1562,13 +1601,12 @@
       <p>К тому, что было потом, меня никто не подготовил: бумаги, вопросы, снять с неё ошейник, помочь положить её в мешок. Я плакала два дня не переставая. Я не могла работать. Я до сих пор не могу смотреть на её прах, он у мужа. Её ошейник лежит в нашей машине, и я не хочу его выбрасывать, потому что машина до сих пор пахнет ею.</p>
       <p>Я не знаю, правильно ли я поступила. Я жалею — и чувствую облегчение, одновременно. Когда я искала помощь, я почти ничего не нашла для таких, как я. Поэтому я сделала это — в память о ней.</p>
       <p class="signature">Написала Ксения, которая любила Моську.</p>
-      <div class="story-more">
-        <h3>Ещё о ней</h3>
+      <details class="story-more fold"><summary><h3>Ещё о ней</h3></summary><div class="fold-body">
         <p>Официально её звали Ветра, и только так называл её мой отец. А для всех нас она была Моськой с первого дня, когда мы взяли её трёхмесячным щенком.</p>
         <p>Первый раз я увидела её дома, рядом с её мамой. Она была самым спокойным щенком, но легко и доверчиво шла к новым людям — и так было всю её жизнь. Мы забрали её, как только ей сделали первые прививки, и жизнь уже никогда не была прежней. Моя дочь родилась, когда Моське было два года, и она не могла представить, каково это — когда у тебя нет собаки.</p>
         <p>Моська жила и с нами, и с моими родителями — стала для них той, о ком можно заботиться, когда все дети и внуки разъехались. Последние два года она жила у нас: маме одной стало тяжелее, а здоровье Моськи начало подводить. С котами Моська легко уживалась: дружила сначала с одним, потом со вторым котом у моих родителей, а потом и с нашими двумя. Особенно ей нравилось подъедать их еду — правда, один кот умудрялся подъедать её.</p>
         <p>Она очень любила гулять, а особенно ездить к морю и в лес. Ей нравилось ездить на машине в новые места, и, пока она была моложе, мы много путешествовали. Она сама запрыгивала в багажник и выпрыгивала из него, а в последние годы её приходилось заносить. Она любила прийти и лечь рядом, когда я работала из дома, — иногда вставала и требовала, чтобы её погладили. Она даже любила ветклинику: там всегда давали вкусняшки. И да, вкусняшки были для неё всем. Её еда — всегда. И попить воды в каждом кафе по дороге, даже если дома полная миска.</p>
-      </div>
+      </div></details>
       <div class="story-keepsake">
         <h3 style="margin-bottom: 4px">Памятная страница Моськи</h3>
         <p class="small muted">Вот чем в конце становятся ответы в разделе <a href="#remember">«Расскажите о своей собаке»</a>. Эта — моя, для неё.</p>
@@ -1622,6 +1660,7 @@
     <div id="sources">
       <h3>Источники и конфиденциальность</h3>
       <p>Шкала качества жизни — это шкала HHHHHMM доктора Элис Вильялобос (Dr Alice Villalobos).</p>
+      <details class="fold"><summary><h3 style="font-size: 17px">Исследования, на которых основаны цифры</h3></summary><div class="fold-body">
       <p>Цифры в 30-дневном пути взяты из этих исследований. Горе по питомцам до сих пор мало изучено, поэтому каждое из них описывает одну группу владельцев, а не всех:</p>
       <ul class="small sources-list">
         <li>Kimura, Kawabata &amp; Maezawa (2013), владельцы в первые дни после смерти питомца, Япония, <em>Journal of Veterinary Medical Science</em>.</li>
@@ -1636,6 +1675,7 @@
         <li>Hyland (2026), 975 взрослых в Великобритании, затяжное горе после смерти питомца, <em>PLOS ONE</em>.</li>
         <li>Wrobel &amp; Dye (2003), 174 взрослых после смерти питомца, <em>Omega</em>.</li>
       </ul>
+      </div></details>
       <p id="privacy">Здесь нет аккаунтов, рекламы и cookie. Посещения считаются анонимно с помощью GoatCounter (только страна, страница и сайт, с которого вы пришли); личные данные не собираются, и ничего из того, что вы пишете, туда не попадает. Фотографии остаются в вашем браузере. Если вы настроили PIN для своей собаки, то дни, ваши заметки о собаке и о себе, оценки, письма, чек-лист, отметки 30-дневного пути, ваши ответы в «Попробуйте», дата прощания и то, что вы написали в «Расскажите о своей собаке», также хранятся онлайн в Supabase — под зашифрованным ключом, созданным из клички, даты рождения и PIN; сами кличка, дата рождения и PIN никуда не отправляются, а записи не связаны ни с каким именем или email. Если вы зажигаете звезду, публично в поле звёзд видны только имя и даты, которые вы ввели. Шрифты загружаются из Google Fonts.</p>
     </div>
   </div>
@@ -2228,7 +2268,7 @@
     wrap.appendChild(range);
     wrap.appendChild(mean);
     if (it[3]) {
-      var note = el("aside", "from-me"); note.appendChild(el("span", "from-label", "От Ксении")); note.appendChild(el("p", null, it[3]));
+      var note = el("details", "from-me note-fold"); note.appendChild(el("summary", "from-label", "От Ксении")); note.appendChild(el("p", null, it[3]));
       wrap.appendChild(note);
     }
     scaleBox.appendChild(wrap);

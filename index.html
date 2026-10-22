@@ -426,6 +426,11 @@
   /* Notes from Ksenija, where they belong */
   .from-me { margin: 14px 0 4px; padding: 4px 0 4px 14px; border-left: 2px solid rgba(233,214,170,.55); }
   .from-me .from-label { display: block; font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #d9c79c; margin-bottom: 4px; }
+  .note-fold > summary { list-style: none; cursor: pointer; display: inline-block; margin-bottom: 0; }
+  .note-fold > summary::-webkit-details-marker { display: none; }
+  .note-fold > summary::after { content: "  +"; color: #d9c79c; }
+  .note-fold[open] > summary::after { content: "  \2212"; }
+  .note-fold[open] > summary { margin-bottom: 4px; }
   .from-me p { font-family: var(--font-quote); font-style: italic; font-size: 17px; line-height: 1.6; color: var(--text); margin: 0; }
   .check-group .from-me { margin: 0 0 4px 36px; }
   .scale-item .from-me { margin-top: 8px; }
@@ -610,6 +615,26 @@
   .foot nav a { color: var(--text); text-decoration: none; }
   .foot .disclaimer { flex-basis: 100%; max-width: 46em; }
 
+  /* Simpler sections: longer reading folds away under its heading */
+  .fold { border-top: 1px solid var(--line); }
+  .fold:last-child, .fold + :not(.fold) { border-bottom: 0; }
+  .fold > summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 16px 0; }
+  .fold > summary::-webkit-details-marker { display: none; }
+  .fold > summary h3 { margin: 0 !important; }
+  .fold > summary::after { content: "+"; color: var(--accent); font-size: 24px; line-height: 1; flex: none; }
+  .fold[open] > summary::after { content: "\2212"; }
+  .fold > summary:hover h3 { color: var(--accent-hover); }
+  .fold-body { padding: 0 0 18px; }
+  .fold-body > :first-child { margin-top: 0; }
+  .side-more > summary, .card-fold > summary { list-style: none; cursor: pointer; color: var(--accent); font-weight: 600; }
+  .side-more > summary::-webkit-details-marker, .card-fold > summary::-webkit-details-marker { display: none; }
+  .side-more > summary::after { content: " \2193"; }
+  .side-more[open] > summary { display: none; }
+  .side-more > :not(summary) { margin-top: 18px; }
+  .card-fold > summary { display: flex; justify-content: space-between; align-items: center; color: var(--text); }
+  .card-fold > summary::after { content: "+"; color: var(--accent); font-size: 22px; line-height: 1; }
+  .card-fold[open] > summary::after { content: "\2212"; }
+  .card-fold[open] > summary { margin-bottom: 12px; }
   /* The first screen: three simple choices */
   .choose-label { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 -8px; }
   .choices { display: flex; flex-direction: column; gap: 10px; max-width: 380px; }
@@ -800,10 +825,12 @@
       <h2>Keep track of the days</h2>
       <p>There is rarely one obvious moment. One entry a day makes the pattern visible and gives you something clear to bring to your vet. It also leaves a record you may be grateful for later, when your mind starts asking "was it too soon?"</p>
       <aside class="from-me"><span class="from-label">From Ksenija</span><p>Her decline was slow, and then it wasn&#39;t. Writing the days down helps you see the turn when it comes.</p></aside>
+      <p class="moment" id="knowsLine"></p>
+      <details class="side-more"><summary>Read more</summary>
       <aside class="from-me"><span class="from-label">From Ksenija</span><p>I booked the appointment twice and cancelled it twice. If you keep going back and forth, you are not failing them. You are trying to be sure.</p></aside>
       <p>Many vets share a phrase that helps people: <em>"Better a week too early than a day too late."</em> It does not mean there is a perfect day. It means that when the choice is between some good time lost and some suffering endured, most vets would rather lose the good time.</p>
-      <p class="moment" id="knowsLine"></p>
       <p class="small">Your entries are saved on this device, and online under your dog's nickname, date of birth and PIN, so you can open them anywhere. Photos never leave this device.</p>
+      </details>
     </div>
     <div class="main stack">
       <div class="card stack no-print dog-setup" id="setup-tracker" data-setup="tracker" style="gap: 16px">
@@ -846,15 +873,15 @@
         <span class="status s-msg" id="setupMsg-tracker" aria-live="polite"></span>
       </div>
 
-      <div class="card stack" style="gap: 10px">
-        <span class="card-title">Small things that helped Mosjka</span>
+      <details class="card stack card-fold" style="gap: 10px">
+        <summary class="card-title">Small things that helped Mosjka</summary>
         <ul class="small" style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px">
           <li>Her paw pads wore away, so she walked in little boots.</li>
           <li>A harness with a handle helped me lift her when she couldn't get up.</li>
           <li>Rugs on smooth floors, so she wouldn't slip.</li>
         </ul>
         <p class="small muted" style="margin: 0">From Ksenija</p>
-      </div>
+      </details>
       <div class="card stack age-card" id="ageCard" hidden style="gap: 12px">
         <span class="card-title" id="ageTitle"></span>
         <p id="ageText"></p>
@@ -906,7 +933,7 @@
           <div>
             <span class="card-title" style="font-size: 17px">And you?</span>
             <p class="small muted" style="margin-top: 4px">Caring for a dog at the end of their life is exhausting. How you are holding up is part of the picture too.</p>
-            <aside class="from-me"><span class="from-label">From Ksenija</span><p>In the end we walked four times a day, the first at five in the morning. Being exhausted didn&#39;t mean I loved her less. It won&#39;t mean that for you either.</p></aside>
+            <details class="from-me note-fold"><summary class="from-label">From Ksenija</summary><p>In the end we walked four times a day, the first at five in the morning. Being exhausted didn&#39;t mean I loved her less. It won&#39;t mean that for you either.</p></details>
           </div>
           <div class="moods" role="group" aria-label="How are you holding up today?" id="meMoods"></div>
           <div><label for="meNote" class="field-label">A note about you, if you like: sleep, tiredness, worry, guilt, a good moment together.</label><textarea id="meNote" maxlength="2000" style="min-height: 70px"></textarea></div>
@@ -944,8 +971,8 @@
         </details>
       </div>
 
-      <div class="card stack no-print" style="gap: 14px">
-        <span class="card-title">Keep your records safe</span>
+      <details class="card stack no-print card-fold" style="gap: 14px">
+        <summary class="card-title">Keep your records safe</summary>
         <p class="small muted">Records can be lost if you clear your browser data, use a private window or change phone. Download a backup now and then, and restore it on any device to carry on.</p>
         <div class="row">
           <button type="button" class="btn" id="backupBtn">Download a backup</button>
@@ -961,7 +988,7 @@
           <p class="small">Clear the days, scores, letters, and your dog's name and photo from this device? This can't be undone. If you might want them one day, a backup keeps them safe.</p>
           <div class="row"><button type="button" class="btn danger" id="clearYes">Yes, clear it</button><button type="button" class="btn" id="clearNo">No, keep everything</button></div>
         </div>
-      </div>
+      </details>
 
       <div class="card stack no-print stage-next" id="decidedCard" style="gap: 10px">
         <span class="card-title">When you've decided</span>
@@ -995,7 +1022,7 @@
         <p class="small muted"><a href="#story">From the story behind this guide</a></p>
       </div>
 
-      <h3>What happens during the appointment</h3>
+      <details class="fold"><summary><h3>What happens during the appointment</h3></summary><div class="fold-body">
       <ol>
         <li><strong>Sedation.</strong> Most vets first give a sedative injection. Your dog becomes deeply relaxed and sleepy over a few minutes. This is a good time to hold them and talk to them.</li>
         <li><strong>The final injection.</strong> The vet gives an overdose of anaesthetic, usually into a vein. Your dog loses consciousness within seconds, then their heart stops, usually within a minute or two. They are not aware of this.</li>
@@ -1003,11 +1030,14 @@
         <li><strong>Time afterwards.</strong> You can usually stay with them for as long as you need. You don't have to rush.</li>
       </ol>
 
-      <h3>Should I be in the room?</h3>
+      </div></details>
+      <details class="fold"><summary><h3>Should I be in the room?</h3></summary><div class="fold-body">
       <p>There is no wrong answer. Many people find that being there, with their hand on their dog and their voice the last thing they hear, is something they are later grateful for. Others know they could not bear it, or that their distress would frighten their dog. Both are acts of love. If you can't be present for the final injection, you might stay for the sedation and say goodbye while they are falling asleep.</p>
 
-      <h3>Children and other pets</h3>
+      </div></details>
+      <details class="fold"><summary><h3>Children and other pets</h3></summary><div class="fold-body">
       <p>With children, use clear words like "died" rather than "went to sleep", which can make sleep frightening. Let them say goodbye in their own way, such as a drawing or a letter. Other dogs and cats in the home sometimes benefit from seeing or smelling their companion's body afterwards; it seems to help some of them understand the absence.</p>
+      </div></details>
     </div>
   </div>
 </section>
@@ -1028,10 +1058,10 @@
           <fieldset class="check-group"><legend>Before the day</legend>
             <label class="check"><input type="checkbox" data-check="where"><span>Decide where it will happen. Ask your vet, or a vet who works with a pet crematorium, whether they can come to your home.</span></label>
             <label class="check"><input type="checkbox" data-check="papers"><span>Ask the vet to prepare the paperwork in advance, and have your dog's passport ready, so the last hour is only for them.</span></label>
-            <aside class="from-me"><span class="from-label">From Ksenija</span><p>The papers came right after, while she was still beside me. I wish I had done them the day before, so those minutes were only hers.</p></aside>
+            <details class="from-me note-fold"><summary class="from-label">From Ksenija</summary><p>The papers came right after, while she was still beside me. I wish I had done them the day before, so those minutes were only hers.</p></details>
             <label class="check"><input type="checkbox" data-check="aftercare"><span>Choose what happens afterwards: individual or communal cremation, or burial. You can decide later, but it helps to know.</span></label>
             <label class="check"><input type="checkbox" data-check="crematorium"><span>Tell the crematorium in advance that you won't help to move or wrap your dog.</span></label>
-            <aside class="from-me"><span class="from-label">From Ksenija</span><p>I had to help put her into the bag. Nobody told me I could say no. You can say no.</p></aside>
+            <details class="from-me note-fold"><summary class="from-label">From Ksenija</summary><p>I had to help put her into the bag. Nobody told me I could say no. You can say no.</p></details>
             <label class="check"><input type="checkbox" data-check="dayoff"><span>Take the next day off, or two. Cancel what you can.</span><em class="whisper">Grief needs room. Give it some.</em></label>
             <label class="check"><input type="checkbox" data-check="someone"><span>Ask someone to be with you: to open doors, talk to the vet and the crematorium, and stay with you afterwards.</span><em class="whisper">You don&#39;t have to hold everything yourself.</em></label>
             <label class="check"><input type="checkbox" data-check="family"><span>Talk with your family about who will be in the room. Children can say goodbye in their own way, before or after.</span></label>
@@ -1046,30 +1076,36 @@
           </fieldset>
           <fieldset class="check-group"><legend>Afterwards</legend>
             <label class="check"><input type="checkbox" data-check="noRush"><span>Leave the collar, the bowl and the bed for now. There is no hurry to decide what to keep.</span><em class="whisper">Their things can wait. So can you.</em></label>
-            <aside class="from-me"><span class="from-label">From Ksenija</span><p>Mosjka&#39;s collar is still in our car. I can&#39;t throw it away. The car still smells of her.</p></aside>
+            <details class="from-me note-fold"><summary class="from-label">From Ksenija</summary><p>Mosjka&#39;s collar is still in our car. I can&#39;t throw it away. The car still smells of her.</p></details>
             <label class="check"><input type="checkbox" data-check="eat"><span>Try to eat something and drink a little water, even if you don't feel like it.</span><em class="whisper">Even a little. Your body is grieving too.</em></label>
             <label class="check"><input type="checkbox" data-check="tonight"><span>Make sure you are not alone tonight, or that you can call someone.</span><em class="whisper">The first nights are the hardest.</em></label>
-            <aside class="from-me"><span class="from-label">From Ksenija</span><p>Be ready for the messages that come afterwards. A standard text from the crematorium saying the ashes can be collected. An email from the state register saying a euthanasia has been recorded for your dog. They are automatic, and they hurt. If you can, ask someone else to read them first, or to collect the ashes for you.</p></aside>
+            <details class="from-me note-fold"><summary class="from-label">From Ksenija</summary><p>Be ready for the messages that come afterwards. A standard text from the crematorium saying the ashes can be collected. An email from the state register saying a euthanasia has been recorded for your dog. They are automatic, and they hurt. If you can, ask someone else to read them first, or to collect the ashes for you.</p></details>
           </fieldset>
         <p class="moment fade-in" id="checkDone" hidden><svg class="tiny-star" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><use href="#starShape" fill="#b4c0dd" stroke="#b4c0dd" stroke-width="2.2" stroke-linejoin="round"/></svg><span>You've thought of everything you could. Now just be with them.</span></p>
         <div class="row"><button type="button" class="btn quiet" id="checkReset">Clear the ticks</button></div>
       </div>
 
       <div class="prose day-steps">
-        <h3 style="margin-top: 0">The morning</h3>
+        <details class="fold"><summary><h3>The morning</h3></summary><div class="fold-body">
         <p>You may wake up hoping you've changed your mind, or feeling strangely calm. Both are normal. Keep the day as ordinary for them as you can: their usual walk if they can manage it, their food, their place in the sun.</p>
-        <h3>The last hours</h3>
+        </div></details>
+        <details class="fold"><summary><h3>The last hours</h3></summary><div class="fold-body">
         <p>Stay close. Lie beside them, stroke them, talk to them. If you want photos, take them now, but don't let the camera take the hours. It's fine if the time feels quiet and ordinary; that is what they knew with you.</p>
-        <h3>When the vet arrives</h3>
+        </div></details>
+        <details class="fold"><summary><h3>When the vet arrives</h3></summary><div class="fold-body">
         <p>You can ask the vet to explain each step before doing it, or to do it without explaining. You can ask for a few more minutes at any point. Usually there is first a sedative, so your dog falls deeply asleep in your arms, and only then the final injection.</p>
-        <h3>The moment</h3>
+        </div></details>
+        <details class="fold"><summary><h3>The moment</h3></summary><div class="fold-body">
         <p>Hold them, and let your voice be the last thing they hear. Their eyes may stay open, and there may be a last breath or a twitch after the heart has stopped. These are reflexes; your dog is no longer aware. Take as long as you need afterwards. You don't have to leave the room or let them go straight away.</p>
         <aside class="from-me"><span class="from-label">From Ksenija</span><p>When I came in, she trembled with joy to see me. I sat beside her and stroked her the whole time. I held her head when it grew heavy. She was still warm when the vet said it was over.</p></aside>
-        <h3>The first evening</h3>
+        </div></details>
+        <details class="fold"><summary><h3>The first evening</h3></summary><div class="fold-body">
         <p>The house will feel very quiet. Many people cry for hours, or feel numb, or both. There's nothing you need to do with it. Eat a little, drink water, and have someone with you or within reach. If you want to, <a href="#letter">write to them</a>.</p>
         <aside class="from-me"><span class="from-label">From Ksenija</span><p>I cried for two days without stopping. I couldn&#39;t work. If that is you right now, it isn&#39;t weakness. It is how much they mattered.</p></aside>
-        <h3>The next days</h3>
+        </div></details>
+        <details class="fold"><summary><h3>The next days</h3></summary><div class="fold-body">
         <p>Expect waves rather than a straight line. The hardest moments are often the small routines: the time of the walk, the bowl, the door. <a href="#after">The thoughts that won't stop</a> are there for when the guilt comes.</p>
+        </div></details>
       </div>
       <div class="card stack no-print stage-next" id="saidCard" style="gap: 10px">
         <span class="card-title">After the appointment</span>
@@ -1409,7 +1445,7 @@ Ksenija, who loved Mosjka</p>
       <p class="voice">"I still can't look at her ashes; my husband keeps them. I want to make a brooch from her medallion. I'm afraid I'll cry when I look at it, but I will make it."</p>
     </div>
     <div class="main prose">
-      <h3 style="margin-top: 0">Ideas</h3>
+      <details class="fold" open><summary><h3>Ideas</h3></summary><div class="fold-body">
       <ul>
         <li><strong>Their own things.</strong> A collar, a tag or a medallion can become a brooch, a bracelet or a keyring. Some people keep the collar just as it is, in the car or by the door.</li>
         <li><strong>Fur.</strong> A little fur, clipped before or kept from their brush, can be sealed in a locket, a ring or a small glass or resin piece.</li>
@@ -1418,15 +1454,18 @@ Ksenija, who loved Mosjka</p>
         <li><strong>Photos and sounds.</strong> A small printed book of photos, or a recording of their bark or breathing, can mean more than you expect.</li>
         <li><strong>Something living.</strong> A tree or a plant in the garden, sometimes with a little of their ashes.</li>
       </ul>
-      <h3>If you choose jewellery</h3>
+      </div></details>
+      <details class="fold"><summary><h3>If you choose jewellery</h3></summary><div class="fold-body">
       <ul>
         <li>If you want their own ashes back, ask the crematorium for an <strong>individual</strong> cremation.</li>
         <li>Ask the maker how much ash or fur they need, and whether they return what they don't use.</li>
         <li>Ask how it is sealed, and whether it is safe to wear every day and in water.</li>
         <li>Look at photos of their real work and read reviews from other owners. Take your time; good makers don't rush you.</li>
       </ul>
-      <h3>If you're not ready</h3>
+      </div></details>
+      <details class="fold"><summary><h3>If you're not ready</h3></summary><div class="fold-body">
       <p>That's completely fine. Someone else can keep the ashes for you, for as long as you need. Many people wait months before making anything, and some never do. The love doesn't depend on an object.</p>
+      </div></details>
     </div>
   </div>
 </section>
@@ -1562,13 +1601,12 @@ Ksenija, who loved Mosjka</p>
       <p>What came after, nobody had prepared me for: the papers, the questions, taking the collar off, helping to put her into the bag. I cried for two days without stopping. I couldn't work. I still can't look at her ashes; my husband keeps them. Her collar is in our car, and I don't want to throw it away, because the car still smells of her.</p>
       <p>I don't know if I did the right thing. I regret it, and I feel relief, both at the same time. When I went looking for help, I found almost nothing for people like me. So I made this, in her memory.</p>
       <p class="signature">Written by Ksenija, who loved Mosjka.</p>
-      <div class="story-more">
-        <h3>More about her</h3>
+      <details class="story-more fold"><summary><h3>More about her</h3></summary><div class="fold-body">
         <p>Her official name was Vetra, and my father only ever called her that. To the rest of us she was Mosjka from the very first day, when we brought her home as a three-month-old puppy.</p>
         <p>The first time I saw her, she was at home with her mother. She was the calmest puppy, but she went to new people easily and trustingly, and she stayed like that all her life. We took her as soon as she'd had her first vaccinations, and life was never the same again. My daughter was born when Mosjka was two, and she couldn't imagine what it's like not to have a dog.</p>
         <p>Mosjka lived with us and with my parents, and became someone for them to care for when all the children and grandchildren had moved away. For her last two years she lived with us, because it had become harder for my mother on her own, and Mosjka's health had begun to fail. She got on easily with cats: she was friends with one cat and then another at my parents', and later with our two. She especially liked eating their food, though one of the cats managed to eat hers.</p>
         <p>She loved walks, and above all trips to the sea and the forest. She loved riding in the car to new places, and when she was younger we travelled a lot. She could jump in and out of the boot by herself; in the last years we had to lift her. She liked to come and lie beside me when I worked from home, sometimes getting up to ask to be stroked. She even loved the vet's, because there were always treats there. And yes, treats were everything to her. Her food, always. And a drink of water at every caf&eacute; on the way, even with a full bowl at home.</p>
-      </div>
+      </div></details>
       <div class="story-keepsake">
         <h3 style="margin-bottom: 4px">Mosjka's keepsake</h3>
         <p class="small muted">This is what <a href="#remember">&ldquo;Tell me about them&rdquo;</a> becomes at the end. This one is mine, for her.</p>
@@ -1622,6 +1660,7 @@ Ksenija, who loved Mosjka</p>
     <div id="sources">
       <h3>Sources and privacy</h3>
       <p>The quality-of-life scale is Dr Alice Villalobos's HHHHHMM scale.</p>
+      <details class="fold"><summary><h3 style="font-size: 17px">The studies behind the figures</h3></summary><div class="fold-body">
       <p>The figures in the 30-day journey come from these studies. Pet grief is still little researched, so each describes one group of owners, not everyone:</p>
       <ul class="small sources-list">
         <li>Kimura, Kawabata &amp; Maezawa (2013), owners in the first days after their pet's death, Japan, <em>Journal of Veterinary Medical Science</em>.</li>
@@ -1636,6 +1675,7 @@ Ksenija, who loved Mosjka</p>
         <li>Hyland (2026), 975 UK adults, prolonged grief after the death of a pet, <em>PLOS ONE</em>.</li>
         <li>Wrobel &amp; Dye (2003), 174 adults after a pet's death, <em>Omega</em>.</li>
       </ul>
+      </div></details>
       <p id="privacy">There are no accounts, no ads and no cookies. Visits are counted anonymously with GoatCounter (country, page and referring site only); no personal data is collected, and nothing you write is ever part of it. Photos stay in your browser. If you set up a PIN for your dog, the days, your notes about your dog and about yourself, scores, letters, checklist, 30-day check-ins, your “Try this” answers, the goodbye date and what you wrote in “Tell me about them” are also stored online with Supabase, under a scrambled key made from the nickname, date of birth and PIN; the nickname, birthday and PIN themselves are never sent, and the entries are not linked to any name or email. If you light a star, only the name and dates you enter are shown publicly, in the field of stars. Fonts are loaded from Google Fonts.</p>
     </div>
   </div>
@@ -2227,7 +2267,7 @@ Ksenija, who loved Mosjka</p>
     wrap.appendChild(range);
     wrap.appendChild(mean);
     if (it[3]) {
-      var note = el("aside", "from-me"); note.appendChild(el("span", "from-label", "From Ksenija")); note.appendChild(el("p", null, it[3]));
+      var note = el("details", "from-me note-fold"); note.appendChild(el("summary", "from-label", "From Ksenija")); note.appendChild(el("p", null, it[3]));
       wrap.appendChild(note);
     }
     scaleBox.appendChild(wrap);
