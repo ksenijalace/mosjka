@@ -3748,6 +3748,7 @@
     moonTitle: "Луна в ночь прощания",
     moonName: function (i) { return ["Новолуние", "Растущий серп", "Первая четверть", "Растущая луна", "Полнолуние", "Убывающая луна", "Последняя четверть", "Убывающий серп"][i]; },
     sheetAlt: function (n) { return "Памятная страница формата A4: " + n; },
+    conName: { resting: "Отдых", curled: "Клубочком", sitting: "Рядом с вами", running: "Свободный бег", play: "Зовёт играть" },
     myDog: "Моя собака", photoOf: "Фото:", born: "Дата рождения:", goodbye: "Прощание:",
     years: function (y) { return y + " " + ruPlural(y, "год", "года", "лет") + " любви"; },
     empty: "Ответьте на один-два вопроса, и ответы появятся здесь.",
@@ -3943,6 +3944,35 @@
     var svg = dogSilhouette(dog, 420).replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ').replace(/<svg([^>]*)>/, "<svg$1><defs>" + document.querySelector("svg defs").innerHTML + "</defs>");
     return ksLoad("data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg));
   }
+  // Five constellation shapes, and the one that suits a dog best: from their size and breed, and from the words
+  // their person used (walks, the forest, a ball… or the sofa, sleeping, lying close).
+  var KS_CONST = {
+    resting: { w: 330, h: 150, stars: [[0, .74], [.1, .48], [.17, .16], [.28, .5], [.48, .34], [.7, .38], [.86, .58], [1, .26], [.8, .95], [.12, .97]],
+      lines: [[0, 1], [1, 2], [2, 3], [1, 3], [3, 4], [4, 5], [5, 6], [6, 7], [6, 8], [0, 9]], bright: [0, 2, 5, 7] },
+    curled: { w: 250, h: 160, stars: [[.18, .62], [.05, .38], [.22, .12], [.5, .02], [.8, .14], [.97, .42], [.84, .78], [.55, .94], [.3, .86], [.34, .5]],
+      lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0], [0, 9]], bright: [0, 3, 5, 7] },
+    sitting: { w: 210, h: 200, stars: [[.42, 0], [.5, .16], [.86, .22], [.44, .34], [.5, .62], [.56, 1], [.2, .46], [.08, .8], [.3, 1], [0, .98]],
+      lines: [[0, 1], [1, 2], [1, 3], [3, 4], [4, 5], [3, 6], [6, 7], [7, 8], [7, 9]], bright: [0, 2, 4, 7] },
+    running: { w: 360, h: 150, stars: [[0, .36], [.1, .2], [.16, .02], [.24, .32], [.46, .3], [.68, .28], [.94, .04], [.8, .42], [.02, .8], [.32, .86], [1, .74], [.64, .92]],
+      lines: [[0, 1], [1, 2], [1, 3], [3, 4], [4, 5], [5, 6], [5, 7], [3, 8], [3, 9], [7, 10], [7, 11]], bright: [0, 2, 5, 6, 10] },
+    play: { w: 330, h: 160, stars: [[0, .7], [.1, .54], [.17, .34], [.26, .62], [.5, .44], [.78, .22], [.98, 0], [.06, .96], [.32, .96], [.84, .96]],
+      lines: [[0, 1], [1, 2], [1, 3], [3, 4], [4, 5], [5, 6], [3, 7], [3, 8], [5, 9]], bright: [0, 2, 5, 6] }
+  };
+  var KS_ACTIVE = /walk|run|play|ball|swim|forest|wood|\bsea\b|seaside|beach|hike|fetch|stick|jump|\bcars?\b|travel|trip|snow|park|chase|digg|explor|гуля|прогул|бег|игр|мяч|плав|лес|мор|пляж|поход|палк|прыг|машин|поездк|путешеств|снег|парк|догон|рыть|роя|playful|curious|brave|игрив|любопыт|смел/g;
+  var KS_CALM = /sleep|asleep|\bnaps?\b|sofa|couch|\bbed\b|\blie\b|lying|\blay\b|cuddl|sun|blanket|calm|lazy|quiet|beside|stroke|lap|gentle|patient|shy|сп[аяи]|сон|дива|кроват|лежа|леж|обним|солнц|плед|спокой|лен|тих|рядом|глад|колен|нежн|терпел|застенч|ласков/g;
+  var KS_ATHLETES = /collie|husky|malinois|malamute|shepherd|pointer|vizsla|weimaraner|whippet|greyhound|saluki|borzoi|jack russell|parson|retriever|labrador|springer|spaniel|setter|kelpie|cattle|terrier|dalmatian|ridgeback|wolfdog|doodle|poodle|lagotto|boxer/;
+  var KS_SLEEPERS = /bulldog|pug|shih tzu|basset|mastiff|bernard|newfoundland|great dane|leonberger|bernese|chow|pekingese|cavalier|maltese|bichon|lhasa|japanese chin|shar pei|dogue|bullmastiff|cane corso|boerboel/;
+  function ksConstellation(k) {
+    var dog = k.dog || {}, a = k.answers || {}, b = breedOf(dog.breed), en = b ? b[1].toLowerCase() : "";
+    var words = ["favourite", "place", "unique", "story", "character", "gave"].map(function (key) { return a[key] || ""; }).join(" ").toLowerCase();
+    var score = (words.match(KS_ACTIVE) || []).length - (words.match(KS_CALM) || []).length;
+    if (KS_ATHLETES.test(en)) score += 1;
+    if (KS_SLEEPERS.test(en)) score -= 1;
+    if (dog.size === "g") score -= 1;
+    var key = score >= 2 ? (/ball|play|fetch|toy|мяч|игр|игрушк/.test(words) ? "play" : "running")
+      : score <= -2 ? (dog.size === "s" ? "curled" : "resting") : "sitting";
+    var c = KS_CONST[key]; c.key = key; return c;
+  }
   // Draw the page at 150 dpi × scale (scale 2 gives a 300 dpi print).
   function drawA4(k, theme, scale, pic) {
     var W = 1240, H = 1754, pad = 112, C = KS_THEMES[theme] || KS_THEMES.night;
@@ -4001,19 +4031,19 @@
     x.globalAlpha = 1;
     if (C.band) { var fade = x.createLinearGradient(0, bandH - 60, 0, bandH); fade.addColorStop(0, "rgba(0,0,0,0)"); fade.addColorStop(1, "rgba(0,0,0,.12)"); x.fillStyle = fade; x.fillRect(0, bandH - 60, W, 60); }
 
-    // Their own constellation: a resting dog drawn in stars, a little different for every name.
-    var DOGSTARS = [[0, .74], [.1, .48], [.17, .16], [.28, .5], [.48, .34], [.7, .38], [.86, .58], [1, .26], [.8, .95], [.12, .97]];
-    var DOGLINES = [[0, 1], [1, 2], [2, 3], [1, 3], [3, 4], [4, 5], [5, 6], [6, 7], [6, 8], [0, 9]], BRIGHT = [1, 0, 1, 0, 0, 1, 0, 1, 0, 0];
-    var cw = 330, chh = 150, cx0 = W - pad - cw + 6, cy0 = 66;
-    var cs = DOGSTARS.map(function (p, i) { return [cx0 + p[0] * cw + (rnd() - .5) * 16, cy0 + p[1] * chh + (rnd() - .5) * 12, BRIGHT[i] ? 5.4 + rnd() * 1.4 : 2.8 + rnd() * 1.4]; });
-    x.strokeStyle = "rgba(205,214,238,.3)"; x.lineWidth = 1.1; x.lineCap = "round";
-    DOGLINES.forEach(function (l) {
+    // Their own constellation, in the shape that suits them best (see ksConstellation), a little different for every name.
+    var CON = ksConstellation(k), cw = CON.w, chh = CON.h, cx0 = W - pad - cw + 6, cy0 = 60 + (150 - chh) / 2 + (CON.h > 150 ? 20 : 0);
+    var cs = CON.stars.map(function (p, i) { return [cx0 + p[0] * cw + (rnd() - .5) * 14, cy0 + p[1] * chh + (rnd() - .5) * 10, CON.bright.indexOf(i) >= 0 ? 5.4 + rnd() * 1.4 : 2.8 + rnd() * 1.4]; });
+    x.strokeStyle = "rgba(205,214,238,.32)"; x.lineWidth = 1.1; x.lineCap = "round";
+    CON.lines.forEach(function (l) {
       var a = cs[l[0]], b = cs[l[1]], dx = b[0] - a[0], dy = b[1] - a[1], d = Math.sqrt(dx * dx + dy * dy) || 1, ga = a[2] * 1.9 + 5, gb2 = b[2] * 1.9 + 5;
       x.beginPath(); x.moveTo(a[0] + dx / d * ga, a[1] + dy / d * ga); x.lineTo(b[0] - dx / d * gb2, b[1] - dy / d * gb2); x.stroke();
     });
     cs.forEach(function (p) { sparkle(p[0], p[1], p[2] * 1.9, "#f4f6fd", "rgba(200,212,240,.3)"); });
+    var labY = Math.max.apply(null, cs.map(function (p) { return p[1]; })) + 44;
     x.font = "bold 13px " + sans; x.fillStyle = "rgba(220,226,242,.62)";
-    spaced(KS.constellation(k.name).toUpperCase(), cx0 + cw / 2, cy0 + chh + 52, 3);
+    spaced(KS.constellation(k.name).toUpperCase(), cx0 + cw / 2, labY, 3);
+    x.font = "italic 17px " + serif; x.fillStyle = "rgba(220,226,242,.55)"; x.fillText(KS.conName[CON.key], cx0 + cw / 2, labY + 26);
     sparkle(W / 2, 70, 14, "#dfe5f6", "rgba(200,212,240,.4)");
 
     // ---- The portrait, sitting on the edge of the sky ----
@@ -4036,7 +4066,7 @@
     x.strokeStyle = "rgba(200,210,236,.18)"; x.lineWidth = 1; x.beginPath(); x.arc(W / 2, py, pr + 14, 0, Math.PI * 2); x.stroke();
 
     // ---- The words, made to fit the page: smaller type before anything is left out ----
-    var top0 = py + pr + 20, limit = H - 236;
+    var top0 = py + pr + 20, limit = H - 262;
     function body(f, draw) {
       var y = top0;
       function T(color, font, s, yy) { if (draw) { x.fillStyle = color; x.font = font; x.fillText(s, W / 2, yy); } }
@@ -4115,28 +4145,30 @@
     c.fit = { f: Math.round(f * 100) / 100, trimmed: Object.keys(ans).filter(function (key) { return ans[key] !== (k.answers[key] || "").replace(/\s+/g, " ").trim(); }) };
 
     // ---- The foot of the page: the moon on the night of the goodbye, and paw prints walking on ----
-    var by = H - 170;
-    x.globalAlpha = .5; x.fillStyle = C.line; x.fillRect(pad, by - 46, W - pad * 2, 1); x.globalAlpha = 1;
+    var by = H - 178;
+    x.globalAlpha = .5; x.fillStyle = C.line; x.fillRect(pad, by - 70, W - pad * 2, 1); x.globalAlpha = 1;
     if (k.goodbye) {
-      var ph2 = moonPhase(k.goodbye), mr = 30, mx = pad + mr, my = by + 6, kk = Math.cos(2 * Math.PI * ph2);
+      var ph2 = moonPhase(k.goodbye), mr = 48, mx = pad + mr, my = by + 2, kk = Math.cos(2 * Math.PI * ph2);
+      var mg = x.createRadialGradient(mx, my, mr * .8, mx, my, mr * 2.1); mg.addColorStop(0, "rgba(220,228,248,.22)"); mg.addColorStop(1, "rgba(220,228,248,0)"); x.fillStyle = mg; x.beginPath(); x.arc(mx, my, mr * 2.1, 0, Math.PI * 2); x.fill();
       x.fillStyle = C.moonDark; x.beginPath(); x.arc(mx, my, mr, 0, Math.PI * 2); x.fill();
       x.fillStyle = C.moonLit; x.beginPath();
       if (ph2 < .5) { x.arc(mx, my, mr, -Math.PI / 2, Math.PI / 2, false); x.ellipse(mx, my, Math.abs(kk) * mr, mr, 0, Math.PI / 2, -Math.PI / 2, kk > 0); }
       else { x.arc(mx, my, mr, Math.PI / 2, -Math.PI / 2, false); x.ellipse(mx, my, Math.abs(kk) * mr, mr, 0, -Math.PI / 2, Math.PI / 2, kk > 0); }
       x.fill();
-      x.textAlign = "left"; x.fillStyle = C.muted; x.font = "bold 13px " + sans; spaced(KS.moonTitle.toUpperCase(), mx + mr + 22, my - 6, 3, "left");
-      x.textAlign = "left"; x.fillStyle = C.body; x.font = "italic 20px " + serif; x.fillText(KS.moonName(Math.floor(ph2 * 8 + .5) % 8) + ", " + longDate(k.goodbye), mx + mr + 22, my + 22);
+      x.textAlign = "left"; x.fillStyle = C.muted; x.font = "bold 14px " + sans; spaced(KS.moonTitle.toUpperCase(), mx + mr + 26, my - 8, 3, "left");
+      x.textAlign = "left"; x.fillStyle = C.body; x.font = "italic 25px " + serif; x.fillText(KS.moonName(Math.floor(ph2 * 8 + .5) % 8), mx + mr + 26, my + 24);
+      x.font = "20px " + serif; x.fillStyle = C.muted; x.fillText(longDate(k.goodbye), mx + mr + 26, my + 52);
       x.textAlign = "center";
     }
     var toes = [[5.1, 10.4, 1.9, 2.4, -22], [9.2, 6, 2, 2.6, -8], [14.8, 6, 2, 2.6, 8], [18.9, 10.4, 1.9, 2.4, 22]];
     var padPath = new Path2D("M12 12.4c-2.7 0-5.7 3.3-5.7 5.8 0 1.8 1.4 2.7 2.9 2.7 1.1 0 1.9-.5 2.8-.5s1.7.5 2.8.5c1.5 0 2.9-.9 2.9-2.7 0-2.5-3-5.8-5.7-5.8z");
     for (var q = 0; q < 6; q++) {
-      x.save(); x.translate(W - pad - 330 + q * 50, by - 10 - q * 6 - (q % 2 ? 0 : 12)); x.rotate((q % 2 ? 14 : -2) * Math.PI / 180 + .5); x.scale(1.05, 1.05);
-      x.globalAlpha = .14 + q * .09; x.fillStyle = C.accent; x.fill(padPath);
+      x.save(); x.translate(W - pad - 440 + q * 66, by - 14 - q * 8 - (q % 2 ? 0 : 18)); x.rotate((q % 2 ? 14 : -2) * Math.PI / 180 + .5); x.scale(1.75, 1.75);
+      x.globalAlpha = .16 + q * .1; x.fillStyle = C.accent; x.fill(padPath);
       toes.forEach(function (t) { x.beginPath(); x.ellipse(t[0], t[1], t[2], t[3], t[4] * Math.PI / 180, 0, Math.PI * 2); x.fill(); });
       x.restore();
     }
-    x.globalAlpha = 1; sparkle(W - pad - 10, by - 50, 14, C.gold, "rgba(215,180,140,.35)");
+    x.globalAlpha = 1; sparkle(W - pad - 6, by - 76, 20, C.gold, "rgba(215,180,140,.4)");
     x.fillStyle = C.muted; x.font = "bold 13px " + sans; spaced(KS.foot.toUpperCase(), W / 2, H - 62, 4);
     return c;
   }
@@ -4191,7 +4223,7 @@
 
   // Mosjka's keepsake, as an example of what the questions become: under her story,
   // and opened on its own from "Tell me about them" or from her star.
-  var MOSJKA_K = { name: KS.mosjka.name, photo: KS.mosjka.photo, cutout: true, dob: "2011-03-22", goodbye: "2026-09-21", answers: KS.mosjka.answers, heads: KS.mosjka.heads };
+  var MOSJKA_K = { name: KS.mosjka.name, photo: KS.mosjka.photo, cutout: true, dog: { breed: "golden-retriever", size: "l" }, dob: "2011-03-22", goodbye: "2026-09-21", answers: KS.mosjka.answers, heads: KS.mosjka.heads };
   function isMosjkaStar(st) { return !!MOSJKA_K && st.born === MOSJKA_K.dob && st.died === MOSJKA_K.goodbye && /^(mosjka|моська)$/i.test((st.name || "").trim()); }
   renderKeepsakeInto(document.getElementById("mosjkaKeepsake"), MOSJKA_K);
   document.getElementById("mosjkaImage").addEventListener("click", function () { a4Save(MOSJKA_K, ksTheme, "mosjkaMsg"); });
