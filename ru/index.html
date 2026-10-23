@@ -565,17 +565,17 @@
   .trail-phase.now { fill: #e9d6aa; }
   .trail-phase.past { fill: rgba(217,224,242,.8); }
   .turn-muzzle { opacity: 0; }
-  .finale .turn-muzzle { animation: turnLook 3s ease-in-out .6s both; }
   @keyframes turnLook { 0% { opacity: 0; } 25%, 70% { opacity: 1; } 100% { opacity: 0; } }
-  .finale-dog { animation: goAhead 2.4s ease-in 3.4s both; }
+  .finale-dog { animation: goAhead 2.6s ease-in-out 1.2s both; }
   @keyframes goAhead { to { transform: translate(var(--fx), var(--fy)); opacity: 0; } }
-  .finale-paw { opacity: 0; animation: fadeIn .7s ease both; }
-  .finale-star { animation: starBright 1.8s ease 5.4s both; }
+  .finale-paw { opacity: 0; animation: pawIn .7s ease both; }
+  @keyframes pawIn { from { opacity: 0; } to { opacity: 1; } }
+  .finale-star { animation: starBright 1.8s ease 3.4s both; }
   @keyframes starBright { from { opacity: .45; transform: scale(.8); } to { opacity: 1; transform: none; } }
   .finale-star { transform-box: fill-box; transform-origin: center; }
   .finale-name { font: italic 15px var(--font-quote); fill: #f0e2be; }
-  .finale-late { animation: fadeIn 1.2s ease 6s both; }
-  .j-finale.finale-late { animation-delay: 6.6s; }
+  .finale-late { animation: fadeIn 1.2s ease 4s both; }
+  .j-finale.finale-late { animation-delay: 4.6s; }
   @media (prefers-reduced-motion: reduce) { .finale .turn-muzzle, .finale-dog, .finale-paw, .finale-star, .finale-late { animation: none; opacity: 1; } .finale-dog { opacity: 0; } }
   .trail-mark { font: italic 12px var(--font-quote); fill: rgba(196,206,234,.5); }
   .trail-mark.on { fill: rgba(217,224,242,.9); }
@@ -3174,7 +3174,8 @@
     }
     lastLit = latest;
     // Where you are: the next day to walk, with them beside you.
-    var allDone = !!st.days[30], H = at(walkT), hx = H.x, hy = H.y;
+    // The month is walked when day 30 is reached, checked in or simply opened.
+    var allDone = !!st.days[30] || (st.seen || 0) >= 30, H = at(walkT), hx = H.x, hy = H.y;
     var hereLabel = allDone ? "Вы прошли месяц" : "День " + walk;
     var W = (dog.breed || dog.size) ? backSilhouette(dog) : null;
     var companion = W
@@ -3199,7 +3200,7 @@
       var E = trailPrint(1, -24, 0, "paw");
       for (var b2 = 1; b2 <= 4; b2++) {
         var f = b2 / 5, bx = E.x + (starX - E.x) * f + (b2 % 2 ? -3 : 3), by = E.y + (starY + 8 - E.y) * f;
-        beyond += '<g class="dogpaw' + (play ? " finale-paw" : "") + '"' + (play ? ' style="animation-delay: ' + (3.6 + b2 * 0.45).toFixed(2) + 's"' : "") + ' fill="#b4c4ab" transform="translate(' + bx.toFixed(1) + ' ' + by.toFixed(1) + ') rotate(60) scale(' + (0.34 - b2 * 0.035).toFixed(3) + ') translate(-12 -12)"><use href="#pawToes"/><use href="#pawPad"/></g>';
+        beyond += '<g class="dogpaw' + (play ? " finale-paw" : "") + '"' + (play ? ' style="animation-delay: ' + (1.6 + b2 * 0.45).toFixed(2) + 's"' : "") + ' fill="#b4c4ab" transform="translate(' + bx.toFixed(1) + ' ' + by.toFixed(1) + ') rotate(60) scale(' + (0.34 - b2 * 0.035).toFixed(3) + ') translate(-12 -12)"><use href="#pawToes"/><use href="#pawPad"/></g>';
       }
       if (dogName) beyond += '<text class="finale-name' + (play ? " finale-late" : "") + '" x="' + (starX - 26).toFixed(1) + '" y="' + (starY + 5).toFixed(1) + '" text-anchor="end">' + dogName.replace(/[<&]/g, "") + '</text>';
     }
@@ -3227,6 +3228,8 @@
       link.textContent = (lit ? "Найти звезду среди других" : "Зажечь звезду") + (dogName ? " — " + dogName : "");
     }
     placeHereLabel(box, hx, hy, allDone);
+    // Bring the path into view, so the last steps are seen.
+    if (play) box.scrollIntoView({ block: "center", behavior: "smooth" });
     box.querySelectorAll(".trail-phase").forEach(function (t) { t.addEventListener("click", function () { jView = +t.dataset.go; renderJourney(); }); });
     box.querySelectorAll(".j-step").forEach(function (g) {
       function go() { jView = +g.dataset.day; renderJourney(); }
@@ -3333,7 +3336,7 @@
     if (jView == null) jView = here;
     jView = Math.min(Math.max(jView, 1), 30);
     // Opening a day further along counts as walking there, filled in or not.
-    if (jView > (st.seen || 0)) { st.seen = jView; store.set(KEYS.journey, st); scheduleSync(); here = hereDay(st); }
+    if (jView > (st.seen || 0)) { if (jView === 30 && !st.days[30]) finalePlay = true; st.seen = jView; store.set(KEYS.journey, st); scheduleSync(); here = hereDay(st); }
     var d = JOURNEY[jView - 1], entry = st.days[jView];
     document.getElementById("jCounter").textContent = "День " + jView + " из 30";
     document.getElementById("jTitle").textContent = d[0];
@@ -3438,7 +3441,7 @@
   document.getElementById("jSave").addEventListener("click", function () {
     if (!jMood) { flash("jMsg", "Когда будете готовы, выберите, как вы сегодня."); return; }
     var st = journeyState();
-    if (jView === 30 && !st.days[30]) finalePlay = true;
+    if (jView === 30 && !st.days[30] && (st.seen || 0) < 30) finalePlay = true;
     st.days[jView] = { mood: jMood, word: document.getElementById("jWord").value.trim(), date: today(), t: Date.now() };
     jDraft = null;
     st.reached = Math.max(st.reached, Math.min(jView + 1, 30));
