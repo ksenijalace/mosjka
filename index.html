@@ -3175,27 +3175,29 @@ Ksenija, who loved Mosjka</p>
     // Where you are: the next day to walk, with them beside you.
     // The month is walked when day 30 is reached, checked in or simply opened.
     var allDone = !!st.days[30] || (st.seen || 0) >= 30, H = at(walkT), hx = H.x, hy = H.y;
-    var hereLabel = allDone ? "You've walked a month" : "Day " + walk;
+    // Looking back at an earlier day, you and your dog stand there again; only on day 30 have they gone ahead.
+    var atEnd = allDone && walk >= 30;
+    var hereLabel = atEnd ? "You've walked a month" : "Day " + walk;
     var W = (dog.breed || dog.size) ? backSilhouette(dog) : null;
     var companion = W
       ? '<svg x="' + (hx - W.w - 8).toFixed(1) + '" y="' + (hy - W.h - 6).toFixed(1) + '" width="' + W.w + '" height="' + W.h + '" viewBox="' + W.vb + '" overflow="visible">' + W.svg + '</svg>'
       : '<circle cx="' + (hx - 16).toFixed(1) + '" cy="' + (hy - 10).toFixed(1) + '" r="4" fill="#c4cee8" opacity=".8"/>';
-    var play = allDone && finalePlay; finalePlay = false;
+    var play = atEnd && finalePlay; finalePlay = false;
     var end0 = trailAt(1), starX = end0.x + 18, starY = end0.y - 22, dogName = (dog.name || "").trim();
-    var hereG = allDone ? (play && W
+    var hereG = atEnd ? (play && W
       ? '<g class="finale"><g class="finale-dog" style="--fx: ' + (starX - hx + W.w / 2).toFixed(1) + 'px; --fy: ' + (starY - hy + W.h).toFixed(1) + 'px"><svg x="' + (hx - W.w - 8).toFixed(1) + '" y="' + (hy - W.h - 6).toFixed(1) + '" width="' + W.w + '" height="' + W.h + '" viewBox="' + W.vb + '" overflow="visible">' + W.svg + '</svg></g></g>'
       : "") : '<g class="j-step here' + (!st.days[walk] ? " current" : "") + '" data-day="' + walk + '" role="button" tabindex="0" aria-label="' + hereLabel + '">' +
       '<ellipse class="glow" cx="' + hx.toFixed(1) + '" cy="' + hy.toFixed(1) + '" rx="34" ry="22"/>' +
       '<ellipse class="hit" cx="' + hx.toFixed(1) + '" cy="' + (hy - 10).toFixed(1) + '" rx="40" ry="22"/>' +
-      (allDone ? "" : '<circle class="here-dot" cx="' + hx.toFixed(1) + '" cy="' + hy.toFixed(1) + '" r="4.5"/>') +
-      companion + (allDone
+      (atEnd ? "" : '<circle class="here-dot" cx="' + hx.toFixed(1) + '" cy="' + hy.toFixed(1) + '" r="4.5"/>') +
+      companion + (atEnd
         ? '<text class="trail-here" x="24" y="104">' + hereLabel + '</text></g>'
         : hx > 190
         ? '<text class="trail-here" x="' + (hx - 14).toFixed(1) + '" y="' + (hy + 22).toFixed(1) + '" text-anchor="end">' + hereLabel + '</text></g>'
         : '<text class="trail-here" x="' + (hx + 12).toFixed(1) + '" y="' + (hy - 8).toFixed(1) + '">' + hereLabel + '</text></g>');
     // When the month is walked: their prints go on past the end of the path, over the horizon, to the star.
     var beyond = "";
-    if (allDone) {
+    if (atEnd) {
       var E = trailPrint(1, -24, 0, "paw");
       for (var b2 = 1; b2 <= 4; b2++) {
         var f = b2 / 5, bx = E.x + (starX - E.x) * f + (b2 % 2 ? -3 : 3), by = E.y + (starY + 8 - E.y) * f;
@@ -3217,16 +3219,16 @@ Ksenija, who loved Mosjka</p>
       sky + (allDone ? "" : ahead) + marks + parts.reverse().join("") + beyond + hereG + '</svg>';
     // The words that go with it.
     var fin = document.getElementById("jFinale");
-    fin.hidden = !allDone;
+    fin.hidden = !atEnd;
     fin.classList.toggle("finale-late", play);
-    if (allDone) {
+    if (atEnd) {
       var nm = dogName || "They";
       document.getElementById("jFinaleText").innerHTML = STAR_SVG;
       document.getElementById("jFinaleText").appendChild(el("span", null, nm + " went on a little ahead. You walked the hardest month carrying them with you. Their star stays here."));
       var lit = !!dog.starId, link = document.getElementById("jFinaleStar");
       link.textContent = lit ? "See " + (dogName ? possessive(dogName) : "their") + " star among the others" : "Light " + (dogName ? possessive(dogName) : "their") + " star";
     }
-    placeHereLabel(box, hx, hy, allDone);
+    placeHereLabel(box, hx, hy, atEnd);
     // Bring the path into view, so the last steps are seen.
     if (play) box.scrollIntoView({ block: "center", behavior: "smooth" });
     box.querySelectorAll(".trail-phase").forEach(function (t) { t.addEventListener("click", function () { jView = +t.dataset.go; renderJourney(); }); });
