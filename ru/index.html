@@ -557,6 +557,8 @@
   .j-step .glow { fill: url(#stepGlow); opacity: 0; }
   .j-phase { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
   .j-expect { border-left: 2px solid var(--line-strong); padding: 2px 0 2px 14px; }
+  .j-expect.note-fold > summary::after { color: var(--accent); }
+  .j-expect.note-fold[open] > summary { margin-bottom: 4px; }
   .j-expect p { font-family: var(--font-quote); font-size: 17px; line-height: 1.6; color: var(--text); }
   .j-ahead { font-family: var(--font-quote); font-style: italic; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
   .trail-phase { font: 600 11px var(--font-body, sans-serif); letter-spacing: .06em; text-transform: uppercase; fill: rgba(196,206,234,.5); cursor: pointer; }
@@ -1341,8 +1343,8 @@
   <div class="wrap split">
     <div class="side">
       <h2>30 дней после</h2>
-      <p>Бережный спутник на первый месяц. В каждом дне — одна короткая мысль, одно небольшое дело, которое можно сделать, и минутка, чтобы сказать, как вы.</p>
-      <p class="small">Идите в своём темпе. Здесь нет серий и счётчиков: пропустите день или неделю и просто продолжайте с того места, где остановились. Ваши отметки хранятся в истории вашей собаки.</p>
+      <p>Бережный спутник на первый месяц — по одному дню.</p>
+      <p class="small">Без серий и счётчиков. Пропустили день — просто продолжайте.</p>
     </div>
     <div class="main card stack" id="journeyCard" style="gap: 20px">
       <div id="jStart" class="stack" style="gap: 14px">
@@ -1397,8 +1399,8 @@
           <p class="moment fade-in" id="jMilestone" hidden></p>
           <p id="jText"></p>
           <p class="moment fade-in" id="jMemory" hidden></p>
-          <aside class="from-me" id="jFrom" hidden><span class="from-label">От Ксении</span><p id="jFromText"></p></aside>
-          <div class="j-expect"><span class="field-label" style="margin: 0 0 2px">Что многие чувствуют примерно в это время</span><p id="jExpect"></p></div>
+          <details class="from-me note-fold" id="jFrom" hidden><summary class="from-label">От Ксении</summary><p id="jFromText"></p></details>
+          <details class="j-expect note-fold"><summary class="field-label" style="margin: 0">Что многие чувствуют примерно в это время</summary><p id="jExpect"></p></details>
         </div>
         <div class="try"><strong id="jActionLabel">Сегодня, если получится. </strong><span id="jAction"></span>
           <div class="stack" id="jEx" style="gap: 12px" hidden>
